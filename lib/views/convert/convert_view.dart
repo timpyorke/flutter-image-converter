@@ -715,16 +715,26 @@ class ConvertView extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           GradientButton(
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('Save functionality coming soon!'),
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
+            onPressed: () async {
+              await viewModel.convertAndSaveImages();
+              if (context.mounted) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      viewModel.hasSavedImages
+                          ? 'Successfully saved ${viewModel.savedPaths.length} image${viewModel.savedPaths.length > 1 ? "s" : ""}!'
+                          : 'Failed to save images',
+                    ),
+                    behavior: SnackBarBehavior.floating,
+                    backgroundColor: viewModel.hasSavedImages
+                        ? Colors.green.shade600
+                        : Colors.red.shade600,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                ),
-              );
+                );
+              }
             },
             gradientColors: [Colors.green.shade500, Colors.green.shade700],
             child: Row(
