@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../viewmodels/navigation_viewmodel.dart';
 import '../views/convert/convert_view.dart';
 import '../views/resize/resize_view.dart';
+import '../views/settings/settings_view.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -43,13 +44,9 @@ class HomePage extends StatelessWidget {
                       ),
                       child: IconButton(
                         onPressed: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content: const Text('Settings coming soon!'),
-                              behavior: SnackBarBehavior.floating,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => const SettingsView(),
                             ),
                           );
                         },

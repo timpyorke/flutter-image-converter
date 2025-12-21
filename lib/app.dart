@@ -7,6 +7,7 @@ import 'pages/home_page.dart';
 import 'viewmodels/navigation_viewmodel.dart';
 import 'viewmodels/conversion_viewmodel.dart';
 import 'viewmodels/resize_viewmodel.dart';
+import 'viewmodels/settings_viewmodel.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -18,13 +19,18 @@ class App extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => NavigationViewModel()),
         ChangeNotifierProvider(create: (_) => ConversionViewModel()),
         ChangeNotifierProvider(create: (_) => ResizeViewModel()),
+        ChangeNotifierProvider(create: (_) => SettingsViewModel()),
       ],
-      child: MaterialApp(
-        title: F.title,
-        theme: _buildLightTheme(),
-        darkTheme: _buildDarkTheme(),
-        themeMode: ThemeMode.system,
-        home: _flavorBanner(child: const HomePage(), show: kDebugMode),
+      child: Consumer<SettingsViewModel>(
+        builder: (context, settingsVM, child) {
+          return MaterialApp(
+            title: F.title,
+            theme: _buildLightTheme(),
+            darkTheme: _buildDarkTheme(),
+            themeMode: settingsVM.themeMode,
+            home: _flavorBanner(child: const HomePage(), show: kDebugMode),
+          );
+        },
       ),
     );
   }
