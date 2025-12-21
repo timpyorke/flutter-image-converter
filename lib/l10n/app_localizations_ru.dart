@@ -21,6 +21,9 @@ class AppLocalizationsRu extends AppLocalizations {
   String get settings => 'Настройки';
 
   @override
+  String get loading => 'Загрузка...';
+
+  @override
   String get convertImages => 'Конвертировать Изображения';
 
   @override

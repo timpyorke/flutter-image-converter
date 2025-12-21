@@ -21,6 +21,9 @@ class AppLocalizationsKo extends AppLocalizations {
   String get settings => '설정';
 
   @override
+  String get loading => '로딩 중...';
+
+  @override
   String get convertImages => '이미지 변환';
 
   @override

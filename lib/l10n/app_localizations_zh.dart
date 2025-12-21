@@ -21,6 +21,9 @@ class AppLocalizationsZh extends AppLocalizations {
   String get settings => '设置';
 
   @override
+  String get loading => '加载中...';
+
+  @override
   String get convertImages => '转换图像';
 
   @override

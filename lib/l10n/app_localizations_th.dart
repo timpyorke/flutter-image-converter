@@ -21,6 +21,9 @@ class AppLocalizationsTh extends AppLocalizations {
   String get settings => 'ตั้งค่า';
 
   @override
+  String get loading => 'กำลังโหลด...';
+
+  @override
   String get convertImages => 'แปลงรูปภาพ';
 
   @override

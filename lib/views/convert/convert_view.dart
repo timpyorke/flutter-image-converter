@@ -33,6 +33,11 @@ class ConvertView extends StatelessWidget {
           });
         }
 
+        // Show centered empty state when no images
+        if (!viewModel.hasSourceImages && !viewModel.hasConvertedImages) {
+          return _buildPickImageButton(context, viewModel);
+        }
+
         return SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 100.0),
           child: Column(
@@ -40,58 +45,52 @@ class ConvertView extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               // Source Images Section
-              if (!viewModel.hasSourceImages)
-                _buildPickImageButton(context, viewModel)
-              else
-                _buildSourceImagesSection(context, viewModel),
+              _buildSourceImagesSection(context, viewModel),
 
               const SizedBox(height: 16),
 
               // Settings Section
-              if (viewModel.hasSourceImages) ...[
-                _buildSettingsCard(context, viewModel),
-                const SizedBox(height: 20),
-              ],
+              _buildSettingsCard(context, viewModel),
+              const SizedBox(height: 20),
 
               // Convert Button
-              if (viewModel.hasSourceImages)
-                GradientButton(
-                  onPressed: viewModel.isLoading
-                      ? null
-                      : () => _showAdsDialogBeforeConvert(context, viewModel),
-                  height: 60,
-                  child: viewModel.isLoading
-                      ? Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const SizedBox(
-                              width: 24,
-                              height: 24,
-                              child: CircularProgressIndicator(
-                                strokeWidth: 2.5,
-                                color: Colors.white,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Text(
-                              'Converting ${viewModel.convertedCount}/${viewModel.totalCount}...',
-                            ),
-                          ],
-                        )
-                      : Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
-                              Icons.auto_fix_high_rounded,
+              GradientButton(
+                onPressed: viewModel.isLoading
+                    ? null
+                    : () => _showAdsDialogBeforeConvert(context, viewModel),
+                height: 60,
+                child: viewModel.isLoading
+                    ? Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: CircularProgressIndicator(
+                              strokeWidth: 2.5,
                               color: Colors.white,
                             ),
-                            const SizedBox(width: 12),
-                            Text(
-                              'Convert ${viewModel.sourceImages.length} Image${viewModel.sourceImages.length > 1 ? "s" : ""}',
-                            ),
-                          ],
-                        ),
-                ),
+                          ),
+                          const SizedBox(width: 16),
+                          Text(
+                            'Converting ${viewModel.convertedCount}/${viewModel.totalCount}...',
+                          ),
+                        ],
+                      )
+                    : Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.auto_fix_high_rounded,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(width: 12),
+                          Text(
+                            'Convert ${viewModel.sourceImages.length} Image${viewModel.sourceImages.length > 1 ? "s" : ""}',
+                          ),
+                        ],
+                      ),
+              ),
 
               // Result Section
               if (viewModel.hasConvertedImages) ...[
@@ -113,7 +112,6 @@ class ConvertView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(height: 60),
           Container(
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
@@ -150,15 +148,18 @@ class ConvertView extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 32),
-          GradientButton(
-            onPressed: viewModel.pickImages,
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.add_photo_alternate_rounded, color: Colors.white),
-                SizedBox(width: 12),
-                Text('Select Images'),
-              ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: GradientButton(
+              onPressed: viewModel.pickImages,
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.add_photo_alternate_rounded, color: Colors.white),
+                  SizedBox(width: 12),
+                  Text('Select Images'),
+                ],
+              ),
             ),
           ),
         ],

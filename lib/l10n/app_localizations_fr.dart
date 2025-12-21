@@ -21,6 +21,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get settings => 'Paramètres';
 
   @override
+  String get loading => 'Chargement...';
+
+  @override
   String get convertImages => 'Convertir les Images';
 
   @override

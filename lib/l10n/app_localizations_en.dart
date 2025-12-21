@@ -21,6 +21,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get settings => 'Settings';
 
   @override
+  String get loading => 'Loading...';
+
+  @override
   String get convertImages => 'Convert Images';
 
   @override

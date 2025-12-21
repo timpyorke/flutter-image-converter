@@ -4,6 +4,7 @@
     "convert": "Convertir",
     "resize": "Redimensionner",
     "settings": "Paramètres",
+    "loading": "Chargement...",
     "convertImages": "Convertir les Images",
     "resizeImage": "Redimensionner l'Image",
     "pickImages": "Sélectionner des Images",

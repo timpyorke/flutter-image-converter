@@ -54,27 +54,27 @@ class _ResizeViewState extends State<ResizeView> {
           });
         }
 
+        // Show centered empty state when no image
+        if (!viewModel.hasSourceImage && !viewModel.hasResizedImage) {
+          return _buildPickImageButton(context, viewModel);
+        }
+
         return SingleChildScrollView(
           padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 100.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Source Image Section
-              if (!viewModel.hasSourceImage)
-                _buildPickImageButton(context, viewModel)
-              else
-                _buildSourceImageCard(context, viewModel),
+              _buildSourceImageCard(context, viewModel),
 
               const SizedBox(height: 16),
 
               // Settings Section
-              if (viewModel.hasSourceImage) ...[
-                _buildSettingsCard(context, viewModel),
-                const SizedBox(height: 16),
-              ],
+              _buildSettingsCard(context, viewModel),
+              const SizedBox(height: 16),
 
               // Resize Button
-              if (viewModel.hasSourceImage && viewModel.canResize)
+              if (viewModel.canResize)
                 GradientButton(
                   onPressed: () =>
                       _showAdsDialogBeforeResize(context, viewModel),
@@ -108,7 +108,6 @@ class _ResizeViewState extends State<ResizeView> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(height: 100),
           Container(
             padding: const EdgeInsets.all(32),
             decoration: BoxDecoration(
@@ -145,15 +144,18 @@ class _ResizeViewState extends State<ResizeView> {
             ),
           ),
           const SizedBox(height: 32),
-          GradientButton(
-            onPressed: viewModel.pickImage,
-            child: const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.add_photo_alternate, color: Colors.white),
-                SizedBox(width: 12),
-                Text('Select Image to Resize'),
-              ],
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: GradientButton(
+              onPressed: viewModel.pickImage,
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.add_photo_alternate, color: Colors.white),
+                  SizedBox(width: 12),
+                  Text('Select Image to Resize'),
+                ],
+              ),
             ),
           ),
         ],

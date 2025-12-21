@@ -4,6 +4,7 @@
     "convert": "แปลง",
     "resize": "ปรับขนาด",
     "settings": "ตั้งค่า",
+    "loading": "กำลังโหลด...",
     "convertImages": "แปลงรูปภาพ",
     "resizeImage": "ปรับขนาดรูปภาพ",
     "pickImages": "เลือกรูปภาพ",

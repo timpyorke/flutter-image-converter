@@ -128,7 +128,7 @@ class ConvertAndSaveImagesUseCase {
 
     // Generate unique filename
     final timestamp = DateTime.now().millisecondsSinceEpoch;
-    final extension = _getFileExtension(format);
+    final extension = format.extension;
     final fileName = 'converted_$timestamp$extension';
     final filePath = '${directory.path}/$fileName';
 
@@ -157,20 +157,6 @@ class ConvertAndSaveImagesUseCase {
     }
 
     return true; // For other platforms
-  }
-
-  /// Get file extension from format
-  String _getFileExtension(ImageFormat format) {
-    switch (format) {
-      case ImageFormat.jpg:
-        return '.jpg';
-      case ImageFormat.png:
-        return '.png';
-      case ImageFormat.webp:
-        return '.webp';
-      case ImageFormat.bmp:
-        return '.bmp';
-    }
   }
 }
 

@@ -4,6 +4,7 @@
     "convert": "변환",
     "resize": "크기 조정",
     "settings": "설정",
+    "loading": "로딩 중...",
     "convertImages": "이미지 변환",
     "resizeImage": "이미지 크기 조정",
     "pickImages": "이미지 선택",

@@ -7,6 +7,7 @@
     "convert": "Convert",
     "resize": "Resize",
     "settings": "Settings",
+    "loading": "Loading...",
     "convertImages": "Convert Images",
     "resizeImage": "Resize Image",
     "pickImages": "Pick Images",

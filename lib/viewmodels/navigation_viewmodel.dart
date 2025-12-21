@@ -1,14 +1,22 @@
 import 'package:flutter/foundation.dart';
 
-/// ViewModel for Navigation state
 class NavigationViewModel extends ChangeNotifier {
   int _selectedIndex = 0;
+  bool _isLoading = false;
 
   int get selectedIndex => _selectedIndex;
+  bool get isLoading => _isLoading;
 
-  void selectTab(int index) {
+  Future<void> selectTab(int index) async {
     if (_selectedIndex != index) {
+      _isLoading = true;
+      notifyListeners();
+
+      // Simulate loading for smooth transition
+      await Future.delayed(const Duration(milliseconds: 350));
+
       _selectedIndex = index;
+      _isLoading = false;
       notifyListeners();
     }
   }

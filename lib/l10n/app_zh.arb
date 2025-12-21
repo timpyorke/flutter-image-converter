@@ -4,6 +4,7 @@
     "convert": "转换",
     "resize": "调整大小",
     "settings": "设置",
+    "loading": "加载中...",
     "convertImages": "转换图像",
     "resizeImage": "调整图像大小",
     "pickImages": "选择图像",

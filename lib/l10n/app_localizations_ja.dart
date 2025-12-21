@@ -21,6 +21,9 @@ class AppLocalizationsJa extends AppLocalizations {
   String get settings => '設定';
 
   @override
+  String get loading => '読み込み中...';
+
+  @override
   String get convertImages => '画像を変換';
 
   @override

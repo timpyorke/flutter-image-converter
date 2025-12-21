@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_converters/widgets/nav_item_widget.dart';
 import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../viewmodels/navigation_viewmodel.dart';
@@ -61,14 +62,34 @@ class HomePage extends StatelessWidget {
               ),
             ],
           ),
-          body: AnimatedSwitcher(
-            duration: const Duration(milliseconds: 300),
-            switchInCurve: Curves.easeInOut,
-            switchOutCurve: Curves.easeInOut,
-            child: navigationVM.isConvertSelected
-                ? const ConvertView(key: ValueKey('convert'))
-                : const ResizeView(key: ValueKey('resize')),
-          ),
+          body: navigationVM.isLoading
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        l10n.loading,
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withValues(alpha: 0.6),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              : AnimatedSwitcher(
+                  duration: const Duration(milliseconds: 300),
+                  switchInCurve: Curves.easeInOut,
+                  switchOutCurve: Curves.easeInOut,
+                  child: navigationVM.isConvertSelected
+                      ? const ConvertView(key: ValueKey('convert'))
+                      : const ResizeView(key: ValueKey('resize')),
+                ),
           bottomNavigationBar: Container(
             margin: const EdgeInsets.all(20),
             child: ClipRRect(
@@ -111,19 +132,21 @@ class HomePage extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      _buildNavItem(
+                      NavItemWidget(
                         context: context,
-                        navigationVM: navigationVM,
+                        isSelected: navigationVM.selectedIndex == 0,
                         icon: Icons.transform_rounded,
                         label: l10n.convert,
                         index: 0,
+                        selectTab: navigationVM.selectTab,
                       ),
-                      _buildNavItem(
+                      NavItemWidget(
                         context: context,
-                        navigationVM: navigationVM,
+                        isSelected: navigationVM.selectedIndex == 1,
                         icon: Icons.photo_size_select_large_rounded,
                         label: l10n.resize,
                         index: 1,
+                        selectTab: navigationVM.selectTab,
                       ),
                     ],
                   ),
@@ -133,77 +156,6 @@ class HomePage extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildNavItem({
-    required BuildContext context,
-    required NavigationViewModel navigationVM,
-    required IconData icon,
-    required String label,
-    required int index,
-  }) {
-    final isSelected = navigationVM.selectedIndex == index;
-    final theme = Theme.of(context);
-
-    return Expanded(
-      child: GestureDetector(
-        onTap: () => navigationVM.selectTab(index),
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 300),
-          curve: Curves.easeInOut,
-          margin: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          decoration: BoxDecoration(
-            gradient: isSelected
-                ? LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      theme.colorScheme.primary,
-                      theme.colorScheme.primary.withValues(alpha: 0.8),
-                    ],
-                  )
-                : null,
-            borderRadius: BorderRadius.circular(22),
-            boxShadow: isSelected
-                ? [
-                    BoxShadow(
-                      color: theme.colorScheme.primary.withValues(alpha: 0.4),
-                      blurRadius: 20,
-                      offset: const Offset(0, 8),
-                    ),
-                  ]
-                : null,
-          ),
-          child: Container(
-            alignment: Alignment.center,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  icon,
-                  color: isSelected
-                      ? Colors.white
-                      : theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                  size: 26,
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  label,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: isSelected
-                        ? Colors.white
-                        : theme.colorScheme.onSurface.withValues(alpha: 0.6),
-                    fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
-                    letterSpacing: -0.2,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 }
