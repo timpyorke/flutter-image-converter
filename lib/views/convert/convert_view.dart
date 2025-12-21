@@ -1,7 +1,9 @@
+import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../models/conversion_settings.dart';
 import '../../viewmodels/conversion_viewmodel.dart';
+import '../../widgets/glass_widgets.dart';
 
 class ConvertView extends StatelessWidget {
   const ConvertView({super.key});
@@ -32,7 +34,7 @@ class ConvertView extends StatelessWidget {
         }
 
         return SingleChildScrollView(
-          padding: const EdgeInsets.all(16.0),
+          padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 100.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
@@ -48,30 +50,47 @@ class ConvertView extends StatelessWidget {
               // Settings Section
               if (viewModel.hasSourceImages) ...[
                 _buildSettingsCard(context, viewModel),
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
               ],
 
               // Convert Button
               if (viewModel.hasSourceImages)
-                SizedBox(
-                  width: double.infinity,
-                  child: FilledButton.icon(
-                    onPressed: viewModel.isLoading
-                        ? null
-                        : viewModel.convertImages,
-                    icon: viewModel.isLoading
-                        ? const SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Icon(Icons.transform),
-                    label: Text(
-                      viewModel.isLoading
-                          ? 'Converting ${viewModel.convertedCount}/${viewModel.totalCount}...'
-                          : 'Convert ${viewModel.sourceImages.length} Image(s)',
-                    ),
-                  ),
+                GradientButton(
+                  onPressed: viewModel.isLoading
+                      ? null
+                      : viewModel.convertImages,
+                  height: 60,
+                  child: viewModel.isLoading
+                      ? Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2.5,
+                                color: Colors.white,
+                              ),
+                            ),
+                            const SizedBox(width: 16),
+                            Text(
+                              'Converting ${viewModel.convertedCount}/${viewModel.totalCount}...',
+                            ),
+                          ],
+                        )
+                      : Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.auto_fix_high_rounded,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              'Convert ${viewModel.sourceImages.length} Image${viewModel.sourceImages.length > 1 ? "s" : ""}',
+                            ),
+                          ],
+                        ),
                 ),
 
               // Result Section
@@ -94,17 +113,53 @@ class ConvertView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const SizedBox(height: 100),
-          Icon(
-            Icons.image_outlined,
-            size: 100,
-            color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.5),
+          const SizedBox(height: 60),
+          Container(
+            padding: const EdgeInsets.all(32),
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: LinearGradient(
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+                colors: [
+                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
+                  Theme.of(
+                    context,
+                  ).colorScheme.secondary.withValues(alpha: 0.1),
+                ],
+              ),
+            ),
+            child: Icon(
+              Icons.collections_rounded,
+              size: 80,
+              color: Theme.of(context).colorScheme.primary,
+            ),
           ),
-          const SizedBox(height: 24),
-          FilledButton.icon(
+          const SizedBox(height: 32),
+          Text(
+            'Select Images to Convert',
+            style: Theme.of(context).textTheme.titleLarge,
+          ),
+          const SizedBox(height: 8),
+          Text(
+            'Choose multiple images from your gallery',
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: Theme.of(
+                context,
+              ).colorScheme.onSurface.withValues(alpha: 0.6),
+            ),
+          ),
+          const SizedBox(height: 32),
+          GradientButton(
             onPressed: viewModel.pickImages,
-            icon: const Icon(Icons.add_photo_alternate),
-            label: const Text('Select Images'),
+            child: const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.add_photo_alternate_rounded, color: Colors.white),
+                SizedBox(width: 12),
+                Text('Select Images'),
+              ],
+            ),
           ),
         ],
       ),
@@ -115,108 +170,190 @@ class ConvertView extends StatelessWidget {
     BuildContext context,
     ConversionViewModel viewModel,
   ) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Source Images (${viewModel.sourceImages.length})',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                Row(
-                  children: [
-                    IconButton(
-                      icon: const Icon(Icons.add),
-                      onPressed: viewModel.pickImages,
-                      tooltip: 'Add more images',
+    return GlassCard(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  Container(
+                    padding: const EdgeInsets.all(8),
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Theme.of(context).colorScheme.primary,
+                          Theme.of(context).colorScheme.secondary,
+                        ],
+                      ),
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                    IconButton(
-                      icon: const Icon(Icons.clear_all),
+                    child: const Icon(
+                      Icons.photo_library_rounded,
+                      color: Colors.white,
+                      size: 20,
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Source Images',
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      Text(
+                        '${viewModel.sourceImages.length} selected',
+                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.onSurface.withValues(alpha: 0.6),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  GlassContainer(
+                    padding: const EdgeInsets.all(8),
+                    borderRadius: 12,
+                    child: IconButton(
+                      icon: const Icon(Icons.add_rounded, size: 20),
+                      onPressed: viewModel.pickImages,
+                      tooltip: 'Add more',
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  GlassContainer(
+                    padding: const EdgeInsets.all(8),
+                    borderRadius: 12,
+                    child: IconButton(
+                      icon: const Icon(Icons.delete_outline_rounded, size: 20),
                       onPressed: viewModel.clear,
                       tooltip: 'Clear all',
+                      padding: EdgeInsets.zero,
+                      constraints: const BoxConstraints(),
                     ),
-                  ],
-                ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            SizedBox(
-              height: 150,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: viewModel.sourceImages.length,
-                itemBuilder: (context, index) {
-                  final image = viewModel.sourceImages[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: Stack(
-                      children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
-                          child: image.bytes != null
-                              ? Image.memory(
-                                  image.bytes!,
-                                  height: 150,
-                                  width: 150,
-                                  fit: BoxFit.cover,
-                                )
-                              : Container(
-                                  height: 150,
-                                  width: 150,
-                                  color: Colors.grey,
-                                ),
-                        ),
-                        Positioned(
-                          top: 4,
-                          right: 4,
-                          child: CircleAvatar(
-                            radius: 12,
-                            backgroundColor: Colors.black54,
-                            child: IconButton(
-                              padding: EdgeInsets.zero,
-                              iconSize: 16,
-                              icon: const Icon(
-                                Icons.close,
-                                color: Colors.white,
-                              ),
-                              onPressed: () =>
-                                  viewModel.removeSourceImage(index),
-                            ),
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 4,
-                          left: 4,
-                          right: 4,
-                          child: Container(
-                            padding: const EdgeInsets.all(4),
-                            decoration: BoxDecoration(
-                              color: Colors.black54,
-                              borderRadius: BorderRadius.circular(4),
-                            ),
-                            child: Text(
-                              image.dimensionsDisplay,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 10,
-                              ),
-                              textAlign: TextAlign.center,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
+                  ),
+                ],
               ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          SizedBox(
+            height: 160,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.only(bottom: 4),
+              itemCount: viewModel.sourceImages.length,
+              itemBuilder: (context, index) {
+                final image = viewModel.sourceImages[index];
+                return Padding(
+                  padding: const EdgeInsets.only(right: 12),
+                  child: GlassContainer(
+                    padding: EdgeInsets.zero,
+                    borderRadius: 20,
+                    child: Container(
+                      width: 140,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Stack(
+                        children: [
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: image.bytes != null
+                                ? Image.memory(
+                                    image.bytes!,
+                                    height: 160,
+                                    width: 140,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Container(
+                                    height: 160,
+                                    width: 140,
+                                    color: Colors.grey.shade300,
+                                  ),
+                          ),
+                          Positioned(
+                            top: 8,
+                            right: 8,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(
+                                  sigmaX: 10,
+                                  sigmaY: 10,
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withValues(alpha: 0.3),
+                                    borderRadius: BorderRadius.circular(20),
+                                  ),
+                                  child: IconButton(
+                                    padding: const EdgeInsets.all(8),
+                                    constraints: const BoxConstraints(),
+                                    icon: const Icon(
+                                      Icons.close_rounded,
+                                      color: Colors.white,
+                                      size: 18,
+                                    ),
+                                    onPressed: () =>
+                                        viewModel.removeSourceImage(index),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          Positioned(
+                            bottom: 8,
+                            left: 8,
+                            right: 8,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(12),
+                              child: BackdropFilter(
+                                filter: ImageFilter.blur(
+                                  sigmaX: 10,
+                                  sigmaY: 10,
+                                ),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 8,
+                                    vertical: 6,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    color: Colors.black.withValues(alpha: 0.5),
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                  child: Text(
+                                    image.dimensionsDisplay,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -225,47 +362,169 @@ class ConvertView extends StatelessWidget {
     BuildContext context,
     ConversionViewModel viewModel,
   ) {
-    return SizedBox(
-      width: double.infinity,
-      child: Card(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return GlassCard(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
             children: [
-              Wrap(
-                spacing: 8,
-                children: ImageFormat.values.map((format) {
-                  final isSelected = viewModel.settings.targetFormat == format;
-                  return ChoiceChip(
-                    label: Text(format.displayName),
-                    selected: isSelected,
-                    onSelected: (_) => viewModel.updateTargetFormat(format),
-                  );
-                }).toList(),
+              Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Theme.of(context).colorScheme.secondary,
+                      Theme.of(context).colorScheme.tertiary,
+                    ],
+                  ),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: const Icon(
+                  Icons.tune_rounded,
+                  color: Colors.white,
+                  size: 20,
+                ),
               ),
-
-              const SizedBox(height: 16),
-
-              // Quality Slider (for lossy formats)
-              if (viewModel.settings.targetFormat == ImageFormat.jpg ||
-                  viewModel.settings.targetFormat == ImageFormat.webp) ...[
-                Text(
-                  'Quality: ${viewModel.settings.quality}%',
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-                Slider(
-                  value: viewModel.settings.quality.toDouble(),
-                  min: 1,
-                  max: 100,
-                  divisions: 99,
-                  label: '${viewModel.settings.quality}%',
-                  onChanged: (value) => viewModel.updateQuality(value.toInt()),
-                ),
-              ],
+              const SizedBox(width: 12),
+              Text(
+                'Target Format',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
             ],
           ),
-        ),
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 10,
+            runSpacing: 10,
+            children: ImageFormat.values.map((format) {
+              final isSelected = viewModel.settings.targetFormat == format;
+              return GestureDetector(
+                onTap: () => viewModel.updateTargetFormat(format),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 20,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    gradient: isSelected
+                        ? LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              Theme.of(context).colorScheme.primary,
+                              Theme.of(context).colorScheme.secondary,
+                            ],
+                          )
+                        : null,
+                    color: isSelected
+                        ? null
+                        : Theme.of(
+                            context,
+                          ).colorScheme.surface.withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(
+                      color: isSelected
+                          ? Colors.transparent
+                          : Theme.of(
+                              context,
+                            ).colorScheme.outline.withValues(alpha: 0.3),
+                      width: 1,
+                    ),
+                    boxShadow: isSelected
+                        ? [
+                            BoxShadow(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.primary.withValues(alpha: 0.3),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ]
+                        : null,
+                  ),
+                  child: Text(
+                    format.displayName,
+                    style: TextStyle(
+                      color: isSelected
+                          ? Colors.white
+                          : Theme.of(context).colorScheme.onSurface,
+                      fontWeight: isSelected
+                          ? FontWeight.w600
+                          : FontWeight.w500,
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
+          ),
+          if (viewModel.settings.targetFormat == ImageFormat.jpg ||
+              viewModel.settings.targetFormat == ImageFormat.webp) ...[
+            const SizedBox(height: 24),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Quality',
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
+                ),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Theme.of(
+                          context,
+                        ).colorScheme.primary.withValues(alpha: 0.2),
+                        Theme.of(
+                          context,
+                        ).colorScheme.secondary.withValues(alpha: 0.2),
+                      ],
+                    ),
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    '${viewModel.settings.quality}%',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w600,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            SliderTheme(
+              data: SliderThemeData(
+                trackHeight: 6,
+                thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 10),
+                overlayShape: const RoundSliderOverlayShape(overlayRadius: 20),
+                activeTrackColor: Theme.of(context).colorScheme.primary,
+                inactiveTrackColor: Theme.of(
+                  context,
+                ).colorScheme.surfaceVariant,
+                thumbColor: Theme.of(context).colorScheme.primary,
+                overlayColor: Theme.of(
+                  context,
+                ).colorScheme.primary.withValues(alpha: 0.2),
+              ),
+              child: Slider(
+                value: viewModel.settings.quality.toDouble(),
+                min: 1,
+                max: 100,
+                divisions: 99,
+                label: '${viewModel.settings.quality}%',
+                onChanged: (value) => viewModel.updateQuality(value.toInt()),
+              ),
+            ),
+          ],
+        ],
       ),
     );
   }
@@ -274,104 +533,212 @@ class ConvertView extends StatelessWidget {
     BuildContext context,
     ConversionViewModel viewModel,
   ) {
-    return Card(
+    return GlassCard(
+      padding: const EdgeInsets.all(24),
       color: Theme.of(context).colorScheme.primaryContainer,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(
-                  Icons.check_circle,
-                  color: Theme.of(context).colorScheme.primary,
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  'Conversion Complete! (${viewModel.convertedImages.length})',
-                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.primary,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.green.shade400, Colors.green.shade600],
                   ),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.green.withValues(alpha: 0.3),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            SizedBox(
-              height: 200,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: viewModel.convertedImages.length,
-                itemBuilder: (context, index) {
-                  final image = viewModel.convertedImages[index];
-                  final sourceImage = viewModel.sourceImages[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 12.0),
+                child: const Icon(
+                  Icons.check_circle_rounded,
+                  color: Colors.white,
+                  size: 28,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Conversion Complete!',
+                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                    ),
+                    Text(
+                      '${viewModel.convertedImages.length} image${viewModel.convertedImages.length > 1 ? "s" : ""} converted successfully',
+                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withValues(alpha: 0.7),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 24),
+          SizedBox(
+            height: 220,
+            child: ListView.builder(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.only(bottom: 4),
+              itemCount: viewModel.convertedImages.length,
+              itemBuilder: (context, index) {
+                final image = viewModel.convertedImages[index];
+                final sourceImage = viewModel.sourceImages[index];
+                final sizeDiff = sourceImage.sizeInBytes! - image.sizeInBytes!;
+                final percentReduced =
+                    (sizeDiff / sourceImage.sizeInBytes! * 100).round();
+
+                return Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: GlassContainer(
+                    padding: const EdgeInsets.all(12),
+                    borderRadius: 20,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(16),
                           child: image.bytes != null
                               ? Image.memory(
                                   image.bytes!,
-                                  height: 120,
-                                  width: 120,
+                                  height: 140,
+                                  width: 140,
                                   fit: BoxFit.cover,
                                 )
                               : Container(
-                                  height: 120,
-                                  width: 120,
-                                  color: Colors.grey,
+                                  height: 140,
+                                  width: 140,
+                                  color: Colors.grey.shade300,
                                 ),
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 12),
                         SizedBox(
-                          width: 120,
+                          width: 140,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                sourceImage.sizeDisplay,
-                                style: const TextStyle(fontSize: 11),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'Before',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface
+                                          .withValues(alpha: 0.5),
+                                    ),
+                                  ),
+                                  Text(
+                                    sourceImage.sizeDisplay,
+                                    style: const TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
                               ),
-                              const Icon(Icons.arrow_downward, size: 14),
-                              Text(
-                                image.sizeDisplay,
-                                style: const TextStyle(
-                                  fontSize: 11,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              const SizedBox(height: 4),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    'After',
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface
+                                          .withValues(alpha: 0.5),
+                                    ),
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        image.sizeDisplay,
+                                        style: TextStyle(
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.green.shade600,
+                                        ),
+                                      ),
+                                      const SizedBox(width: 4),
+                                      if (percentReduced > 0)
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 4,
+                                            vertical: 2,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.green.shade100,
+                                            borderRadius: BorderRadius.circular(
+                                              4,
+                                            ),
+                                          ),
+                                          child: Text(
+                                            '-$percentReduced%',
+                                            style: TextStyle(
+                                              fontSize: 9,
+                                              fontWeight: FontWeight.w700,
+                                              color: Colors.green.shade700,
+                                            ),
+                                          ),
+                                        ),
+                                    ],
+                                  ),
+                                ],
                               ),
                             ],
                           ),
                         ),
                       ],
                     ),
-                  );
-                },
-              ),
+                  ),
+                );
+              },
             ),
-            const SizedBox(height: 12),
-            SizedBox(
-              width: double.infinity,
-              child: OutlinedButton.icon(
-                onPressed: () {
-                  // TODO: Implement save functionality
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Save functionality coming soon!'),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.save),
-                label: Text(
-                  'Save ${viewModel.convertedImages.length} Image(s)',
+          ),
+          const SizedBox(height: 20),
+          GradientButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('Save functionality coming soon!'),
+                  behavior: SnackBarBehavior.floating,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
                 ),
-              ),
+              );
+            },
+            gradientColors: [Colors.green.shade500, Colors.green.shade700],
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(Icons.download_rounded, color: Colors.white),
+                const SizedBox(width: 12),
+                Text(
+                  'Save ${viewModel.convertedImages.length} Image${viewModel.convertedImages.length > 1 ? "s" : ""}',
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
