@@ -1,18 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_image_converters/const/image_format.dart';
 import 'package:provider/provider.dart';
+import '../../l10n/app_localizations.dart';
 import '../../viewmodels/settings_viewmodel.dart';
 import '../../widgets/glass_widgets.dart';
-import '../../models/app_settings.dart';
 
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Settings'),
+        title: Text(l10n.settings),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_rounded),
           onPressed: () => Navigator.of(context).pop(),
@@ -26,48 +28,48 @@ class SettingsView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Appearance Section
-                _buildSectionTitle(context, 'Appearance'),
+                _buildSectionTitle(context, l10n.appearance),
                 const SizedBox(height: 12),
-                _buildThemeCard(context, viewModel),
+                _buildThemeCard(context, viewModel, l10n),
                 const SizedBox(height: 32),
 
                 // Conversion Defaults Section
-                _buildSectionTitle(context, 'Conversion Defaults'),
+                _buildSectionTitle(context, l10n.conversionDefaults),
                 const SizedBox(height: 12),
-                _buildDefaultFormatCard(context, viewModel),
+                _buildDefaultFormatCard(context, viewModel, l10n),
                 const SizedBox(height: 16),
-                _buildDefaultQualityCard(context, viewModel),
+                _buildDefaultQualityCard(context, viewModel, l10n),
                 const SizedBox(height: 32),
 
                 // Storage Section
-                _buildSectionTitle(context, 'Storage'),
+                _buildSectionTitle(context, l10n.storage),
                 const SizedBox(height: 12),
-                _buildStorageCard(context, viewModel),
+                _buildStorageCard(context, viewModel, l10n),
                 const SizedBox(height: 32),
 
                 // Advanced Section
-                _buildSectionTitle(context, 'Advanced'),
+                _buildSectionTitle(context, l10n.advanced),
                 const SizedBox(height: 12),
-                _buildAdvancedCard(context, viewModel),
+                _buildAdvancedCard(context, viewModel, l10n),
                 const SizedBox(height: 32),
 
                 // About Section
-                _buildSectionTitle(context, 'About'),
+                _buildSectionTitle(context, l10n.about),
                 const SizedBox(height: 12),
-                _buildAboutCard(context, viewModel),
+                _buildAboutCard(context, viewModel, l10n),
                 const SizedBox(height: 32),
 
                 // Reset Button
                 Center(
                   child: GradientButton(
-                    onPressed: () => _showResetDialog(context, viewModel),
+                    onPressed: () => _showResetDialog(context, viewModel, l10n),
                     gradientColors: [Colors.red.shade400, Colors.red.shade600],
-                    child: const Row(
+                    child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Icon(Icons.restore_rounded, color: Colors.white),
-                        SizedBox(width: 12),
-                        Text('Reset to Defaults'),
+                        const Icon(Icons.restore_rounded, color: Colors.white),
+                        const SizedBox(width: 12),
+                        Text(l10n.resetToDefaults),
                       ],
                     ),
                   ),
@@ -94,7 +96,11 @@ class SettingsView extends StatelessWidget {
     );
   }
 
-  Widget _buildThemeCard(BuildContext context, SettingsViewModel viewModel) {
+  Widget _buildThemeCard(
+    BuildContext context,
+    SettingsViewModel viewModel,
+    AppLocalizations l10n,
+  ) {
     return GlassCard(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -129,13 +135,13 @@ class SettingsView extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Theme',
+                      l10n.theme,
                       style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         fontWeight: FontWeight.w700,
                       ),
                     ),
                     Text(
-                      'Choose your preferred theme',
+                      l10n.choosePreferredTheme,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: Theme.of(
                           context,
@@ -153,7 +159,7 @@ class SettingsView extends StatelessWidget {
               Expanded(
                 child: _buildThemeOption(
                   context,
-                  'Light',
+                  l10n.light,
                   Icons.light_mode_rounded,
                   ThemeMode.light,
                   viewModel.themeMode == ThemeMode.light,
@@ -164,7 +170,7 @@ class SettingsView extends StatelessWidget {
               Expanded(
                 child: _buildThemeOption(
                   context,
-                  'Dark',
+                  l10n.dark,
                   Icons.dark_mode_rounded,
                   ThemeMode.dark,
                   viewModel.themeMode == ThemeMode.dark,
@@ -175,7 +181,7 @@ class SettingsView extends StatelessWidget {
               Expanded(
                 child: _buildThemeOption(
                   context,
-                  'System',
+                  l10n.system,
                   Icons.brightness_auto_rounded,
                   ThemeMode.system,
                   viewModel.themeMode == ThemeMode.system,
@@ -246,6 +252,7 @@ class SettingsView extends StatelessWidget {
   Widget _buildDefaultFormatCard(
     BuildContext context,
     SettingsViewModel viewModel,
+    AppLocalizations l10n,
   ) {
     return GlassCard(
       padding: const EdgeInsets.all(20),
@@ -326,6 +333,7 @@ class SettingsView extends StatelessWidget {
   Widget _buildDefaultQualityCard(
     BuildContext context,
     SettingsViewModel viewModel,
+    AppLocalizations l10n,
   ) {
     return GlassCard(
       padding: const EdgeInsets.all(20),
@@ -402,7 +410,11 @@ class SettingsView extends StatelessWidget {
     );
   }
 
-  Widget _buildStorageCard(BuildContext context, SettingsViewModel viewModel) {
+  Widget _buildStorageCard(
+    BuildContext context,
+    SettingsViewModel viewModel,
+    AppLocalizations l10n,
+  ) {
     return GlassCard(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -449,7 +461,11 @@ class SettingsView extends StatelessWidget {
     );
   }
 
-  Widget _buildAdvancedCard(BuildContext context, SettingsViewModel viewModel) {
+  Widget _buildAdvancedCard(
+    BuildContext context,
+    SettingsViewModel viewModel,
+    AppLocalizations l10n,
+  ) {
     return GlassCard(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -465,7 +481,7 @@ class SettingsView extends StatelessWidget {
                 context,
               ).colorScheme.onSurface.withValues(alpha: 0.4),
             ),
-            onTap: () => _showLanguageDialog(context, viewModel),
+            onTap: () => _showLanguageDialog(context, viewModel, l10n),
           ),
           const SizedBox(height: 16),
           _buildSettingTile(
@@ -479,14 +495,18 @@ class SettingsView extends StatelessWidget {
                 context,
               ).colorScheme.onSurface.withValues(alpha: 0.4),
             ),
-            onTap: () => _showClearCacheDialog(context),
+            onTap: () => _showClearCacheDialog(context, l10n),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildAboutCard(BuildContext context, SettingsViewModel viewModel) {
+  Widget _buildAboutCard(
+    BuildContext context,
+    SettingsViewModel viewModel,
+    AppLocalizations l10n,
+  ) {
     return GlassCard(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -627,7 +647,11 @@ class SettingsView extends StatelessWidget {
     );
   }
 
-  void _showResetDialog(BuildContext context, SettingsViewModel viewModel) {
+  void _showResetDialog(
+    BuildContext context,
+    SettingsViewModel viewModel,
+    AppLocalizations l10n,
+  ) {
     showDialog(
       context: context,
       builder: (context) => Dialog(
@@ -717,7 +741,7 @@ class SettingsView extends StatelessWidget {
     );
   }
 
-  void _showClearCacheDialog(BuildContext context) {
+  void _showClearCacheDialog(BuildContext context, AppLocalizations l10n) {
     showDialog(
       context: context,
       builder: (context) => Dialog(
@@ -824,7 +848,11 @@ class SettingsView extends StatelessWidget {
     return languages[code] ?? 'English';
   }
 
-  void _showLanguageDialog(BuildContext context, SettingsViewModel viewModel) {
+  void _showLanguageDialog(
+    BuildContext context,
+    SettingsViewModel viewModel,
+    AppLocalizations l10n,
+  ) {
     final languages = [
       {'code': 'en', 'name': 'English', 'nativeName': 'English'},
       {'code': 'th', 'name': 'Thai', 'nativeName': 'ภาษาไทย'},

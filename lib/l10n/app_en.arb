@@ -1,0 +1,148 @@
+{
+    "@@locale": "en",
+    "appTitle": "Image Converter",
+    "@appTitle": {
+        "description": "Application title"
+    },
+    "convert": "Convert",
+    "resize": "Resize",
+    "settings": "Settings",
+    "convertImages": "Convert Images",
+    "resizeImage": "Resize Image",
+    "pickImages": "Pick Images",
+    "selectImage": "Select Image",
+    "selectImages": "Select Images",
+    "selectImageToResize": "Select Image to Resize",
+    "converting": "Converting {current}/{total}...",
+    "@converting": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "convertNImages": "Convert {count, plural, =1{1 Image} other{{count} Images}}",
+    "@convertNImages": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "saveNImages": "Save {count, plural, =1{1 Image} other{{count} Images}}",
+    "@saveNImages": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "conversionComplete": "Conversion Complete!",
+    "resizeComplete": "Resize Complete!",
+    "nImagesConvertedSuccessfully": "{count} image(s) converted successfully",
+    "@nImagesConvertedSuccessfully": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "yourImageResizedSuccessfully": "Your image has been resized successfully",
+    "format": "Format",
+    "quality": "Quality",
+    "sourceImages": "Source Images",
+    "sourceImage": "Source Image",
+    "conversionSettings": "Conversion Settings",
+    "resizeSettings": "Resize Settings",
+    "width": "Width",
+    "height": "Height",
+    "maintainAspectRatio": "Maintain Aspect Ratio",
+    "name": "Name",
+    "dimensions": "Dimensions",
+    "size": "Size",
+    "before": "Before",
+    "after": "After",
+    "readyToConvert": "Ready to convert your images?",
+    "thisWillConvertNImages": "This will convert {count} image(s)",
+    "@thisWillConvertNImages": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "readyToResize": "Ready to resize your image?",
+    "imageWillBeResized": "Your image will be resized to the specified dimensions",
+    "cancel": "Cancel",
+    "continueAction": "Continue",
+    "save": "Save",
+    "clear": "Clear",
+    "reset": "Reset",
+    "advertisement": "Advertisement",
+    "adBannerPlaceholder": "Ad Banner Placeholder",
+    "appearance": "Appearance",
+    "theme": "Theme",
+    "choosePreferredTheme": "Choose your preferred theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "conversionDefaults": "Conversion Defaults",
+    "defaultOutputFormat": "Default Output Format",
+    "defaultQuality": "Default Quality",
+    "storage": "Storage",
+    "autoSaveToGallery": "Auto-save to Gallery",
+    "automaticallySaveConverted": "Automatically save converted images",
+    "storageLocation": "Storage Location",
+    "storageLocationPath": "Pictures/ImageConverter",
+    "advanced": "Advanced",
+    "language": "Language",
+    "clearCache": "Clear Cache",
+    "freeUpStorage": "Free up storage space",
+    "about": "About",
+    "version": "Version",
+    "latest": "Latest",
+    "privacyPolicy": "Privacy Policy",
+    "howWeHandleData": "How we handle your data",
+    "termsOfService": "Terms of Service",
+    "appUsageTerms": "App usage terms",
+    "resetToDefaults": "Reset to Defaults",
+    "resetSettings": "Reset Settings?",
+    "resetSettingsConfirm": "This will reset all settings to their default values. This action cannot be undone.",
+    "settingsResetToDefaults": "Settings reset to defaults",
+    "clearCacheQuestion": "Clear Cache?",
+    "clearCacheDescription": "This will clear temporary files and free up storage space. Your images and settings will not be affected.",
+    "cacheClearedSuccessfully": "Cache cleared successfully",
+    "selectLanguage": "Select Language",
+    "languageChangedTo": "Language changed to {language}",
+    "@languageChangedTo": {
+        "placeholders": {
+            "language": {
+                "type": "String"
+            }
+        }
+    },
+    "storageLocationConfigurationComingSoon": "Storage location configuration coming soon!",
+    "privacyPolicyComingSoon": "Privacy policy coming soon!",
+    "termsOfServiceComingSoon": "Terms of service coming soon!",
+    "saveFunctionalityComingSoon": "Save functionality coming soon!",
+    "noImagesSelected": "No images selected",
+    "pickImageError": "Failed to pick image",
+    "conversionError": "Conversion failed",
+    "resizeError": "Resize failed",
+    "convertYourImages": "Convert Your Images",
+    "selectImagesToGetStarted": "Select multiple images to get started",
+    "resizeYourImages": "Resize Your Images",
+    "selectAnImageToGetStarted": "Select an image to get started",
+    "savedNImagesSuccessfully": "Successfully saved {count} image(s)!",
+    "@savedNImagesSuccessfully": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "failedToSaveImages": "Failed to save images"
+}

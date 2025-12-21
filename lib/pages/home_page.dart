@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import '../l10n/app_localizations.dart';
 import '../viewmodels/navigation_viewmodel.dart';
 import '../views/convert/convert_view.dart';
 import '../views/resize/resize_view.dart';
@@ -11,6 +12,8 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+
     return Consumer<NavigationViewModel>(
       builder: (context, navigationVM, child) {
         return Scaffold(
@@ -19,7 +22,7 @@ class HomePage extends StatelessWidget {
             title: AnimatedSwitcher(
               duration: const Duration(milliseconds: 300),
               child: Text(
-                navigationVM.isConvertSelected ? 'Convert' : 'Resize',
+                navigationVM.isConvertSelected ? l10n.convert : l10n.resize,
                 key: ValueKey(navigationVM.selectedIndex),
               ),
             ),
@@ -112,14 +115,14 @@ class HomePage extends StatelessWidget {
                         context: context,
                         navigationVM: navigationVM,
                         icon: Icons.transform_rounded,
-                        label: 'Convert',
+                        label: l10n.convert,
                         index: 0,
                       ),
                       _buildNavItem(
                         context: context,
                         navigationVM: navigationVM,
                         icon: Icons.photo_size_select_large_rounded,
-                        label: 'Resize',
+                        label: l10n.resize,
                         index: 1,
                       ),
                     ],

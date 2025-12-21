@@ -1,8 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
 import 'flavors.dart';
+import 'l10n/app_localizations.dart';
 import 'pages/home_page.dart';
 import 'viewmodels/navigation_viewmodel.dart';
 import 'viewmodels/conversion_viewmodel.dart';
@@ -28,6 +30,25 @@ class App extends StatelessWidget {
             theme: _buildLightTheme(),
             darkTheme: _buildDarkTheme(),
             themeMode: settingsVM.themeMode,
+            localizationsDelegates: const [
+              AppLocalizations.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+            ],
+            supportedLocales: const [
+              Locale('en'), // English
+              Locale('th'), // Thai
+              Locale('zh'), // Chinese
+              Locale('ja'), // Japanese
+              Locale('ko'), // Korean
+              Locale('es'), // Spanish
+              Locale('fr'), // French
+              Locale('de'), // German
+              Locale('pt'), // Portuguese
+              Locale('ru'), // Russian
+            ],
+            locale: Locale(settingsVM.settings.language),
             home: _flavorBanner(child: const HomePage(), show: kDebugMode),
           );
         },

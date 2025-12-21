@@ -2,7 +2,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_converters/const/image_format.dart';
 import 'package:provider/provider.dart';
-import '../../models/conversion_settings.dart';
 import '../../viewmodels/conversion_viewmodel.dart';
 import '../../widgets/glass_widgets.dart';
 
@@ -509,7 +508,7 @@ class ConvertView extends StatelessWidget {
                 activeTrackColor: Theme.of(context).colorScheme.primary,
                 inactiveTrackColor: Theme.of(
                   context,
-                ).colorScheme.surfaceVariant,
+                ).colorScheme.surfaceContainerHighest,
                 thumbColor: Theme.of(context).colorScheme.primary,
                 overlayColor: Theme.of(
                   context,
