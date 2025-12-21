@@ -4,6 +4,8 @@ import 'package:provider/provider.dart';
 import '../../l10n/app_localizations.dart';
 import '../../viewmodels/settings_viewmodel.dart';
 import '../../widgets/glass_widgets.dart';
+import '../legal/privacy_policy_view.dart';
+import '../legal/terms_of_service_view.dart';
 
 class SettingsView extends StatelessWidget {
   const SettingsView({super.key});
@@ -534,13 +536,9 @@ class SettingsView extends StatelessWidget {
               ).colorScheme.onSurface.withValues(alpha: 0.4),
             ),
             onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('Privacy policy coming soon!'),
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const PrivacyPolicyView(),
                 ),
               );
             },
@@ -558,13 +556,9 @@ class SettingsView extends StatelessWidget {
               ).colorScheme.onSurface.withValues(alpha: 0.4),
             ),
             onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('Terms of service coming soon!'),
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => const TermsOfServiceView(),
                 ),
               );
             },
