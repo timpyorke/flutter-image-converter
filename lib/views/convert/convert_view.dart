@@ -443,6 +443,16 @@ class ConvertView extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              children: [
+                _buildQualityChip(context, viewModel, 'Low', 50),
+                _buildQualityChip(context, viewModel, 'Medium', 75),
+                _buildQualityChip(context, viewModel, 'High', 90),
+                _buildQualityChip(context, viewModel, 'Max', 100),
+              ],
+            ),
+            const SizedBox(height: 12),
             SliderTheme(
               data: SliderThemeData(
                 trackHeight: 6,
@@ -679,7 +689,6 @@ class ConvertView extends StatelessWidget {
                 );
               }
             },
-            gradientColors: [Colors.green.shade500, Colors.green.shade700],
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -794,7 +803,6 @@ class ConvertView extends StatelessWidget {
                 children: [
                   Expanded(
                     child: GradientButton(
-                      gradientColors: [Colors.red, Colors.redAccent],
                       onPressed: () {
                         Navigator.of(context).pop();
                       },
@@ -817,6 +825,40 @@ class ConvertView extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildQualityChip(
+    BuildContext context,
+    ConversionViewModel viewModel,
+    String label,
+    int quality,
+  ) {
+    final isSelected = viewModel.settings.quality == quality;
+    return FilterChip(
+      label: Text(label),
+      selected: isSelected,
+      onSelected: (_) {
+        viewModel.updateQuality(quality);
+      },
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      selectedColor: Theme.of(
+        context,
+      ).colorScheme.primary.withValues(alpha: 0.2),
+      checkmarkColor: Theme.of(context).colorScheme.primary,
+      labelStyle: TextStyle(
+        color: isSelected
+            ? Theme.of(context).colorScheme.primary
+            : Theme.of(context).colorScheme.onSurface,
+        fontWeight: FontWeight.w600,
+      ),
+      side: BorderSide(
+        color: isSelected
+            ? Theme.of(context).colorScheme.primary
+            : Theme.of(context).colorScheme.outline.withValues(alpha: 0.3),
+        width: 1.5,
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     );
   }
 }

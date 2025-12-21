@@ -198,6 +198,26 @@ class _ResizeViewState extends State<ResizeView> {
 
           const SizedBox(height: 20),
 
+          // Quick Resize Options
+          Text(
+            'Reduce by %',
+            style: Theme.of(
+              context,
+            ).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w600),
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 8,
+            children: [
+              _buildPercentageChip(context, viewModel, 25),
+              _buildPercentageChip(context, viewModel, 50),
+              _buildPercentageChip(context, viewModel, 75),
+              _buildResetChip(context, viewModel),
+            ],
+          ),
+
+          const SizedBox(height: 20),
+
           // Dimensions Input
           Row(
             children: [
@@ -407,7 +427,6 @@ class _ResizeViewState extends State<ResizeView> {
                 ),
               );
             },
-            gradientColors: [Colors.green.shade500, Colors.green.shade700],
             child: const Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -566,7 +585,6 @@ class _ResizeViewState extends State<ResizeView> {
                 children: [
                   Expanded(
                     child: GradientButton(
-                      gradientColors: [Colors.red, Colors.redAccent],
                       onPressed: () {
                         Navigator.of(context).pop();
                         viewModel.resizeImage();
@@ -590,6 +608,84 @@ class _ResizeViewState extends State<ResizeView> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildPercentageChip(
+    BuildContext context,
+    ResizeViewModel viewModel,
+    int percentage,
+  ) {
+    return FilterChip(
+      label: Text('$percentage%'),
+      selected: false,
+      onSelected: (_) {
+        if (viewModel.sourceImage != null) {
+          final sourceWidth = viewModel.sourceImage!.width ?? 0;
+          final sourceHeight = viewModel.sourceImage!.height ?? 0;
+
+          final newWidth = (sourceWidth * (100 - percentage) / 100).round();
+          final newHeight = (sourceHeight * (100 - percentage) / 100).round();
+
+          _widthController.text = newWidth.toString();
+          _heightController.text = newHeight.toString();
+
+          viewModel.updateWidth(newWidth);
+          viewModel.updateHeight(newHeight);
+        }
+      },
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      selectedColor: Theme.of(
+        context,
+      ).colorScheme.primary.withValues(alpha: 0.2),
+      labelStyle: TextStyle(
+        color: Theme.of(context).colorScheme.primary,
+        fontWeight: FontWeight.w600,
+      ),
+      side: BorderSide(
+        color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.3),
+        width: 1.5,
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+    );
+  }
+
+  Widget _buildResetChip(BuildContext context, ResizeViewModel viewModel) {
+    return FilterChip(
+      label: const Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.refresh_rounded, size: 16),
+          SizedBox(width: 4),
+          Text('Reset'),
+        ],
+      ),
+      selected: false,
+      onSelected: (_) {
+        if (viewModel.sourceImage != null) {
+          final sourceWidth = viewModel.sourceImage!.width ?? 0;
+          final sourceHeight = viewModel.sourceImage!.height ?? 0;
+
+          _widthController.text = sourceWidth.toString();
+          _heightController.text = sourceHeight.toString();
+
+          viewModel.updateWidth(sourceWidth);
+          viewModel.updateHeight(sourceHeight);
+        }
+      },
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      selectedColor: Theme.of(
+        context,
+      ).colorScheme.secondary.withValues(alpha: 0.2),
+      labelStyle: TextStyle(
+        color: Theme.of(context).colorScheme.secondary,
+        fontWeight: FontWeight.w600,
+      ),
+      side: BorderSide(
+        color: Theme.of(context).colorScheme.secondary.withValues(alpha: 0.3),
+        width: 1.5,
+      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
     );
   }
 }

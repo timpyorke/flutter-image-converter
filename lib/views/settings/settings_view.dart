@@ -63,7 +63,6 @@ class SettingsView extends StatelessWidget {
                 Center(
                   child: GradientButton(
                     onPressed: () => _showResetDialog(context, viewModel, l10n),
-                    gradientColors: [Colors.red.shade400, Colors.red.shade600],
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -725,10 +724,6 @@ class SettingsView extends StatelessWidget {
                           ),
                         );
                       },
-                      gradientColors: [
-                        Colors.red.shade400,
-                        Colors.red.shade600,
-                      ],
                       child: const Text('Reset'),
                     ),
                   ),
