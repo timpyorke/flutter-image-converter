@@ -1,25 +1,63 @@
 # 📸 Flutter Image Converters
 
-> ⚠️ **Work in Progress** - Core features are currently under development
-
-A cross-platform Flutter application for converting images between different formats (JPG, PNG, WebP) with support for quality adjustment and batch processing.
+A cross-platform Flutter application for converting and resizing images between different formats with a clean MVVM architecture and Provider state management.
 
 ## ✨ Features
 
-- 📷 **Image Selection**: Pick images from gallery or capture with camera
-- 🔄 **Format Conversion**: Convert between JPG, PNG, and WebP formats
-- 🎚️ **Quality Control**: Adjust compression and quality settings
-- 👁️ **Preview & Compare**: View original vs converted images with file size comparison
-- 📊 **Conversion History**: Track and manage previously converted images
-- 💾 **Save & Share**: Export converted images to device gallery or share directly
-- 🎨 **Multi-Flavor Support**: Separate dev and production environments
+### Image Conversion
+
+- 📷 **Multi-Select**: Pick multiple images from gallery at once
+- 🔄 **Batch Conversion**: Convert multiple images simultaneously
+- 📊 **Progress Tracking**: Real-time conversion progress (e.g., "Converting 2/5...")
+- 🎯 **Format Conversion**: Convert between JPG, PNG, WebP, and BMP formats
+- 🎚️ **Quality Control**: Adjust compression quality for lossy formats (1-100%)
+- 👁️ **Preview**: View all images in horizontal scrollable list
+- 📊 **Metadata Display**: See dimensions, format, and file size for each image
+- 🗑️ **Individual Management**: Remove specific images from batch
+- ➕ **Add More**: Add additional images to existing selection
+- 💾 **Batch Results**: View before/after size comparison for all images
+
+### Image Resizing
+
+- 📐 **Custom Dimensions**: Set width and/or height
+- 🔒 **Aspect Ratio Lock**: Maintain proportions automatically
+- 📏 **Auto-calculation**: Automatically calculate dimensions when aspect ratio is locked
+- 👁️ **Preview**: View original and resized images with comparison
+
+### Architecture
+
+- 🏗️ **MVVM Pattern**: Clean separation of concerns
+- ⚡ **Provider State Management**: Reactive and efficient
+- 🎨 **Material 3 Design**: Modern UI with dark mode support
+- 🎯 **Multi-Flavor Support**: Separate dev and production environments
 
 ### Planned Features
 
-- ⚡ Batch image conversion
-- ✂️ Image editing (crop, resize, rotate)
-- 📱 Platform-optimized UI (Material & Cupertino)
-- 🌐 Format-specific options (transparency, metadata preservation)
+- 💾 Save images to gallery
+- 📤 Share functionality
+- 🎨 Image filters and effects
+- 📝 Conversion history
+- ⚙️ Settings page
+- ⚡ Parallel conversion (multi-threaded)
+
+## 🏗️ Architecture
+
+This project follows **MVVM (Model-View-ViewModel)** architecture with **Provider** for state management.
+
+```
+lib/
+├── models/              # Data models
+├── viewmodels/         # Business logic & state
+├── views/              # UI components
+├── services/           # Business operations
+└── pages/              # Page scaffolds
+```
+
+For detailed architecture documentation, see:
+
+- [ARCHITECTURE.md](ARCHITECTURE.md) - Architecture overview and patterns
+- [ARCHITECTURE_DIAGRAM.md](ARCHITECTURE_DIAGRAM.md) - Visual diagrams and flows
+- [MVVM_IMPLEMENTATION.md](MVVM_IMPLEMENTATION.md) - Implementation details
 
 ## 🚀 Getting Started
 
