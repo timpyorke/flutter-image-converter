@@ -22,7 +22,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: _selectedIndex == 0 ? _buildConvertPage() : _buildResizePage(),
       bottomNavigationBar: Container(
-        margin: const EdgeInsets.all(16.0),
+        margin: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 24.0),
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.surface,
@@ -110,10 +110,6 @@ class _HomePageState extends State<HomePage> {
   Widget _buildConvertPage() {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(F.title, style: Theme.of(context).textTheme.titleMedium),
-        ),
         Expanded(
           child: Center(
             child: FilledButton.icon(
@@ -130,10 +126,6 @@ class _HomePageState extends State<HomePage> {
   Widget _buildResizePage() {
     return Column(
       children: [
-        Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Text(F.title, style: Theme.of(context).textTheme.titleMedium),
-        ),
         Expanded(
           child: Center(
             child: FilledButton.icon(
