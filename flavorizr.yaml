@@ -1,0 +1,21 @@
+flavors:
+  dev:
+    app:
+      name: "Image Converters Dev"
+
+    android:
+      applicationId: "com.codenour.image_converters.dev"
+    ios:
+      bundleId: "com.codenour.image-converters.dev"
+    macos:
+      bundleId: "com.codenour.image-converters.dev"
+  prod:
+    app:
+      name: "Image Converters"
+
+    android:
+      applicationId: "com.codenour.image_converters"
+    ios:
+      bundleId: "com.codenour.image-converters"
+    macos:
+      bundleId: "com.codenour.image-converters"
