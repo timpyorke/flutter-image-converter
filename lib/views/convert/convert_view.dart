@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_converters/const/image_format.dart';
+import 'package:flutter_image_converters/widgets/pick_image_button_widget.dart';
 import 'package:provider/provider.dart';
 import '../../viewmodels/conversion_viewmodel.dart';
 import '../../widgets/glass_widgets.dart';
@@ -35,7 +36,11 @@ class ConvertView extends StatelessWidget {
 
         // Show centered empty state when no images
         if (!viewModel.hasSourceImages && !viewModel.hasConvertedImages) {
-          return _buildPickImageButton(context, viewModel);
+          return PickImageButtonWidget(
+            title: 'Select Images to Convert',
+            subtitle: 'Choose multiple images from your gallery',
+            onPressed: viewModel.pickImages,
+          );
         }
 
         return SingleChildScrollView(
@@ -101,69 +106,6 @@ class ConvertView extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildPickImageButton(
-    BuildContext context,
-    ConversionViewModel viewModel,
-  ) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(32),
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              gradient: LinearGradient(
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-                colors: [
-                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
-                  Theme.of(
-                    context,
-                  ).colorScheme.secondary.withValues(alpha: 0.1),
-                ],
-              ),
-            ),
-            child: Icon(
-              Icons.collections_rounded,
-              size: 80,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-          const SizedBox(height: 32),
-          Text(
-            'Select Images to Convert',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Choose multiple images from your gallery',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(
-                context,
-              ).colorScheme.onSurface.withValues(alpha: 0.6),
-            ),
-          ),
-          const SizedBox(height: 32),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: GradientButton(
-              onPressed: viewModel.pickImages,
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.add_photo_alternate_rounded, color: Colors.white),
-                  SizedBox(width: 12),
-                  Text('Select Images'),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_image_converters/widgets/pick_image_button_widget.dart';
 import 'package:provider/provider.dart';
 import '../../viewmodels/resize_viewmodel.dart';
 import '../../widgets/glass_widgets.dart';
@@ -56,7 +57,11 @@ class _ResizeViewState extends State<ResizeView> {
 
         // Show centered empty state when no image
         if (!viewModel.hasSourceImage && !viewModel.hasResizedImage) {
-          return _buildPickImageButton(context, viewModel);
+          return PickImageButtonWidget(
+            title: 'Resize Your Images',
+            subtitle: 'Select an image to get started',
+            onPressed: viewModel.pickImage,
+          );
         }
 
         return SingleChildScrollView(
@@ -97,69 +102,6 @@ class _ResizeViewState extends State<ResizeView> {
           ),
         );
       },
-    );
-  }
-
-  Widget _buildPickImageButton(
-    BuildContext context,
-    ResizeViewModel viewModel,
-  ) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(32),
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
-                  Theme.of(
-                    context,
-                  ).colorScheme.secondary.withValues(alpha: 0.2),
-                ],
-              ),
-              shape: BoxShape.circle,
-            ),
-            child: Icon(
-              Icons.photo_size_select_large_outlined,
-              size: 80,
-              color: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-          const SizedBox(height: 32),
-          Text(
-            'Resize Your Images',
-            style: Theme.of(
-              context,
-            ).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.w700),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            'Select an image to get started',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(
-                context,
-              ).colorScheme.onSurface.withValues(alpha: 0.6),
-            ),
-          ),
-          const SizedBox(height: 32),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: GradientButton(
-              onPressed: viewModel.pickImage,
-              child: const Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(Icons.add_photo_alternate, color: Colors.white),
-                  SizedBox(width: 12),
-                  Text('Select Image to Resize'),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 
