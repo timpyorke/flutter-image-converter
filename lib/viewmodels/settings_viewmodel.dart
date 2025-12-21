@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_image_converters/const/image_format.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../models/app_settings.dart';
+import '../services/storage_service.dart';
 
 /// ViewModel for app settings
 class SettingsViewModel extends ChangeNotifier {
   AppSettings _settings = AppSettings();
-  SharedPreferences? _prefs;
+  StorageService? _storage;
 
   SettingsViewModel() {
     _loadSettings();
@@ -34,13 +34,13 @@ class SettingsViewModel extends ChangeNotifier {
 
   /// Load settings from SharedPreferences
   Future<void> _loadSettings() async {
-    _prefs = await SharedPreferences.getInstance();
+    _storage = await StorageService.getInstance();
 
-    final themeModeIndex = _prefs?.getInt('themeMode') ?? 0;
-    final defaultFormatIndex = _prefs?.getInt('defaultFormat') ?? 1;
-    final defaultQuality = _prefs?.getInt('defaultQuality') ?? 90;
-    final saveToGallery = _prefs?.getBool('saveToGallery') ?? true;
-    final language = _prefs?.getString('language') ?? 'en';
+    final themeModeIndex = _storage?.getInt('themeMode') ?? 0;
+    final defaultFormatIndex = _storage?.getInt('defaultFormat') ?? 1;
+    final defaultQuality = _storage?.getInt('defaultQuality') ?? 90;
+    final saveToGallery = _storage?.getBool('saveToGallery') ?? true;
+    final language = _storage?.getString('language') ?? 'en';
 
     _settings = AppSettings(
       themeMode: ThemeMode.values[themeModeIndex],
@@ -55,11 +55,11 @@ class SettingsViewModel extends ChangeNotifier {
 
   /// Save settings to SharedPreferences
   Future<void> _saveSettings() async {
-    await _prefs?.setInt('themeMode', _settings.themeMode.index);
-    await _prefs?.setInt('defaultFormat', _settings.defaultFormat.index);
-    await _prefs?.setInt('defaultQuality', _settings.defaultQuality);
-    await _prefs?.setBool('saveToGallery', _settings.saveToGallery);
-    await _prefs?.setString('language', _settings.language);
+    await _storage?.setInt('themeMode', _settings.themeMode.index);
+    await _storage?.setInt('defaultFormat', _settings.defaultFormat.index);
+    await _storage?.setInt('defaultQuality', _settings.defaultQuality);
+    await _storage?.setBool('saveToGallery', _settings.saveToGallery);
+    await _storage?.setString('language', _settings.language);
   }
 
   /// Update theme mode
