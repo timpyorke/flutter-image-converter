@@ -9,6 +9,7 @@ class AppSettings {
   final bool saveToGallery;
   final String language;
   final String version;
+  final String storageLocation;
 
   AppSettings({
     this.themeMode = ThemeMode.system,
@@ -17,6 +18,7 @@ class AppSettings {
     this.saveToGallery = true,
     this.language = 'en',
     this.version = '1.0.0',
+    this.storageLocation = 'Pictures/ImageConverter',
   });
 
   AppSettings copyWith({
@@ -26,6 +28,7 @@ class AppSettings {
     bool? saveToGallery,
     String? language,
     String? version,
+    String? storageLocation,
   }) {
     return AppSettings(
       themeMode: themeMode ?? this.themeMode,
@@ -34,6 +37,7 @@ class AppSettings {
       saveToGallery: saveToGallery ?? this.saveToGallery,
       language: language ?? this.language,
       version: version ?? this.version,
+      storageLocation: storageLocation ?? this.storageLocation,
     );
   }
 }

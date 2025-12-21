@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
 
+import 'core/di/service_locator.dart';
 import 'flavors.dart';
 import 'l10n/app_localizations.dart';
 import 'pages/home_page.dart';
@@ -18,10 +19,10 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (_) => NavigationViewModel()),
-        ChangeNotifierProvider(create: (_) => ConversionViewModel()),
-        ChangeNotifierProvider(create: (_) => ResizeViewModel()),
-        ChangeNotifierProvider(create: (_) => SettingsViewModel()),
+        ChangeNotifierProvider(create: (_) => getIt<NavigationViewModel>()),
+        ChangeNotifierProvider(create: (_) => getIt<ConversionViewModel>()),
+        ChangeNotifierProvider(create: (_) => getIt<ResizeViewModel>()),
+        ChangeNotifierProvider(create: (_) => getIt<SettingsViewModel>()),
       ],
       child: Consumer<SettingsViewModel>(
         builder: (context, settingsVM, child) {

@@ -434,26 +434,14 @@ class SettingsView extends StatelessWidget {
             context,
             icon: Icons.folder_rounded,
             title: 'Storage Location',
-            subtitle: 'Pictures/ImageConverter',
+            subtitle: viewModel.storageLocation,
             trailing: Icon(
               Icons.chevron_right_rounded,
               color: Theme.of(
                 context,
               ).colorScheme.onSurface.withValues(alpha: 0.4),
             ),
-            onTap: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text(
-                    'Storage location configuration coming soon!',
-                  ),
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              );
-            },
+            onTap: () => _showStorageLocationDialog(context, viewModel, l10n),
           ),
         ],
       ),
@@ -999,6 +987,176 @@ class SettingsView extends StatelessWidget {
                   },
                 ),
               ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showStorageLocationDialog(
+    BuildContext context,
+    SettingsViewModel viewModel,
+    AppLocalizations l10n,
+  ) {
+    final storageOptions = [
+      {
+        'title': 'Pictures/ImageConverter',
+        'subtitle': 'Default location in Pictures folder',
+        'path': 'Pictures/ImageConverter',
+      },
+      {
+        'title': 'Downloads/ImageConverter',
+        'subtitle': 'Converted images in Downloads',
+        'path': 'Downloads/ImageConverter',
+      },
+      {
+        'title': 'Documents/ImageConverter',
+        'subtitle': 'Store in Documents folder',
+        'path': 'Documents/ImageConverter',
+      },
+      {
+        'title': 'DCIM/ImageConverter',
+        'subtitle': 'Save with camera photos',
+        'path': 'DCIM/ImageConverter',
+      },
+    ];
+
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: GlassCard(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.all(16),
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [
+                      Theme.of(context).colorScheme.primary,
+                      Theme.of(context).colorScheme.secondary,
+                    ],
+                  ),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.folder_rounded,
+                  color: Colors.white,
+                  size: 48,
+                ),
+              ),
+              const SizedBox(height: 20),
+              Text(
+                'Storage Location',
+                style: Theme.of(
+                  context,
+                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                'Choose where to save converted images',
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.7),
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              ...storageOptions.map((option) {
+                final isSelected = viewModel.storageLocation == option['path'];
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: GlassContainer(
+                    padding: const EdgeInsets.all(16),
+                    borderRadius: 16,
+                    child: InkWell(
+                      onTap: () {
+                        viewModel.updateStorageLocation(option['path']!);
+                        Navigator.of(context).pop();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Storage location updated to ${option['title']}',
+                            ),
+                            behavior: SnackBarBehavior.floating,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                          ),
+                        );
+                      },
+                      borderRadius: BorderRadius.circular(16),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? Theme.of(
+                                      context,
+                                    ).colorScheme.primary.withValues(alpha: 0.2)
+                                  : Theme.of(context).colorScheme.surface
+                                        .withValues(alpha: 0.5),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(
+                              Icons.folder_rounded,
+                              color: isSelected
+                                  ? Theme.of(context).colorScheme.primary
+                                  : Theme.of(context).colorScheme.onSurface
+                                        .withValues(alpha: 0.6),
+                              size: 24,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  option['title']!,
+                                  style: Theme.of(context).textTheme.titleSmall
+                                      ?.copyWith(
+                                        fontWeight: isSelected
+                                            ? FontWeight.w700
+                                            : FontWeight.w600,
+                                        color: isSelected
+                                            ? Theme.of(
+                                                context,
+                                              ).colorScheme.primary
+                                            : null,
+                                      ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  option['subtitle']!,
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface
+                                            .withValues(alpha: 0.6),
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (isSelected)
+                            Icon(
+                              Icons.check_circle_rounded,
+                              color: Theme.of(context).colorScheme.primary,
+                              size: 24,
+                            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              }),
             ],
           ),
         ),

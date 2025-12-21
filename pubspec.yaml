@@ -20,6 +20,7 @@ dependencies:
   permission_handler: ^11.3.0
   shared_preferences: ^2.2.2
   intl: ^0.20.0
+  get_it: ^9.2.0
 
 dev_dependencies:
   flutter_test:

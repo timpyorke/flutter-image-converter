@@ -13,14 +13,10 @@ class ConversionViewModel extends ChangeNotifier {
   final ConvertAndSaveImagesUseCase _convertAndSaveUseCase;
 
   ConversionViewModel({
-    ImageService? imageService,
-    ConvertAndSaveImagesUseCase? convertAndSaveUseCase,
-  }) : _imageService = imageService ?? ImageService(),
-       _convertAndSaveUseCase =
-           convertAndSaveUseCase ??
-           ConvertAndSaveImagesUseCase(
-             imageService: imageService ?? ImageService(),
-           );
+    required ImageService imageService,
+    required ConvertAndSaveImagesUseCase convertAndSaveUseCase,
+  }) : _imageService = imageService,
+       _convertAndSaveUseCase = convertAndSaveUseCase;
 
   // State
   ConversionState _state = ConversionState.idle;

@@ -9,8 +9,8 @@ enum ResizeState { idle, picking, resizing, success, error }
 class ResizeViewModel extends ChangeNotifier {
   final ImageService _imageService;
 
-  ResizeViewModel({ImageService? imageService})
-    : _imageService = imageService ?? ImageService();
+  ResizeViewModel({required ImageService imageService})
+    : _imageService = imageService;
 
   // State
   ResizeState _state = ResizeState.idle;

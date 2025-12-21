@@ -6,9 +6,10 @@ import '../services/storage_service.dart';
 /// ViewModel for app settings
 class SettingsViewModel extends ChangeNotifier {
   AppSettings _settings = AppSettings();
-  StorageService? _storage;
+  final StorageService _storage;
 
-  SettingsViewModel() {
+  SettingsViewModel({required StorageService storageService})
+    : _storage = storageService {
     _loadSettings();
   }
 
@@ -29,18 +30,21 @@ class SettingsViewModel extends ChangeNotifier {
   /// Get language preference
   String get language => _settings.language;
 
+  /// Get storage location
+  String get storageLocation => _settings.storageLocation;
+
   /// Get app version
   String get version => _settings.version;
 
   /// Load settings from SharedPreferences
   Future<void> _loadSettings() async {
-    _storage = await StorageService.getInstance();
-
-    final themeModeIndex = _storage?.getInt('themeMode') ?? 0;
-    final defaultFormatIndex = _storage?.getInt('defaultFormat') ?? 1;
-    final defaultQuality = _storage?.getInt('defaultQuality') ?? 90;
-    final saveToGallery = _storage?.getBool('saveToGallery') ?? true;
-    final language = _storage?.getString('language') ?? 'en';
+    final themeModeIndex = _storage.getInt('themeMode') ?? 0;
+    final defaultFormatIndex = _storage.getInt('defaultFormat') ?? 1;
+    final defaultQuality = _storage.getInt('defaultQuality') ?? 90;
+    final saveToGallery = _storage.getBool('saveToGallery') ?? true;
+    final language = _storage.getString('language') ?? 'en';
+    final storageLocation =
+        _storage.getString('storageLocation') ?? 'Pictures/ImageConverter';
 
     _settings = AppSettings(
       themeMode: ThemeMode.values[themeModeIndex],
@@ -48,6 +52,7 @@ class SettingsViewModel extends ChangeNotifier {
       defaultQuality: defaultQuality,
       saveToGallery: saveToGallery,
       language: language,
+      storageLocation: storageLocation,
     );
 
     notifyListeners();
@@ -55,11 +60,12 @@ class SettingsViewModel extends ChangeNotifier {
 
   /// Save settings to SharedPreferences
   Future<void> _saveSettings() async {
-    await _storage?.setInt('themeMode', _settings.themeMode.index);
-    await _storage?.setInt('defaultFormat', _settings.defaultFormat.index);
-    await _storage?.setInt('defaultQuality', _settings.defaultQuality);
-    await _storage?.setBool('saveToGallery', _settings.saveToGallery);
-    await _storage?.setString('language', _settings.language);
+    await _storage.setInt('themeMode', _settings.themeMode.index);
+    await _storage.setInt('defaultFormat', _settings.defaultFormat.index);
+    await _storage.setInt('defaultQuality', _settings.defaultQuality);
+    await _storage.setBool('saveToGallery', _settings.saveToGallery);
+    await _storage.setString('language', _settings.language);
+    await _storage.setString('storageLocation', _settings.storageLocation);
   }
 
   /// Update theme mode
@@ -93,6 +99,13 @@ class SettingsViewModel extends ChangeNotifier {
   /// Update language
   Future<void> updateLanguage(String languageCode) async {
     _settings = _settings.copyWith(language: languageCode);
+    await _saveSettings();
+    notifyListeners();
+  }
+
+  /// Update storage location
+  Future<void> updateStorageLocation(String location) async {
+    _settings = _settings.copyWith(storageLocation: location);
     await _saveSettings();
     notifyListeners();
   }
