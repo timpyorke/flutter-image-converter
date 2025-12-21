@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_image_converters/const/image_format.dart';
 
 /// Application settings model
 class AppSettings {
@@ -36,5 +37,3 @@ class AppSettings {
     );
   }
 }
-
-enum ImageFormat { jpg, png, webp, bmp }

@@ -1,7 +1,9 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_image_converters/models/resize_setting.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
+import '../const/image_format.dart';
 import '../models/image_data.dart';
 import '../models/conversion_settings.dart';
 

@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_converters/const/image_format.dart';
 import 'package:provider/provider.dart';
 import '../../models/conversion_settings.dart';
 import '../../viewmodels/conversion_viewmodel.dart';
