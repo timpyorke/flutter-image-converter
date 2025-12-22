@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../core/widgets/glass_widgets.dart';
+import '../../core/widgets/widgets.dart';
 
 class TermsOfServiceView extends StatelessWidget {
   const TermsOfServiceView({super.key});

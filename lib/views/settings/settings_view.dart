@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_image_converters/const/image_format.dart';
+import 'package:flutter_image_converters/views/settings/setting_advanced_card.dart';
+import 'package:flutter_image_converters/views/settings/setting_default_format_card.dart';
+import 'package:flutter_image_converters/views/settings/setting_default_quality_card.dart';
+import 'package:flutter_image_converters/views/settings/setting_storage_card.dart';
+import 'package:flutter_image_converters/views/settings/setting_theme_card.dart';
 import 'package:provider/provider.dart';
 import '../../l10n/app_localizations.dart';
 import '../../viewmodels/settings_viewmodel.dart';
-import '../../core/widgets/glass_widgets.dart';
+import '../../core/widgets/widgets.dart';
 import '../legal/privacy_policy_view.dart';
 import '../legal/terms_of_service_view.dart';
 
@@ -30,33 +34,65 @@ class SettingsView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Appearance Section
-                _buildSectionTitle(context, l10n.appearance),
+                SectionTitle(title: l10n.appearance),
                 const SizedBox(height: 12),
-                _buildThemeCard(context, viewModel, l10n),
+                SettingThemeCard(
+                  lable: l10n.theme,
+                  updateThemeMode: (type) {
+                    viewModel.updateThemeMode(type.mode);
+                  },
+                  currentThemeMode: viewModel.themeMode,
+                  description: l10n.choosePreferredTheme,
+                ),
                 const SizedBox(height: 32),
 
                 // Conversion Defaults Section
-                _buildSectionTitle(context, l10n.conversionDefaults),
+                SectionTitle(title: l10n.conversionDefaults),
                 const SizedBox(height: 12),
-                _buildDefaultFormatCard(context, viewModel, l10n),
+                SettingDefaultFormatCard(
+                  defaultFormat: viewModel.defaultFormat,
+                  updateDefaultFormat: (format) {
+                    viewModel.updateDefaultFormat(format);
+                  },
+                ),
                 const SizedBox(height: 16),
-                _buildDefaultQualityCard(context, viewModel, l10n),
+                SettingDefaultQualityCard(
+                  defaultQuality: viewModel.defaultQuality,
+                  updateDefaultQuality: (quality) {
+                    viewModel.updateDefaultQuality(quality);
+                  },
+                ),
                 const SizedBox(height: 32),
 
                 // Storage Section
-                _buildSectionTitle(context, l10n.storage),
+                SectionTitle(title: l10n.storage),
                 const SizedBox(height: 12),
-                _buildStorageCard(context, viewModel, l10n),
+                SettingStorageCard(
+                  toggleSaveToGallery: viewModel.toggleSaveToGallery,
+                  saveToGallery: viewModel.saveToGallery,
+                  storageLocation: viewModel.storageLocation,
+                  showStorageLocation: () {
+                    _showStorageLocationDialog(context, viewModel, l10n);
+                  },
+                ),
                 const SizedBox(height: 32),
 
                 // Advanced Section
-                _buildSectionTitle(context, l10n.advanced),
+                SectionTitle(title: l10n.advanced),
                 const SizedBox(height: 12),
-                _buildAdvancedCard(context, viewModel, l10n),
+                SettingAdvancedCard(
+                  language: _getLanguageName(viewModel.language),
+                  showLanguageDialog: () {
+                    _showLanguageDialog(context, viewModel, l10n);
+                  },
+                  showClearCacheDialog: () {
+                    _showClearCacheDialog(context, l10n);
+                  },
+                ),
                 const SizedBox(height: 32),
 
                 // About Section
-                _buildSectionTitle(context, l10n.about),
+                SectionTitle(title: l10n.about),
                 const SizedBox(height: 12),
                 _buildAboutCard(context, viewModel, l10n),
                 const SizedBox(height: 32),
@@ -79,414 +115,6 @@ class SettingsView extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(BuildContext context, String title) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 4),
-      child: Text(
-        title,
-        style: Theme.of(context).textTheme.titleSmall?.copyWith(
-          fontWeight: FontWeight.w700,
-          letterSpacing: 0.5,
-          color: Theme.of(context).colorScheme.primary,
-        ),
-      ),
-    );
-  }
-
-  Widget _buildThemeCard(
-    BuildContext context,
-    SettingsViewModel viewModel,
-    AppLocalizations l10n,
-  ) {
-    return GlassCard(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Theme.of(
-                        context,
-                      ).colorScheme.primary.withValues(alpha: 0.2),
-                      Theme.of(
-                        context,
-                      ).colorScheme.secondary.withValues(alpha: 0.2),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(
-                  Icons.palette_rounded,
-                  color: Theme.of(context).colorScheme.primary,
-                  size: 24,
-                ),
-              ),
-              const SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      l10n.theme,
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                    Text(
-                      l10n.choosePreferredTheme,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onSurface.withValues(alpha: 0.6),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
-          Row(
-            children: [
-              Expanded(
-                child: _buildThemeOption(
-                  context,
-                  l10n.light,
-                  Icons.light_mode_rounded,
-                  ThemeMode.light,
-                  viewModel.themeMode == ThemeMode.light,
-                  () => viewModel.updateThemeMode(ThemeMode.light),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildThemeOption(
-                  context,
-                  l10n.dark,
-                  Icons.dark_mode_rounded,
-                  ThemeMode.dark,
-                  viewModel.themeMode == ThemeMode.dark,
-                  () => viewModel.updateThemeMode(ThemeMode.dark),
-                ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: _buildThemeOption(
-                  context,
-                  l10n.system,
-                  Icons.brightness_auto_rounded,
-                  ThemeMode.system,
-                  viewModel.themeMode == ThemeMode.system,
-                  () => viewModel.updateThemeMode(ThemeMode.system),
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildThemeOption(
-    BuildContext context,
-    String label,
-    IconData icon,
-    ThemeMode mode,
-    bool isSelected,
-    VoidCallback onTap,
-  ) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-        decoration: BoxDecoration(
-          color: isSelected
-              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.15)
-              : Theme.of(context).colorScheme.surface.withValues(alpha: 0.5),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: isSelected
-                ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.5)
-                : Theme.of(context).colorScheme.outline.withValues(alpha: 0.2),
-            width: isSelected ? 2 : 1,
-          ),
-        ),
-        child: Column(
-          children: [
-            Icon(
-              icon,
-              color: isSelected
-                  ? Theme.of(context).colorScheme.primary
-                  : Theme.of(
-                      context,
-                    ).colorScheme.onSurface.withValues(alpha: 0.6),
-              size: 28,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              label,
-              style: TextStyle(
-                fontSize: 12,
-                fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-                color: isSelected
-                    ? Theme.of(context).colorScheme.primary
-                    : Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withValues(alpha: 0.7),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDefaultFormatCard(
-    BuildContext context,
-    SettingsViewModel viewModel,
-    AppLocalizations l10n,
-  ) {
-    return GlassCard(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Icon(
-                Icons.image_rounded,
-                color: Theme.of(context).colorScheme.primary,
-                size: 24,
-              ),
-              const SizedBox(width: 12),
-              Text(
-                'Default Output Format',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          Wrap(
-            spacing: 8,
-            runSpacing: 8,
-            children: ImageFormat.values.map((format) {
-              final isSelected = viewModel.defaultFormat == format;
-              return GestureDetector(
-                onTap: () => viewModel.updateDefaultFormat(format),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 12,
-                  ),
-                  decoration: BoxDecoration(
-                    gradient: isSelected
-                        ? LinearGradient(
-                            colors: [
-                              Theme.of(context).colorScheme.primary,
-                              Theme.of(context).colorScheme.secondary,
-                            ],
-                          )
-                        : null,
-                    color: isSelected
-                        ? null
-                        : Theme.of(
-                            context,
-                          ).colorScheme.surface.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(
-                      color: isSelected
-                          ? Colors.transparent
-                          : Theme.of(
-                              context,
-                            ).colorScheme.outline.withValues(alpha: 0.2),
-                    ),
-                  ),
-                  child: Text(
-                    format.name.toUpperCase(),
-                    style: TextStyle(
-                      fontWeight: FontWeight.w700,
-                      fontSize: 13,
-                      color: isSelected
-                          ? Colors.white
-                          : Theme.of(context).colorScheme.onSurface,
-                    ),
-                  ),
-                ),
-              );
-            }).toList(),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildDefaultQualityCard(
-    BuildContext context,
-    SettingsViewModel viewModel,
-    AppLocalizations l10n,
-  ) {
-    return GlassCard(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  Icon(
-                    Icons.high_quality_rounded,
-                    color: Theme.of(context).colorScheme.primary,
-                    size: 24,
-                  ),
-                  const SizedBox(width: 12),
-                  Text(
-                    'Default Quality',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                ],
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Theme.of(context).colorScheme.primary,
-                      Theme.of(context).colorScheme.secondary,
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Text(
-                  '${viewModel.defaultQuality}%',
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w700,
-                    fontSize: 14,
-                  ),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 16),
-          SliderTheme(
-            data: SliderThemeData(
-              activeTrackColor: Theme.of(context).colorScheme.primary,
-              inactiveTrackColor: Theme.of(
-                context,
-              ).colorScheme.primary.withValues(alpha: 0.2),
-              thumbColor: Theme.of(context).colorScheme.primary,
-              overlayColor: Theme.of(
-                context,
-              ).colorScheme.primary.withValues(alpha: 0.2),
-            ),
-            child: Slider(
-              value: viewModel.defaultQuality.toDouble(),
-              min: 1,
-              max: 100,
-              divisions: 99,
-              onChanged: (value) =>
-                  viewModel.updateDefaultQuality(value.toInt()),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildStorageCard(
-    BuildContext context,
-    SettingsViewModel viewModel,
-    AppLocalizations l10n,
-  ) {
-    return GlassCard(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          _buildSettingTile(
-            context,
-            icon: Icons.save_alt_rounded,
-            title: 'Auto-save to Gallery',
-            subtitle: 'Automatically save converted images',
-            trailing: Switch(
-              value: viewModel.saveToGallery,
-              onChanged: (_) => viewModel.toggleSaveToGallery(),
-              activeTrackColor: Theme.of(context).colorScheme.primary,
-            ),
-          ),
-          const SizedBox(height: 16),
-          _buildSettingTile(
-            context,
-            icon: Icons.folder_rounded,
-            title: 'Storage Location',
-            subtitle: viewModel.storageLocation,
-            trailing: Icon(
-              Icons.chevron_right_rounded,
-              color: Theme.of(
-                context,
-              ).colorScheme.onSurface.withValues(alpha: 0.4),
-            ),
-            onTap: () => _showStorageLocationDialog(context, viewModel, l10n),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAdvancedCard(
-    BuildContext context,
-    SettingsViewModel viewModel,
-    AppLocalizations l10n,
-  ) {
-    return GlassCard(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          _buildSettingTile(
-            context,
-            icon: Icons.language_rounded,
-            title: 'Language',
-            subtitle: _getLanguageName(viewModel.language),
-            trailing: Icon(
-              Icons.chevron_right_rounded,
-              color: Theme.of(
-                context,
-              ).colorScheme.onSurface.withValues(alpha: 0.4),
-            ),
-            onTap: () => _showLanguageDialog(context, viewModel, l10n),
-          ),
-          const SizedBox(height: 16),
-          _buildSettingTile(
-            context,
-            icon: Icons.delete_sweep_rounded,
-            title: 'Clear Cache',
-            subtitle: 'Free up storage space',
-            trailing: Icon(
-              Icons.chevron_right_rounded,
-              color: Theme.of(
-                context,
-              ).colorScheme.onSurface.withValues(alpha: 0.4),
-            ),
-            onTap: () => _showClearCacheDialog(context, l10n),
-          ),
-        ],
       ),
     );
   }
@@ -566,6 +194,7 @@ class SettingsView extends StatelessWidget {
         ],
       ),
     );
+  
   }
 
   Widget _buildSettingTile(

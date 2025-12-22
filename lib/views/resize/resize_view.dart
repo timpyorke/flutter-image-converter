@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_converters/core/widgets/pick_image_button_widget.dart';
 import 'package:provider/provider.dart';
 import '../../viewmodels/resize_viewmodel.dart';
-import '../../core/widgets/glass_widgets.dart';
+import '../../core/widgets/widgets.dart';
 
 class ResizeView extends StatefulWidget {
   const ResizeView({super.key});
