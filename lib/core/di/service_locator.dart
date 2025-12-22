@@ -1,3 +1,4 @@
+import 'package:flutter_image_converters/services/dialog_service.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../services/image_service.dart';
@@ -19,6 +20,7 @@ Future<void> setupDependencyInjection() async {
     () => StorageService.getInstance(),
   );
   getIt.registerLazySingleton<ImageService>(() => ImageService());
+  getIt.registerLazySingleton<DialogService>(() => DialogService());
   await getIt.isReady<StorageService>();
 
   //**
@@ -42,6 +44,9 @@ Future<void> setupDependencyInjection() async {
     () => ResizeViewModel(imageService: getIt<ImageService>()),
   );
   getIt.registerFactory<SettingsViewModel>(
-    () => SettingsViewModel(storageService: getIt<StorageService>()),
+    () => SettingsViewModel(
+      storageService: getIt<StorageService>(),
+      dialogService: getIt<DialogService>(),
+    ),
   );
 }

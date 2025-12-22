@@ -1,145 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_image_converters/views/settings/setting_about_card.dart';
-import 'package:flutter_image_converters/views/settings/setting_advanced_card.dart';
-import 'package:flutter_image_converters/views/settings/setting_default_format_card.dart';
-import 'package:flutter_image_converters/views/settings/setting_default_quality_card.dart';
-import 'package:flutter_image_converters/views/settings/setting_storage_card.dart';
-import 'package:flutter_image_converters/views/settings/setting_theme_card.dart';
-import 'package:provider/provider.dart';
-import '../../l10n/app_localizations.dart';
-import '../../viewmodels/settings_viewmodel.dart';
-import '../../core/widgets/widgets.dart';
-import '../legal/privacy_policy_view.dart';
-import '../legal/terms_of_service_view.dart';
+import 'package:flutter_image_converters/core/widgets/glass_card.dart';
+import 'package:flutter_image_converters/core/widgets/glass_container.dart';
+import 'package:flutter_image_converters/core/widgets/gradient_button.dart';
 
-class SettingsView extends StatelessWidget {
-  const SettingsView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final l10n = AppLocalizations.of(context)!;
-
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(l10n.settings),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_rounded),
-          onPressed: () => Navigator.of(context).pop(),
-        ),
-      ),
-      body: Consumer<SettingsViewModel>(
-        builder: (context, viewModel, child) {
-          return SingleChildScrollView(
-            padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 100.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Appearance Section
-                SectionTitle(title: l10n.appearance),
-                const SizedBox(height: 12),
-                SettingThemeCard(
-                  lable: l10n.theme,
-                  updateThemeMode: (type) {
-                    viewModel.updateThemeMode(type.mode);
-                  },
-                  currentThemeMode: viewModel.themeMode,
-                  description: l10n.choosePreferredTheme,
-                ),
-                const SizedBox(height: 32),
-
-                // Conversion Defaults Section
-                SectionTitle(title: l10n.conversionDefaults),
-                const SizedBox(height: 12),
-                SettingDefaultFormatCard(
-                  defaultFormat: viewModel.defaultFormat,
-                  updateDefaultFormat: (format) {
-                    viewModel.updateDefaultFormat(format);
-                  },
-                ),
-                const SizedBox(height: 16),
-                SettingDefaultQualityCard(
-                  defaultQuality: viewModel.defaultQuality,
-                  updateDefaultQuality: (quality) {
-                    viewModel.updateDefaultQuality(quality);
-                  },
-                ),
-                const SizedBox(height: 32),
-
-                // Storage Section
-                SectionTitle(title: l10n.storage),
-                const SizedBox(height: 12),
-                SettingStorageCard(
-                  toggleSaveToGallery: viewModel.toggleSaveToGallery,
-                  saveToGallery: viewModel.saveToGallery,
-                  storageLocation: viewModel.storageLocation,
-                  showStorageLocation: () {
-                    _showStorageLocationDialog(context, viewModel, l10n);
-                  },
-                ),
-                const SizedBox(height: 32),
-
-                // Advanced Section
-                SectionTitle(title: l10n.advanced),
-                const SizedBox(height: 12),
-                SettingAdvancedCard(
-                  language: viewModel.getLanguageName(),
-                  showLanguageDialog: () {
-                    _showLanguageDialog(context, viewModel, l10n);
-                  },
-                  showClearCacheDialog: () {
-                    _showClearCacheDialog(context, l10n);
-                  },
-                ),
-                const SizedBox(height: 32),
-
-                // About Section
-                SectionTitle(title: l10n.about),
-                const SizedBox(height: 12),
-                SettingAboutCard(
-                  version: viewModel.version,
-                  onTapPrivacyPolicy: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const PrivacyPolicyView(),
-                      ),
-                    );
-                  },
-                  onTapTermsOfService: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const TermsOfServiceView(),
-                      ),
-                    );
-                  },
-                ),
-                const SizedBox(height: 32),
-
-                // Reset Button
-                Center(
-                  child: GradientButton(
-                    onPressed: () => _showResetDialog(context, viewModel, l10n),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.restore_rounded, color: Colors.white),
-                        const SizedBox(width: 12),
-                        Text(l10n.resetToDefaults),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          );
-        },
-      ),
-    );
-  }
-
-  void _showResetDialog(
+class DialogService {
+  void showResetSettingDialog(
     BuildContext context,
-    SettingsViewModel viewModel,
-    AppLocalizations l10n,
+    VoidCallback resetToDefaults,
   ) {
     showDialog(
       context: context,
@@ -202,7 +69,7 @@ class SettingsView extends StatelessWidget {
                   Expanded(
                     child: GradientButton(
                       onPressed: () {
-                        viewModel.resetToDefaults();
+                        resetToDefaults;
                         Navigator.of(context).pop();
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -226,7 +93,7 @@ class SettingsView extends StatelessWidget {
     );
   }
 
-  void _showClearCacheDialog(BuildContext context, AppLocalizations l10n) {
+  void showClearCacheDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (context) => Dialog(
@@ -317,10 +184,10 @@ class SettingsView extends StatelessWidget {
     );
   }
 
-  void _showLanguageDialog(
+  void showLanguageDialog(
     BuildContext context,
-    SettingsViewModel viewModel,
-    AppLocalizations l10n,
+    String selectLang,
+    Function(String) updateLanguage,
   ) {
     final languages = [
       {'code': 'en', 'name': 'English', 'nativeName': 'English'},
@@ -385,11 +252,11 @@ class SettingsView extends StatelessWidget {
                       const SizedBox(height: 8),
                   itemBuilder: (context, index) {
                     final language = languages[index];
-                    final isSelected = viewModel.language == language['code'];
+                    final isSelected = selectLang == language['code'];
 
                     return InkWell(
                       onTap: () {
-                        viewModel.updateLanguage(language['code']!);
+                        updateLanguage(language['code']!);
                         Navigator.of(context).pop();
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(
@@ -480,10 +347,10 @@ class SettingsView extends StatelessWidget {
     );
   }
 
-  void _showStorageLocationDialog(
+  void showStorageLocationDialog(
     BuildContext context,
-    SettingsViewModel viewModel,
-    AppLocalizations l10n,
+    String storageLocation,
+    Function(String) updateStorageLocation,
   ) {
     final storageOptions = [
       {
@@ -553,7 +420,7 @@ class SettingsView extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               ...storageOptions.map((option) {
-                final isSelected = viewModel.storageLocation == option['path'];
+                final isSelected = storageLocation == option['path'];
                 return Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: GlassContainer(
@@ -561,7 +428,7 @@ class SettingsView extends StatelessWidget {
                     borderRadius: 16,
                     child: InkWell(
                       onTap: () {
-                        viewModel.updateStorageLocation(option['path']!);
+                        updateStorageLocation(option['path']!);
                         Navigator.of(context).pop();
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(

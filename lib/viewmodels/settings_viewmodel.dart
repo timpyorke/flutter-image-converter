@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_image_converters/const/image_format.dart';
+import 'package:flutter_image_converters/services/dialog_service.dart';
 import '../models/app_settings.dart';
 import '../services/storage_service.dart';
 
 /// ViewModel for app settings
 class SettingsViewModel extends ChangeNotifier {
   AppSettings _settings = AppSettings();
-  final StorageService _storage;
+  final StorageService storageService;
+  final DialogService dialogService;
 
-  SettingsViewModel({required StorageService storageService})
-    : _storage = storageService {
+  SettingsViewModel({
+    required this.storageService,
+    required this.dialogService,
+  }) {
     _loadSettings();
   }
 
@@ -38,13 +42,14 @@ class SettingsViewModel extends ChangeNotifier {
 
   /// Load settings from SharedPreferences
   Future<void> _loadSettings() async {
-    final themeModeIndex = _storage.getInt('themeMode') ?? 0;
-    final defaultFormatIndex = _storage.getInt('defaultFormat') ?? 1;
-    final defaultQuality = _storage.getInt('defaultQuality') ?? 90;
-    final saveToGallery = _storage.getBool('saveToGallery') ?? true;
-    final language = _storage.getString('language') ?? 'en';
+    final themeModeIndex = storageService.getInt('themeMode') ?? 0;
+    final defaultFormatIndex = storageService.getInt('defaultFormat') ?? 1;
+    final defaultQuality = storageService.getInt('defaultQuality') ?? 90;
+    final saveToGallery = storageService.getBool('saveToGallery') ?? true;
+    final language = storageService.getString('language') ?? 'en';
     final storageLocation =
-        _storage.getString('storageLocation') ?? 'Pictures/ImageConverter';
+        storageService.getString('storageLocation') ??
+        'Pictures/ImageConverter';
 
     _settings = AppSettings(
       themeMode: ThemeMode.values[themeModeIndex],
@@ -60,12 +65,15 @@ class SettingsViewModel extends ChangeNotifier {
 
   /// Save settings to SharedPreferences
   Future<void> _saveSettings() async {
-    await _storage.setInt('themeMode', _settings.themeMode.index);
-    await _storage.setInt('defaultFormat', _settings.defaultFormat.index);
-    await _storage.setInt('defaultQuality', _settings.defaultQuality);
-    await _storage.setBool('saveToGallery', _settings.saveToGallery);
-    await _storage.setString('language', _settings.language);
-    await _storage.setString('storageLocation', _settings.storageLocation);
+    await storageService.setInt('themeMode', _settings.themeMode.index);
+    await storageService.setInt('defaultFormat', _settings.defaultFormat.index);
+    await storageService.setInt('defaultQuality', _settings.defaultQuality);
+    await storageService.setBool('saveToGallery', _settings.saveToGallery);
+    await storageService.setString('language', _settings.language);
+    await storageService.setString(
+      'storageLocation',
+      _settings.storageLocation,
+    );
   }
 
   /// Update theme mode
@@ -115,5 +123,21 @@ class SettingsViewModel extends ChangeNotifier {
     _settings = AppSettings();
     await _saveSettings();
     notifyListeners();
+  }
+
+  String getLanguageName() {
+    const languages = {
+      'en': 'English',
+      'th': 'ภาษาไทย',
+      'zh': '中文',
+      'ja': '日本語',
+      'ko': '한국어',
+      'es': 'Español',
+      'fr': 'Français',
+      'de': 'Deutsch',
+      'pt': 'Português',
+      'ru': 'Русский',
+    };
+    return languages[language] ?? 'English';
   }
 }
