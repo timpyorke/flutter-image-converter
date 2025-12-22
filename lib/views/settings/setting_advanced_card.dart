@@ -30,7 +30,7 @@ class SettingAdvancedCard extends StatelessWidget {
                 context,
               ).colorScheme.onSurface.withValues(alpha: 0.4),
             ),
-            onTap: () => showLanguageDialog,
+            onTap: showLanguageDialog,
           ),
           const SizedBox(height: 16),
           SettingTile(
@@ -43,7 +43,7 @@ class SettingAdvancedCard extends StatelessWidget {
                 context,
               ).colorScheme.onSurface.withValues(alpha: 0.4),
             ),
-            onTap: () => showClearCacheDialog,
+            onTap: showClearCacheDialog,
           ),
         ],
       ),

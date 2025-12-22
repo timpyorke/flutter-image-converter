@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_image_converters/views/settings/setting_about_card.dart';
 import 'package:flutter_image_converters/views/settings/setting_advanced_card.dart';
 import 'package:flutter_image_converters/views/settings/setting_default_format_card.dart';
 import 'package:flutter_image_converters/views/settings/setting_default_quality_card.dart';
@@ -94,7 +95,23 @@ class SettingsView extends StatelessWidget {
                 // About Section
                 SectionTitle(title: l10n.about),
                 const SizedBox(height: 12),
-                _buildAboutCard(context, viewModel, l10n),
+                SettingAboutCard(
+                  version: viewModel.version,
+                  onTapPrivacyPolicy: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const PrivacyPolicyView(),
+                      ),
+                    );
+                  },
+                  onTapTermsOfService: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const TermsOfServiceView(),
+                      ),
+                    );
+                  },
+                ),
                 const SizedBox(height: 32),
 
                 // Reset Button
@@ -115,144 +132,6 @@ class SettingsView extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
-  }
-
-  Widget _buildAboutCard(
-    BuildContext context,
-    SettingsViewModel viewModel,
-    AppLocalizations l10n,
-  ) {
-    return GlassCard(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          _buildSettingTile(
-            context,
-            icon: Icons.info_rounded,
-            title: 'Version',
-            subtitle: viewModel.version,
-            trailing: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-              decoration: BoxDecoration(
-                color: Theme.of(
-                  context,
-                ).colorScheme.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                'Latest',
-                style: TextStyle(
-                  color: Theme.of(context).colorScheme.primary,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 12,
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(height: 16),
-          _buildSettingTile(
-            context,
-            icon: Icons.privacy_tip_rounded,
-            title: 'Privacy Policy',
-            subtitle: 'How we handle your data',
-            trailing: Icon(
-              Icons.chevron_right_rounded,
-              color: Theme.of(
-                context,
-              ).colorScheme.onSurface.withValues(alpha: 0.4),
-            ),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const PrivacyPolicyView(),
-                ),
-              );
-            },
-          ),
-          const SizedBox(height: 16),
-          _buildSettingTile(
-            context,
-            icon: Icons.description_rounded,
-            title: 'Terms of Service',
-            subtitle: 'App usage terms',
-            trailing: Icon(
-              Icons.chevron_right_rounded,
-              color: Theme.of(
-                context,
-              ).colorScheme.onSurface.withValues(alpha: 0.4),
-            ),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const TermsOfServiceView(),
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  
-  }
-
-  Widget _buildSettingTile(
-    BuildContext context, {
-    required IconData icon,
-    required String title,
-    required String subtitle,
-    required Widget trailing,
-    VoidCallback? onTap,
-  }) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(12),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Theme.of(
-                  context,
-                ).colorScheme.primary.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Icon(
-                icon,
-                color: Theme.of(context).colorScheme.primary,
-                size: 20,
-              ),
-            ),
-            const SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Text(
-                    subtitle,
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withValues(alpha: 0.6),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(width: 12),
-            trailing,
-          ],
-        ),
       ),
     );
   }

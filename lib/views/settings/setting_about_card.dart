@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_image_converters/core/widgets/glass_card.dart';
-import 'package:flutter_image_converters/views/legal/privacy_policy_view.dart';
-import 'package:flutter_image_converters/views/legal/terms_of_service_view.dart';
 import 'package:flutter_image_converters/views/settings/setting_tile.dart';
 
 class SettingAboutCard extends StatelessWidget {
@@ -55,13 +53,7 @@ class SettingAboutCard extends StatelessWidget {
                 context,
               ).colorScheme.onSurface.withValues(alpha: 0.4),
             ),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const PrivacyPolicyView(),
-                ),
-              );
-            },
+            onTap: onTapPrivacyPolicy,
           ),
           const SizedBox(height: 16),
           SettingTile(
@@ -74,13 +66,7 @@ class SettingAboutCard extends StatelessWidget {
                 context,
               ).colorScheme.onSurface.withValues(alpha: 0.4),
             ),
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => const TermsOfServiceView(),
-                ),
-              );
-            },
+            onTap: onTapTermsOfService,
           ),
         ],
       ),
