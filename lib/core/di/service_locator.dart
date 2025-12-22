@@ -12,21 +12,25 @@ final getIt = GetIt.instance;
 
 /// Initialize dependency injection
 Future<void> setupDependencyInjection() async {
-  // Services - Register as singletons
+  //**
+  //* Services - Register as factories
+  //**/
   getIt.registerSingletonAsync<StorageService>(
     () => StorageService.getInstance(),
   );
   getIt.registerLazySingleton<ImageService>(() => ImageService());
-
-  // Wait for async services to be ready
   await getIt.isReady<StorageService>();
 
-  // Use Cases - Register as factories
+  //**
+  //* UseCases - Register as factories
+  //**/
   getIt.registerFactory<ConvertAndSaveImagesUseCase>(
     () => ConvertAndSaveImagesUseCase(imageService: getIt<ImageService>()),
   );
 
-  // ViewModels - Register as factories (new instance for each provider)
+  //**
+  //* ViewModels - Register as factories
+  //**/
   getIt.registerFactory<NavigationViewModel>(() => NavigationViewModel());
   getIt.registerFactory<ConversionViewModel>(
     () => ConversionViewModel(
