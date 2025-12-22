@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_image_converters/widgets/glass_widgets.dart';
+import 'package:flutter_image_converters/core/widgets/glass_widgets.dart';
 
 class PickImageButtonWidget extends StatelessWidget {
   const PickImageButtonWidget({

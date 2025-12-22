@@ -3,7 +3,7 @@ import 'package:flutter_image_converters/const/image_format.dart';
 import 'package:provider/provider.dart';
 import '../../l10n/app_localizations.dart';
 import '../../viewmodels/settings_viewmodel.dart';
-import '../../widgets/glass_widgets.dart';
+import '../../core/widgets/glass_widgets.dart';
 import '../legal/privacy_policy_view.dart';
 import '../legal/terms_of_service_view.dart';
 

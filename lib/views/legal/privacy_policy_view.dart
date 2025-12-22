@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../widgets/glass_widgets.dart';
+import '../../core/widgets/glass_widgets.dart';
 
 class PrivacyPolicyView extends StatelessWidget {
   const PrivacyPolicyView({super.key});

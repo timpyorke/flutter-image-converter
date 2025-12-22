@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_converters/widgets/nav_item_widget.dart';
+import 'package:flutter_image_converters/core/widgets/nav_item_widget.dart';
 import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
 import '../viewmodels/navigation_viewmodel.dart';
