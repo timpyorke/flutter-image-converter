@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_image_converters/const/image_format.dart';
 import 'package:flutter_image_converters/services/dialog_service.dart';
+import 'package:flutter_image_converters/views/settings/models/setting_view_state.dart';
 import '../models/app_settings.dart';
 import '../services/storage_service.dart';
 
 /// ViewModel for app settings
 class SettingsViewModel extends ChangeNotifier {
-  AppSettings _settings = AppSettings();
+  SettingViewState _state = SettingViewState.initial();
   final StorageService storageService;
   final DialogService dialogService;
 
@@ -17,110 +18,146 @@ class SettingsViewModel extends ChangeNotifier {
     _loadSettings();
   }
 
-  AppSettings get settings => _settings;
+  SettingViewState get state => _state;
+  AppSettings get settings => _state.settings;
+  bool get isLoading => _state.isLoading;
+  String? get errorMessage => _state.errorMessage;
 
   /// Get theme mode
-  ThemeMode get themeMode => _settings.themeMode;
+  ThemeMode get themeMode => _state.settings.themeMode;
 
   /// Get default format
-  ImageFormat get defaultFormat => _settings.defaultFormat;
+  ImageFormat get defaultFormat => _state.settings.defaultFormat;
 
   /// Get default quality
-  int get defaultQuality => _settings.defaultQuality;
+  int get defaultQuality => _state.settings.defaultQuality;
 
   /// Get save to gallery preference
-  bool get saveToGallery => _settings.saveToGallery;
+  bool get saveToGallery => _state.settings.saveToGallery;
 
   /// Get language preference
-  String get language => _settings.language;
+  String get language => _state.settings.language;
 
   /// Get storage location
-  String get storageLocation => _settings.storageLocation;
+  String get storageLocation => _state.settings.storageLocation;
 
   /// Get app version
-  String get version => _settings.version;
+  String get version => _state.settings.version;
 
   /// Load settings from SharedPreferences
   Future<void> _loadSettings() async {
-    final themeModeIndex = storageService.getInt('themeMode') ?? 0;
-    final defaultFormatIndex = storageService.getInt('defaultFormat') ?? 1;
-    final defaultQuality = storageService.getInt('defaultQuality') ?? 90;
-    final saveToGallery = storageService.getBool('saveToGallery') ?? true;
-    final language = storageService.getString('language') ?? 'en';
-    final storageLocation =
-        storageService.getString('storageLocation') ??
-        'Pictures/ImageConverter';
+    try {
+      _state = _state.copyWithLoading();
+      notifyListeners();
 
-    _settings = AppSettings(
-      themeMode: ThemeMode.values[themeModeIndex],
-      defaultFormat: ImageFormat.values[defaultFormatIndex],
-      defaultQuality: defaultQuality,
-      saveToGallery: saveToGallery,
-      language: language,
-      storageLocation: storageLocation,
-    );
+      final themeModeIndex = storageService.getInt('themeMode') ?? 0;
+      final defaultFormatIndex = storageService.getInt('defaultFormat') ?? 1;
+      final defaultQuality = storageService.getInt('defaultQuality') ?? 90;
+      final saveToGallery = storageService.getBool('saveToGallery') ?? true;
+      final language = storageService.getString('language') ?? 'en';
+      final storageLocation =
+          storageService.getString('storageLocation') ??
+          'Pictures/ImageConverter';
 
-    notifyListeners();
+      final loadedSettings = AppSettings(
+        themeMode: ThemeMode.values[themeModeIndex],
+        defaultFormat: ImageFormat.values[defaultFormatIndex],
+        defaultQuality: defaultQuality,
+        saveToGallery: saveToGallery,
+        language: language,
+        storageLocation: storageLocation,
+      );
+
+      _state = _state.copyWithSettings(loadedSettings);
+      notifyListeners();
+    } catch (e) {
+      _state = _state.copyWithError('Failed to load settings: $e');
+      notifyListeners();
+    }
   }
 
   /// Save settings to SharedPreferences
   Future<void> _saveSettings() async {
-    await storageService.setInt('themeMode', _settings.themeMode.index);
-    await storageService.setInt('defaultFormat', _settings.defaultFormat.index);
-    await storageService.setInt('defaultQuality', _settings.defaultQuality);
-    await storageService.setBool('saveToGallery', _settings.saveToGallery);
-    await storageService.setString('language', _settings.language);
-    await storageService.setString(
-      'storageLocation',
-      _settings.storageLocation,
-    );
+    try {
+      await storageService.setInt('themeMode', _state.settings.themeMode.index);
+      await storageService.setInt(
+        'defaultFormat',
+        _state.settings.defaultFormat.index,
+      );
+      await storageService.setInt(
+        'defaultQuality',
+        _state.settings.defaultQuality,
+      );
+      await storageService.setBool(
+        'saveToGallery',
+        _state.settings.saveToGallery,
+      );
+      await storageService.setString('language', _state.settings.language);
+      await storageService.setString(
+        'storageLocation',
+        _state.settings.storageLocation,
+      );
+    } catch (e) {
+      _state = _state.copyWithError('Failed to save settings: $e');
+      notifyListeners();
+      rethrow;
+    }
   }
 
   /// Update theme mode
   Future<void> updateThemeMode(ThemeMode mode) async {
-    _settings = _settings.copyWith(themeMode: mode);
+    final updatedSettings = _state.settings.copyWith(themeMode: mode);
+    _state = _state.copyWithSettings(updatedSettings);
     await _saveSettings();
     notifyListeners();
   }
 
   /// Update default format
   Future<void> updateDefaultFormat(ImageFormat format) async {
-    _settings = _settings.copyWith(defaultFormat: format);
+    final updatedSettings = _state.settings.copyWith(defaultFormat: format);
+    _state = _state.copyWithSettings(updatedSettings);
     await _saveSettings();
     notifyListeners();
   }
 
   /// Update default quality
   Future<void> updateDefaultQuality(int quality) async {
-    _settings = _settings.copyWith(defaultQuality: quality);
+    final updatedSettings = _state.settings.copyWith(defaultQuality: quality);
+    _state = _state.copyWithSettings(updatedSettings);
     await _saveSettings();
     notifyListeners();
   }
 
   /// Toggle save to gallery
   Future<void> toggleSaveToGallery() async {
-    _settings = _settings.copyWith(saveToGallery: !_settings.saveToGallery);
+    final updatedSettings = _state.settings.copyWith(
+      saveToGallery: !_state.settings.saveToGallery,
+    );
+    _state = _state.copyWithSettings(updatedSettings);
     await _saveSettings();
     notifyListeners();
   }
 
   /// Update language
   Future<void> updateLanguage(String languageCode) async {
-    _settings = _settings.copyWith(language: languageCode);
+    final updatedSettings = _state.settings.copyWith(language: languageCode);
+    _state = _state.copyWithSettings(updatedSettings);
     await _saveSettings();
     notifyListeners();
   }
 
   /// Update storage location
   Future<void> updateStorageLocation(String location) async {
-    _settings = _settings.copyWith(storageLocation: location);
+    final updatedSettings = _state.settings.copyWith(storageLocation: location);
+    _state = _state.copyWithSettings(updatedSettings);
     await _saveSettings();
     notifyListeners();
   }
 
   /// Reset to defaults
   Future<void> resetToDefaults() async {
-    _settings = AppSettings();
+    final defaultSettings = AppSettings();
+    _state = _state.copyWithSettings(defaultSettings);
     await _saveSettings();
     notifyListeners();
   }
