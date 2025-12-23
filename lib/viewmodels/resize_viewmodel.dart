@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_image_converters/const/resize_state_type.dart';
 import 'package:flutter_image_converters/models/resize_setting.dart';
+import 'package:flutter_image_converters/views/resize/models/resize_view_state.dart';
 import '../models/image_data.dart';
 import '../services/image_service.dart';
-
-enum ResizeState { idle, picking, resizing, success, error }
 
 /// ViewModel for Image Resize operations
 class ResizeViewModel extends ChangeNotifier {
@@ -13,132 +13,112 @@ class ResizeViewModel extends ChangeNotifier {
     : _imageService = imageService;
 
   // State
-  ResizeState _state = ResizeState.idle;
-  ImageData? _sourceImage;
-  ImageData? _resizedImage;
-  ResizeSettings _settings = ResizeSettings(
-    width: null,
-    height: null,
-    maintainAspectRatio: true,
-  );
-  String? _errorMessage;
+  ResizeViewState _state = ResizeViewState.initial();
 
   // Getters
-  ResizeState get state => _state;
-  ImageData? get sourceImage => _sourceImage;
-  ImageData? get resizedImage => _resizedImage;
-  ResizeSettings get settings => _settings;
-  String? get errorMessage => _errorMessage;
-  bool get hasSourceImage => _sourceImage != null;
-  bool get hasResizedImage => _resizedImage != null;
-  bool get isLoading =>
-      _state == ResizeState.picking || _state == ResizeState.resizing;
-  bool get canResize => _sourceImage != null && _settings.isValid;
+  ResizeViewState get viewState => _state;
+  ResizeStateType get state => _state.state;
+  ImageData? get sourceImage => _state.sourceImage;
+  ImageData? get resizedImage => _state.resizedImage;
+  ResizeSettings get settings => _state.settings;
+  String? get errorMessage => _state.errorMessage;
+  bool get hasSourceImage => _state.hasSourceImage;
+  bool get hasResizedImage => _state.hasResizedImage;
+  bool get isLoading => _state.isLoading;
+  bool get canResize => _state.canResize;
 
   /// Pick an image from gallery
   Future<void> pickImage() async {
-    _setState(ResizeState.picking);
-    _errorMessage = null;
+    _state = _state.copyWithPicking();
+    notifyListeners();
 
     try {
       final image = await _imageService.pickImage();
 
       if (image != null) {
-        _sourceImage = image;
-        _resizedImage = null; // Reset resized image
-        // Set default dimensions
-        _settings = ResizeSettings(
-          width: image.width,
-          height: image.height,
-          maintainAspectRatio: true,
-        );
-        _setState(ResizeState.idle);
+        _state = _state.copyWithSourceImage(image);
       } else {
-        _setState(ResizeState.idle);
+        _state = _state.copyWithIdle();
       }
+      notifyListeners();
     } catch (e) {
-      _errorMessage = e.toString();
-      _setState(ResizeState.error);
+      _state = _state.copyWithError(e.toString());
+      notifyListeners();
     }
   }
 
   /// Resize the current image
   Future<void> resizeImage() async {
-    if (_sourceImage == null) {
-      _errorMessage = 'No image selected';
-      _setState(ResizeState.error);
+    if (_state.sourceImage == null) {
+      _state = _state.copyWithError('No image selected');
+      notifyListeners();
       return;
     }
 
-    if (!_settings.isValid) {
-      _errorMessage = 'Invalid resize dimensions';
-      _setState(ResizeState.error);
+    if (!_state.settings.isValid) {
+      _state = _state.copyWithError('Invalid resize dimensions');
+      notifyListeners();
       return;
     }
 
-    _setState(ResizeState.resizing);
-    _errorMessage = null;
+    _state = _state.copyWithResizing();
+    notifyListeners();
 
     try {
-      final resized = await _imageService.resizeImage(_sourceImage!, _settings);
+      final resized = await _imageService.resizeImage(
+        _state.sourceImage!,
+        _state.settings,
+      );
 
-      _resizedImage = resized;
-      _setState(ResizeState.success);
+      _state = _state.copyWithSuccess(resized);
+      notifyListeners();
     } catch (e) {
-      _errorMessage = e.toString();
-      _setState(ResizeState.error);
+      _state = _state.copyWithError(e.toString());
+      notifyListeners();
     }
   }
 
   /// Update resize settings
   void updateSettings(ResizeSettings newSettings) {
-    _settings = newSettings;
+    _state = _state.copyWith(settings: newSettings);
     notifyListeners();
   }
 
   /// Update width
   void updateWidth(int? width) {
-    _settings = _settings.copyWith(width: width);
+    _state = _state.copyWith(settings: _state.settings.copyWith(width: width));
     notifyListeners();
   }
 
   /// Update height
   void updateHeight(int? height) {
-    _settings = _settings.copyWith(height: height);
+    _state = _state.copyWith(
+      settings: _state.settings.copyWith(height: height),
+    );
     notifyListeners();
   }
 
   /// Toggle aspect ratio lock
   void toggleAspectRatio() {
-    _settings = _settings.copyWith(
-      maintainAspectRatio: !_settings.maintainAspectRatio,
+    _state = _state.copyWith(
+      settings: _state.settings.copyWith(
+        maintainAspectRatio: !_state.settings.maintainAspectRatio,
+      ),
     );
     notifyListeners();
   }
 
   /// Clear all images
   void clear() {
-    _sourceImage = null;
-    _resizedImage = null;
-    _errorMessage = null;
-    _settings = ResizeSettings(
-      width: null,
-      height: null,
-      maintainAspectRatio: true,
-    );
-    _setState(ResizeState.idle);
+    _state = _state.copyWithClear();
+    notifyListeners();
   }
 
   /// Reset error state
   void clearError() {
-    _errorMessage = null;
-    if (_state == ResizeState.error) {
-      _setState(ResizeState.idle);
+    if (_state.state == ResizeStateType.error) {
+      _state = _state.copyWithIdle();
+      notifyListeners();
     }
-  }
-
-  void _setState(ResizeState newState) {
-    _state = newState;
-    notifyListeners();
   }
 }
