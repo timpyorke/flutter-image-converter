@@ -4,13 +4,18 @@ import 'package:flutter_image_converters/models/resize_setting.dart';
 import 'package:flutter_image_converters/views/resize/models/resize_view_state.dart';
 import '../models/image_data.dart';
 import '../services/image_service.dart';
+import '../services/storage_service.dart';
 
 /// ViewModel for Image Resize operations
 class ResizeViewModel extends ChangeNotifier {
   final ImageService _imageService;
+  final StorageService _storageService;
 
-  ResizeViewModel({required ImageService imageService})
-    : _imageService = imageService;
+  ResizeViewModel({
+    required ImageService imageService,
+    required StorageService storageService,
+  }) : _imageService = imageService,
+       _storageService = storageService;
 
   // State
   ResizeViewState _state = ResizeViewState.initial();
@@ -26,6 +31,8 @@ class ResizeViewModel extends ChangeNotifier {
   bool get hasResizedImage => _state.hasResizedImage;
   bool get isLoading => _state.isLoading;
   bool get canResize => _state.canResize;
+  bool get shouldAutoSave => _storageService.getBool('saveToGallery') ?? true;
+  bool get shouldShowSaveButton => !shouldAutoSave && hasResizedImage;
 
   /// Pick an image from gallery
   Future<void> pickImage() async {
@@ -72,8 +79,32 @@ class ResizeViewModel extends ChangeNotifier {
 
       _state = _state.copyWithSuccess(resized);
       notifyListeners();
+
+      // Auto-save if enabled
+      if (shouldAutoSave) {
+        await saveResizedImage();
+      }
     } catch (e) {
       _state = _state.copyWithError(e.toString());
+      notifyListeners();
+    }
+  }
+
+  /// Save the resized image
+  Future<void> saveResizedImage() async {
+    if (_state.resizedImage == null) {
+      _state = _state.copyWithError('No resized image to save');
+      notifyListeners();
+      return;
+    }
+
+    try {
+      final storageLocation =
+          _storageService.getString('storageLocation') ??
+          'Pictures/ImageConverter';
+      await _imageService.saveImage(_state.resizedImage!, storageLocation);
+    } catch (e) {
+      _state = _state.copyWithError('Failed to save image: $e');
       notifyListeners();
     }
   }

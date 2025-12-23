@@ -5,18 +5,22 @@ import 'package:flutter_image_converters/views/convert/models/convert_view_state
 import '../models/image_data.dart';
 import '../models/conversion_settings.dart';
 import '../services/image_service.dart';
+import '../services/storage_service.dart';
 import '../usecases/convert_and_save_images_usecase.dart';
 
 /// ViewModel for Image Conversion operations
 class ConversionViewModel extends ChangeNotifier {
   final ImageService _imageService;
   final ConvertAndSaveImagesUseCase _convertAndSaveUseCase;
+  final StorageService _storageService;
 
   ConversionViewModel({
     required ImageService imageService,
     required ConvertAndSaveImagesUseCase convertAndSaveUseCase,
+    required StorageService storageService,
   }) : _imageService = imageService,
-       _convertAndSaveUseCase = convertAndSaveUseCase;
+       _convertAndSaveUseCase = convertAndSaveUseCase,
+       _storageService = storageService;
 
   // State
   ConvertViewState _state = ConvertViewState.initial();
@@ -36,6 +40,8 @@ class ConversionViewModel extends ChangeNotifier {
   int get convertedCount => _state.convertedCount;
   int get totalCount => _state.totalCount;
   double get progress => _state.progress;
+  bool get shouldAutoSave => _storageService.getBool('saveToGallery') ?? true;
+  bool get shouldShowSaveButton => !shouldAutoSave && hasConvertedImages;
 
   /// Pick multiple images from gallery
   Future<void> pickImages() async {
@@ -62,6 +68,12 @@ class ConversionViewModel extends ChangeNotifier {
     if (_state.sourceImages.isEmpty) {
       _state = _state.copyWithError('No images selected');
       notifyListeners();
+      return;
+    }
+
+    // If auto-save is enabled, use convertAndSaveImages instead
+    if (shouldAutoSave) {
+      await convertAndSaveImages();
       return;
     }
 

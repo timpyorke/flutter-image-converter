@@ -1,3 +1,4 @@
+import 'package:flutter_image_converters/providers/shared_pref_provider.dart';
 import 'package:flutter_image_converters/services/dialog_service.dart';
 import 'package:get_it/get_it.dart';
 
@@ -31,22 +32,37 @@ Future<void> setupDependencyInjection() async {
   );
 
   //**
+  //* Providers - Register as factories
+  //**/
+
+  getIt.registerFactory<SharedPrefProvider>(
+    () => SharedPrefProvider(getIt<StorageService>()),
+  );
+
+  //**
   //* ViewModels - Register as factories
   //**/
   getIt.registerFactory<NavigationViewModel>(() => NavigationViewModel());
-  getIt.registerFactory<ConversionViewModel>(
-    () => ConversionViewModel(
-      imageService: getIt<ImageService>(),
-      convertAndSaveUseCase: getIt<ConvertAndSaveImagesUseCase>(),
-    ),
-  );
-  getIt.registerFactory<ResizeViewModel>(
-    () => ResizeViewModel(imageService: getIt<ImageService>()),
-  );
+
   getIt.registerFactory<SettingsViewModel>(
     () => SettingsViewModel(
       storageService: getIt<StorageService>(),
       dialogService: getIt<DialogService>(),
+    ),
+  );
+
+  getIt.registerFactory<ConversionViewModel>(
+    () => ConversionViewModel(
+      imageService: getIt<ImageService>(),
+      convertAndSaveUseCase: getIt<ConvertAndSaveImagesUseCase>(),
+      storageService: getIt<StorageService>(),
+    ),
+  );
+
+  getIt.registerFactory<ResizeViewModel>(
+    () => ResizeViewModel(
+      imageService: getIt<ImageService>(),
+      storageService: getIt<StorageService>(),
     ),
   );
 }
