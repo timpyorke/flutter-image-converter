@@ -109,18 +109,21 @@ class ResizeViewModel extends ChangeNotifier {
 
   /// Update resize settings
   void updateSettings(ResizeSettings newSettings) {
+    if (_state.settings == newSettings) return;
     _state = _state.copyWith(settings: newSettings);
     notifyListeners();
   }
 
   /// Update width
   void updateWidth(int? width) {
+    if (_state.settings.width == width) return;
     _state = _state.copyWith(settings: _state.settings.copyWith(width: width));
     notifyListeners();
   }
 
   /// Update height
   void updateHeight(int? height) {
+    if (_state.settings.height == height) return;
     _state = _state.copyWith(
       settings: _state.settings.copyWith(height: height),
     );

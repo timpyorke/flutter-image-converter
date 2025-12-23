@@ -210,20 +210,13 @@ class ConvertView extends StatelessWidget {
                       ),
                       child: Stack(
                         children: [
-                          ClipRRect(
+                          CachedImageThumbnail(
+                            imageData: image,
+                            height: 160,
+                            width: 140,
+                            fit: BoxFit.cover,
+                            thumbnailSize: 200,
                             borderRadius: BorderRadius.circular(20),
-                            child: image.bytes != null
-                                ? Image.memory(
-                                    image.bytes!,
-                                    height: 160,
-                                    width: 140,
-                                    fit: BoxFit.cover,
-                                  )
-                                : Container(
-                                    height: 160,
-                                    width: 140,
-                                    color: Colors.grey.shade300,
-                                  ),
                           ),
                           Positioned(
                             top: 8,
@@ -561,20 +554,13 @@ class ConvertView extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        ClipRRect(
+                        CachedImageThumbnail(
+                          imageData: image,
+                          height: 140,
+                          width: 140,
+                          fit: BoxFit.cover,
+                          thumbnailSize: 200,
                           borderRadius: BorderRadius.circular(16),
-                          child: image.bytes != null
-                              ? Image.memory(
-                                  image.bytes!,
-                                  height: 140,
-                                  width: 140,
-                                  fit: BoxFit.cover,
-                                )
-                              : Container(
-                                  height: 140,
-                                  width: 140,
-                                  color: Colors.grey.shade300,
-                                ),
                         ),
                         const SizedBox(height: 12),
                         SizedBox(

@@ -143,14 +143,13 @@ class _ResizeViewState extends State<ResizeView> {
           ),
           const SizedBox(height: 16),
           if (viewModel.sourceImage!.bytes != null)
-            ClipRRect(
+            CachedImageThumbnail(
+              imageData: viewModel.sourceImage!,
+              height: 200,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              thumbnailSize: 300,
               borderRadius: BorderRadius.circular(16),
-              child: Image.memory(
-                viewModel.sourceImage!.bytes!,
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
             ),
           const SizedBox(height: 16),
           _buildImageInfo(context, viewModel.sourceImage!),
@@ -403,14 +402,13 @@ class _ResizeViewState extends State<ResizeView> {
           ),
           const SizedBox(height: 20),
           if (viewModel.resizedImage!.bytes != null)
-            ClipRRect(
+            CachedImageThumbnail(
+              imageData: viewModel.resizedImage!,
+              height: 200,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              thumbnailSize: 300,
               borderRadius: BorderRadius.circular(16),
-              child: Image.memory(
-                viewModel.resizedImage!.bytes!,
-                height: 200,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
             ),
           const SizedBox(height: 20),
           _buildImageInfo(context, viewModel.resizedImage!),

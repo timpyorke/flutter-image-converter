@@ -2,14 +2,15 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_image_converters/models/resize_setting.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:image/image.dart' as img;
-import '../const/image_format.dart';
 import '../models/image_data.dart';
 import '../models/conversion_settings.dart';
+import '../core/utils/image_cache.dart';
+import 'image_processing_isolate.dart';
 
 /// Service for handling image operations
 class ImageService {
   final ImagePicker _picker = ImagePicker();
+  final ImageCache _thumbnailCache = ImageCache();
 
   /// Pick an image from gallery
   Future<ImageData?> pickImage() async {
@@ -21,7 +22,7 @@ class ImageService {
       if (pickedFile == null) return null;
 
       final bytes = await pickedFile.readAsBytes();
-      final image = img.decodeImage(bytes);
+      final image = await ImageProcessingIsolate.decodeImage(bytes);
 
       if (image == null) return null;
 
@@ -51,7 +52,7 @@ class ImageService {
       for (final pickedFile in pickedFiles) {
         try {
           final bytes = await pickedFile.readAsBytes();
-          final image = img.decodeImage(bytes);
+          final image = await ImageProcessingIsolate.decodeImage(bytes);
 
           if (image != null) {
             images.add(
@@ -88,37 +89,13 @@ class ImageService {
         throw Exception('Source image bytes are null');
       }
 
-      final image = img.decodeImage(sourceImage.bytes!);
-      if (image == null) {
-        throw Exception('Failed to decode image');
-      }
-
-      Uint8List? convertedBytes;
-
-      switch (settings.targetFormat) {
-        case ImageFormat.jpg:
-          convertedBytes = Uint8List.fromList(
-            img.encodeJpg(image, quality: settings.quality),
-          );
-          break;
-        case ImageFormat.png:
-          convertedBytes = Uint8List.fromList(img.encodePng(image));
-          break;
-        case ImageFormat.webp:
-          // Note: webp encoding might not be available in all versions
-          // fallback to PNG if needed
-          try {
-            convertedBytes = Uint8List.fromList(
-              img.encodeJpg(image, quality: settings.quality),
-            );
-          } catch (e) {
-            convertedBytes = Uint8List.fromList(img.encodePng(image));
-          }
-          break;
-        case ImageFormat.bmp:
-          convertedBytes = Uint8List.fromList(img.encodeBmp(image));
-          break;
-      }
+      final convertedBytes = await ImageProcessingIsolate.convertImage(
+        ConvertImageParams(
+          imageBytes: sourceImage.bytes!,
+          targetFormat: settings.targetFormat,
+          quality: settings.quality,
+        ),
+      );
 
       return sourceImage.copyWith(
         bytes: convertedBytes,
@@ -144,42 +121,21 @@ class ImageService {
         throw Exception('Source image bytes are null');
       }
 
-      final image = img.decodeImage(sourceImage.bytes!);
-      if (image == null) {
-        throw Exception('Failed to decode image');
-      }
-
-      int newWidth = settings.width ?? image.width;
-      int newHeight = settings.height ?? image.height;
-
-      if (settings.maintainAspectRatio) {
-        if (settings.width != null && settings.height == null) {
-          newHeight = (image.height * settings.width! / image.width).round();
-        } else if (settings.height != null && settings.width == null) {
-          newWidth = (image.width * settings.height! / image.height).round();
-        }
-      }
-
-      final resized = img.copyResize(
-        image,
-        width: newWidth,
-        height: newHeight,
-        interpolation: img.Interpolation.linear,
+      final result = await ImageProcessingIsolate.resizeImage(
+        ResizeImageParams(
+          imageBytes: sourceImage.bytes!,
+          width: settings.width,
+          height: settings.height,
+          maintainAspectRatio: settings.maintainAspectRatio,
+          format: sourceImage.format,
+        ),
       );
 
-      // Keep original format
-      Uint8List resizedBytes;
-      if (sourceImage.format?.toLowerCase() == 'png') {
-        resizedBytes = Uint8List.fromList(img.encodePng(resized));
-      } else {
-        resizedBytes = Uint8List.fromList(img.encodeJpg(resized, quality: 90));
-      }
-
       return sourceImage.copyWith(
-        bytes: resizedBytes,
-        width: resized.width,
-        height: resized.height,
-        sizeInBytes: resizedBytes.length,
+        bytes: result.bytes,
+        width: result.width,
+        height: result.height,
+        sizeInBytes: result.bytes.length,
       );
     } catch (e) {
       throw Exception('Failed to resize image: $e');
@@ -192,10 +148,10 @@ class ImageService {
       if (imageData.bytes == null) {
         throw Exception('No image data to save');
       }
-
+      final format = imageData.format ?? 'jpg';
       final fileName =
           imageData.name ??
-          'image_${DateTime.now().millisecondsSinceEpoch}.${imageData.format ?? 'jpg'}';
+          'image_${DateTime.now().millisecondsSinceEpoch}.$format';
       final filePath = '$directory/$fileName';
       final file = File(filePath);
 
@@ -205,6 +161,40 @@ class ImageService {
     } catch (e) {
       throw Exception('Failed to save image: $e');
     }
+  }
+
+  /// Get or create thumbnail for image (with caching)
+  Future<Uint8List> getThumbnail(
+    ImageData imageData, {
+    int maxSize = 200,
+  }) async {
+    if (imageData.bytes == null) {
+      throw Exception('No image data for thumbnail');
+    }
+
+    // Generate cache key based on image path and size
+    final cacheKey = '${imageData.path}_$maxSize';
+
+    // Check cache first
+    final cached = _thumbnailCache.get(cacheKey);
+    if (cached != null) {
+      return cached;
+    }
+
+    // Generate thumbnail in isolate
+    final thumbnail = await ImageProcessingIsolate.createThumbnail(
+      ThumbnailParams(imageBytes: imageData.bytes!, maxSize: maxSize),
+    );
+
+    // Cache the thumbnail
+    _thumbnailCache.put(cacheKey, thumbnail);
+
+    return thumbnail;
+  }
+
+  /// Clear thumbnail cache
+  void clearThumbnailCache() {
+    _thumbnailCache.clear();
   }
 
   String _getFormatFromPath(String path) {

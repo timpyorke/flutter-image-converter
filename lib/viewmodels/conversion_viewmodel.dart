@@ -91,10 +91,19 @@ class ConversionViewModel extends ChangeNotifier {
         );
         converted.add(convertedImage);
         count++;
-        _state = _state.copyWithProgress(count);
-        notifyListeners(); // Update progress
+
+        // Only notify every 10% progress or last item to reduce UI updates
+        if (count % (_state.sourceImages.length ~/ 10 + 1) == 0 ||
+            count == _state.sourceImages.length) {
+          _state = _state.copyWithProgress(count);
+          notifyListeners();
+        }
       }
 
+      // Ensure final state is set
+      if (_state.convertedCount != converted.length) {
+        _state = _state.copyWithProgress(converted.length);
+      }
       _state = _state.copyWithSuccess(convertedImages: converted);
       notifyListeners();
     } catch (e) {
@@ -115,14 +124,16 @@ class ConversionViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
+      final totalImages = _state.sourceImages.length;
       final result = await _convertAndSaveUseCase.execute(
         sourceImages: _state.sourceImages,
         settings: _state.settings,
         onProgress: (current, total) {
-          _state = _state.copyWithProgress(
-            _state.sourceImages.length + current,
-          );
-          notifyListeners();
+          // Only notify every 10% progress to reduce UI updates
+          if (current % (total ~/ 10 + 1) == 0 || current == total) {
+            _state = _state.copyWithProgress(totalImages + current);
+            notifyListeners();
+          }
         },
       );
 
@@ -146,6 +157,7 @@ class ConversionViewModel extends ChangeNotifier {
 
   /// Update conversion settings
   void updateSettings(ConversionSettings newSettings) {
+    if (_state.settings == newSettings) return;
     _state = _state.copyWith(settings: newSettings);
     notifyListeners();
   }
