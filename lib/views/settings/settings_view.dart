@@ -1,10 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_image_converters/views/settings/setting_about_card.dart';
-import 'package:flutter_image_converters/views/settings/setting_advanced_card.dart';
-import 'package:flutter_image_converters/views/settings/setting_default_format_card.dart';
-import 'package:flutter_image_converters/views/settings/setting_default_quality_card.dart';
-import 'package:flutter_image_converters/views/settings/setting_storage_card.dart';
-import 'package:flutter_image_converters/views/settings/setting_theme_card.dart';
+import 'package:flutter_image_converters/views/settings/widgets/widgets.dart';
 import 'package:provider/provider.dart';
 import '../../l10n/app_localizations.dart';
 import '../../viewmodels/settings_viewmodel.dart';
@@ -117,7 +112,10 @@ class SettingsView extends StatelessWidget {
                 // Reset Button
                 Center(
                   child: GradientButton(
-                    onPressed: () => _showResetDialog(context, viewModel, l10n),
+                    onPressed: () {
+                      viewModel.onShowResetDialog(context);
+                    
+                    },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -132,96 +130,6 @@ class SettingsView extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
-  }
-
-  void _showResetDialog(
-    BuildContext context,
-    SettingsViewModel viewModel,
-    AppLocalizations l10n,
-  ) {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: GlassCard(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.red.shade100,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.warning_rounded,
-                  color: Colors.red.shade600,
-                  size: 48,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                'Reset Settings?',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'This will reset all settings to their default values. This action cannot be undone.',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withValues(alpha: 0.7),
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  Expanded(
-                    child: GlassContainer(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      borderRadius: 12,
-                      child: InkWell(
-                        onTap: () => Navigator.of(context).pop(),
-                        child: Center(
-                          child: Text(
-                            'Cancel',
-                            style: Theme.of(context).textTheme.titleSmall
-                                ?.copyWith(fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: GradientButton(
-                      onPressed: () {
-                        viewModel.resetToDefaults();
-                        Navigator.of(context).pop();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text('Settings reset to defaults'),
-                            behavior: SnackBarBehavior.floating,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                        );
-                      },
-                      child: const Text('Reset'),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }

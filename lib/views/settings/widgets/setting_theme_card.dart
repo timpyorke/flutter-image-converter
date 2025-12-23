@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_image_converters/core/widgets/glass_card.dart';
-import 'package:flutter_image_converters/views/settings/setting_theme_option.dart';
-import 'package:flutter_image_converters/views/settings/theme_type.dart';
+import 'package:flutter_image_converters/const/theme_type.dart';
+import 'package:flutter_image_converters/views/settings/widgets/setting_theme_option.dart';
 
 class SettingThemeCard extends StatelessWidget {
   const SettingThemeCard({

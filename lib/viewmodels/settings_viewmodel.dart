@@ -140,4 +140,10 @@ class SettingsViewModel extends ChangeNotifier {
     };
     return languages[language] ?? 'English';
   }
+
+  void onShowResetDialog(BuildContext context) {
+    dialogService.showResetSettingDialog(context, () {
+      resetToDefaults();
+    });
+  }
 }

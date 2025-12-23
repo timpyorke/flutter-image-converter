@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_image_converters/core/widgets/glass_card.dart';
-import 'package:flutter_image_converters/views/settings/setting_tile.dart';
+import 'package:flutter_image_converters/views/settings/widgets/setting_tile.dart';
 
 class SettingStorageCard extends StatelessWidget {
   const SettingStorageCard({

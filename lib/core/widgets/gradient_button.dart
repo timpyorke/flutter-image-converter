@@ -9,6 +9,7 @@ class GradientButton extends StatelessWidget {
   final double borderRadius;
   final EdgeInsetsGeometry? padding;
   final double blur;
+  final Color? color;
 
   const GradientButton({
     super.key,
@@ -18,6 +19,7 @@ class GradientButton extends StatelessWidget {
     this.borderRadius = 28,
     this.padding,
     this.blur = 10.0,
+    this.color,
   });
 
   @override
@@ -25,6 +27,9 @@ class GradientButton extends StatelessWidget {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
     final isEnabled = onPressed != null;
+
+    // Use provided color or fallback to theme primary color
+    final baseColor = color ?? theme.colorScheme.primary;
 
     return Container(
       height: height,
@@ -35,7 +40,7 @@ class GradientButton extends StatelessWidget {
                 BoxShadow(
                   color: isDark
                       ? Colors.black.withValues(alpha: 0.4)
-                      : theme.colorScheme.primary.withValues(alpha: 0.3),
+                      : baseColor.withValues(alpha: 0.3),
                   blurRadius: 20,
                   offset: const Offset(0, 10),
                 ),
@@ -54,12 +59,12 @@ class GradientButton extends StatelessWidget {
                 colors: isEnabled
                     ? isDark
                           ? [
-                              theme.colorScheme.primary.withValues(alpha: 0.6),
-                              theme.colorScheme.primary.withValues(alpha: 0.4),
+                              baseColor.withValues(alpha: 0.6),
+                              baseColor.withValues(alpha: 0.4),
                             ]
                           : [
-                              theme.colorScheme.primary.withValues(alpha: 0.8),
-                              theme.colorScheme.primary.withValues(alpha: 0.6),
+                              baseColor.withValues(alpha: 0.8),
+                              baseColor.withValues(alpha: 0.6),
                             ]
                     : [
                         Colors.grey.withValues(alpha: 0.3),
@@ -70,8 +75,8 @@ class GradientButton extends StatelessWidget {
               border: Border.all(
                 color: isEnabled
                     ? isDark
-                          ? theme.colorScheme.primary.withValues(alpha: 0.5)
-                          : theme.colorScheme.primary.withValues(alpha: 0.3)
+                          ? baseColor.withValues(alpha: 0.5)
+                          : baseColor.withValues(alpha: 0.3)
                     : Colors.grey.withValues(alpha: 0.3),
                 width: 1.5,
               ),
@@ -81,10 +86,8 @@ class GradientButton extends StatelessWidget {
               child: InkWell(
                 onTap: onPressed,
                 borderRadius: BorderRadius.circular(borderRadius),
-                splashColor: theme.colorScheme.primary.withValues(alpha: 0.2),
-                highlightColor: theme.colorScheme.primary.withValues(
-                  alpha: 0.1,
-                ),
+                splashColor: baseColor.withValues(alpha: 0.2),
+                highlightColor: baseColor.withValues(alpha: 0.1),
                 child: Container(
                   padding:
                       padding ?? const EdgeInsets.symmetric(horizontal: 24),
