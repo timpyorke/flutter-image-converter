@@ -146,4 +146,22 @@ class SettingsViewModel extends ChangeNotifier {
       resetToDefaults();
     });
   }
+
+  void onShowClearCacheDialog(BuildContext context) {
+    dialogService.showClearCacheDialog(context);
+  }
+
+  void showLanguageDialog(BuildContext context) {
+    dialogService.showLanguageDialog(context, language, (selectedLanguage) {
+      updateLanguage(selectedLanguage);
+    });
+  }
+
+  void showStorageLocationDialog(BuildContext context) {
+    dialogService.showStorageLocationDialog(context, storageLocation, (
+      selectedLocation,
+    ) {
+      updateStorageLocation(selectedLocation);
+    });
+  }
 }

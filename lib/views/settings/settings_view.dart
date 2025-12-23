@@ -68,7 +68,7 @@ class SettingsView extends StatelessWidget {
                   saveToGallery: viewModel.saveToGallery,
                   storageLocation: viewModel.storageLocation,
                   showStorageLocation: () {
-                    _showStorageLocationDialog(context, viewModel, l10n);
+                    viewModel.showStorageLocationDialog(context);
                   },
                 ),
                 const SizedBox(height: 32),
@@ -79,10 +79,10 @@ class SettingsView extends StatelessWidget {
                 SettingAdvancedCard(
                   language: viewModel.getLanguageName(),
                   showLanguageDialog: () {
-                    _showLanguageDialog(context, viewModel, l10n);
+                    viewModel.showLanguageDialog(context);
                   },
                   showClearCacheDialog: () {
-                    _showClearCacheDialog(context, l10n);
+                    viewModel.onShowClearCacheDialog(context);
                   },
                 ),
                 const SizedBox(height: 32),
@@ -114,7 +114,6 @@ class SettingsView extends StatelessWidget {
                   child: GradientButton(
                     onPressed: () {
                       viewModel.onShowResetDialog(context);
-                    
                     },
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -130,260 +129,6 @@ class SettingsView extends StatelessWidget {
             ),
           );
         },
-      ),
-    );
-  }
-
-  void _showClearCacheDialog(BuildContext context, AppLocalizations l10n) {
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: GlassCard(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Theme.of(context).colorScheme.primary,
-                      Theme.of(context).colorScheme.secondary,
-                    ],
-                  ),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.delete_sweep_rounded,
-                  color: Colors.white,
-                  size: 48,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                'Clear Cache?',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(height: 12),
-              Text(
-                'This will clear temporary files and free up storage space. Your images and settings will not be affected.',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withValues(alpha: 0.7),
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  Expanded(
-                    child: GlassContainer(
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      borderRadius: 12,
-                      child: InkWell(
-                        onTap: () => Navigator.of(context).pop(),
-                        child: Center(
-                          child: Text(
-                            'Cancel',
-                            style: Theme.of(context).textTheme.titleSmall
-                                ?.copyWith(fontWeight: FontWeight.w600),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: GradientButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text('Cache cleared successfully'),
-                            behavior: SnackBarBehavior.floating,
-                            backgroundColor: Colors.green.shade600,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                        );
-                      },
-                      child: const Text('Clear'),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  void _showLanguageDialog(
-    BuildContext context,
-    SettingsViewModel viewModel,
-    AppLocalizations l10n,
-  ) {
-    final languages = [
-      {'code': 'en', 'name': 'English', 'nativeName': 'English'},
-      {'code': 'th', 'name': 'Thai', 'nativeName': 'ภาษาไทย'},
-      {'code': 'zh', 'name': 'Chinese', 'nativeName': '中文'},
-      {'code': 'ja', 'name': 'Japanese', 'nativeName': '日本語'},
-      {'code': 'ko', 'name': 'Korean', 'nativeName': '한국어'},
-      {'code': 'es', 'name': 'Spanish', 'nativeName': 'Español'},
-      {'code': 'fr', 'name': 'French', 'nativeName': 'Français'},
-      {'code': 'de', 'name': 'German', 'nativeName': 'Deutsch'},
-      {'code': 'pt', 'name': 'Portuguese', 'nativeName': 'Português'},
-      {'code': 'ru', 'name': 'Russian', 'nativeName': 'Русский'},
-    ];
-
-    showDialog(
-      context: context,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: GlassCard(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Theme.of(context).colorScheme.primary,
-                          Theme.of(context).colorScheme.secondary,
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(
-                      Icons.language_rounded,
-                      color: Colors.white,
-                      size: 28,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Text(
-                      'Select Language',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                height: 400,
-                width: double.infinity,
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  itemCount: languages.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 8),
-                  itemBuilder: (context, index) {
-                    final language = languages[index];
-                    final isSelected = viewModel.language == language['code'];
-
-                    return InkWell(
-                      onTap: () {
-                        viewModel.updateLanguage(language['code']!);
-                        Navigator.of(context).pop();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Language changed to ${language['nativeName']}',
-                            ),
-                            behavior: SnackBarBehavior.floating,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                          ),
-                        );
-                      },
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? Theme.of(
-                                  context,
-                                ).colorScheme.primary.withValues(alpha: 0.15)
-                              : Theme.of(
-                                  context,
-                                ).colorScheme.surface.withValues(alpha: 0.3),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: isSelected
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(
-                                    context,
-                                  ).colorScheme.outline.withValues(alpha: 0.2),
-                            width: isSelected ? 2 : 1,
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    language['nativeName']!,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(
-                                          fontWeight: isSelected
-                                              ? FontWeight.w700
-                                              : FontWeight.w600,
-                                          color: isSelected
-                                              ? Theme.of(
-                                                  context,
-                                                ).colorScheme.primary
-                                              : null,
-                                        ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    language['name']!,
-                                    style: Theme.of(context).textTheme.bodySmall
-                                        ?.copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurface
-                                              .withValues(alpha: 0.6),
-                                        ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            if (isSelected)
-                              Icon(
-                                Icons.check_circle_rounded,
-                                color: Theme.of(context).colorScheme.primary,
-                                size: 24,
-                              ),
-                          ],
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
