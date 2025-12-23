@@ -8,164 +8,163 @@ class DialogService {
     BuildContext context,
     VoidCallback resetToDefaults,
   ) {
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: GlassCard(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.red.shade100,
-                  shape: BoxShape.circle,
-                ),
-                child: Icon(
-                  Icons.warning_rounded,
-                  color: Colors.red.shade600,
-                  size: 48,
-                ),
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => GlassCard(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.red.shade100,
+                shape: BoxShape.circle,
               ),
-              const SizedBox(height: 20),
-              Text(
-                'Reset Settings?',
-                style: Theme.of(
+              child: Icon(
+                Icons.warning_rounded,
+                color: Colors.red.shade600,
+                size: 48,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Reset Settings?',
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'This will reset all settings to their default values. This action cannot be undone.',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(
                   context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+                ).colorScheme.onSurface.withValues(alpha: 0.7),
               ),
-              const SizedBox(height: 12),
-              Text(
-                'This will reset all settings to their default values. This action cannot be undone.',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withValues(alpha: 0.7),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            Row(
+              children: [
+                Expanded(
+                  child: GradientButton(
+                    color: Colors.redAccent,
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Center(child: Text('Cancel')),
+                  ),
                 ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  Expanded(
-                    child: GradientButton(
-                      color: Colors.redAccent,
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: Center(child: Text('Cancel')),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: GradientButton(
-                      onPressed: () {
-                        resetToDefaults;
-                        Navigator.of(context).pop();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text('Settings reset to defaults'),
-                            behavior: SnackBarBehavior.floating,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: GradientButton(
+                    onPressed: () {
+                      resetToDefaults;
+                      Navigator.of(context).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Text('Settings reset to defaults'),
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                        );
-                      },
-                      child: const Text('Reset'),
-                    ),
+                        ),
+                      );
+                    },
+                    child: const Text('Reset'),
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
   }
 
   void showClearCacheDialog(BuildContext context) {
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: GlassCard(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Theme.of(context).colorScheme.primary,
-                      Theme.of(context).colorScheme.secondary,
-                    ],
-                  ),
-                  shape: BoxShape.circle,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => GlassCard(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Theme.of(context).colorScheme.primary,
+                    Theme.of(context).colorScheme.secondary,
+                  ],
                 ),
-                child: const Icon(
-                  Icons.delete_sweep_rounded,
-                  color: Colors.white,
-                  size: 48,
-                ),
+                shape: BoxShape.circle,
               ),
-              const SizedBox(height: 20),
-              Text(
-                'Clear Cache?',
-                style: Theme.of(
+              child: const Icon(
+                Icons.delete_sweep_rounded,
+                color: Colors.white,
+                size: 48,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Clear Cache?',
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'This will clear temporary files and free up storage space. Your images and settings will not be affected.',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(
                   context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+                ).colorScheme.onSurface.withValues(alpha: 0.7),
               ),
-              const SizedBox(height: 12),
-              Text(
-                'This will clear temporary files and free up storage space. Your images and settings will not be affected.',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withValues(alpha: 0.7),
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  Expanded(
-                    child: GradientButton(
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: Center(
-                        child: Text(
-                          'Cancel',
-                          style: Theme.of(context).textTheme.titleSmall
-                              ?.copyWith(fontWeight: FontWeight.w600),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            Row(
+              children: [
+                Expanded(
+                  child: GradientButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: Center(
+                      child: Text(
+                        'Cancel',
+                        style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: GradientButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: const Text('Cache cleared successfully'),
-                            behavior: SnackBarBehavior.floating,
-                            backgroundColor: Colors.green.shade600,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: GradientButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: const Text('Cache cleared successfully'),
+                          behavior: SnackBarBehavior.floating,
+                          backgroundColor: Colors.green.shade600,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                        );
-                      },
-                      child: const Text('Clear'),
-                    ),
+                        ),
+                      );
+                    },
+                    child: const Text('Clear'),
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
       ),
     );
@@ -189,146 +188,142 @@ class DialogService {
       {'code': 'ru', 'name': 'Russian', 'nativeName': 'Русский'},
     ];
 
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: GlassCard(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        colors: [
-                          Theme.of(context).colorScheme.primary,
-                          Theme.of(context).colorScheme.secondary,
-                        ],
-                      ),
-                      borderRadius: BorderRadius.circular(12),
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => GlassCard(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Theme.of(context).colorScheme.primary,
+                        Theme.of(context).colorScheme.secondary,
+                      ],
                     ),
-                    child: const Icon(
-                      Icons.language_rounded,
-                      color: Colors.white,
-                      size: 28,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: const Icon(
+                    Icons.language_rounded,
+                    color: Colors.white,
+                    size: 28,
+                  ),
+                ),
+                const SizedBox(width: 16),
+                Expanded(
+                  child: Text(
+                    'Select Language',
+                    style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                      fontWeight: FontWeight.w700,
                     ),
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Text(
-                      'Select Language',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-              SizedBox(
-                height: 400,
-                width: double.infinity,
-                child: ListView.separated(
-                  shrinkWrap: true,
-                  itemCount: languages.length,
-                  separatorBuilder: (context, index) =>
-                      const SizedBox(height: 8),
-                  itemBuilder: (context, index) {
-                    final language = languages[index];
-                    final isSelected = selectLang == language['code'];
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              height: 400,
+              width: double.infinity,
+              child: ListView.separated(
+                shrinkWrap: true,
+                itemCount: languages.length,
+                separatorBuilder: (context, index) => const SizedBox(height: 8),
+                itemBuilder: (context, index) {
+                  final language = languages[index];
+                  final isSelected = selectLang == language['code'];
 
-                    return InkWell(
-                      onTap: () {
-                        updateLanguage(language['code']!);
-                        Navigator.of(context).pop();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Language changed to ${language['nativeName']}',
-                            ),
-                            behavior: SnackBarBehavior.floating,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
+                  return InkWell(
+                    onTap: () {
+                      updateLanguage(language['code']!);
+                      Navigator.of(context).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Language changed to ${language['nativeName']}',
                           ),
-                        );
-                      },
-                      borderRadius: BorderRadius.circular(12),
-                      child: Container(
-                        padding: const EdgeInsets.all(16),
-                        decoration: BoxDecoration(
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(12),
+                    child: Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: isSelected
+                            ? Theme.of(
+                                context,
+                              ).colorScheme.primary.withValues(alpha: 0.15)
+                            : Theme.of(
+                                context,
+                              ).colorScheme.surface.withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(12),
+                        border: Border.all(
                           color: isSelected
-                              ? Theme.of(
-                                  context,
-                                ).colorScheme.primary.withValues(alpha: 0.15)
+                              ? Theme.of(context).colorScheme.primary
                               : Theme.of(
                                   context,
-                                ).colorScheme.surface.withValues(alpha: 0.3),
-                          borderRadius: BorderRadius.circular(12),
-                          border: Border.all(
-                            color: isSelected
-                                ? Theme.of(context).colorScheme.primary
-                                : Theme.of(
-                                    context,
-                                  ).colorScheme.outline.withValues(alpha: 0.2),
-                            width: isSelected ? 2 : 1,
-                          ),
-                        ),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    language['nativeName']!,
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .titleMedium
-                                        ?.copyWith(
-                                          fontWeight: isSelected
-                                              ? FontWeight.w700
-                                              : FontWeight.w600,
-                                          color: isSelected
-                                              ? Theme.of(
-                                                  context,
-                                                ).colorScheme.primary
-                                              : null,
-                                        ),
-                                  ),
-                                  const SizedBox(height: 2),
-                                  Text(
-                                    language['name']!,
-                                    style: Theme.of(context).textTheme.bodySmall
-                                        ?.copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurface
-                                              .withValues(alpha: 0.6),
-                                        ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            if (isSelected)
-                              Icon(
-                                Icons.check_circle_rounded,
-                                color: Theme.of(context).colorScheme.primary,
-                                size: 24,
-                              ),
-                          ],
+                                ).colorScheme.outline.withValues(alpha: 0.2),
+                          width: isSelected ? 2 : 1,
                         ),
                       ),
-                    );
-                  },
-                ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  language['nativeName']!,
+                                  style: Theme.of(context).textTheme.titleMedium
+                                      ?.copyWith(
+                                        fontWeight: isSelected
+                                            ? FontWeight.w700
+                                            : FontWeight.w600,
+                                        color: isSelected
+                                            ? Theme.of(
+                                                context,
+                                              ).colorScheme.primary
+                                            : null,
+                                      ),
+                                ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  language['name']!,
+                                  style: Theme.of(context).textTheme.bodySmall
+                                      ?.copyWith(
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface
+                                            .withValues(alpha: 0.6),
+                                      ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          if (isSelected)
+                            Icon(
+                              Icons.check_circle_rounded,
+                              color: Theme.of(context).colorScheme.primary,
+                              size: 24,
+                            ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -362,143 +357,143 @@ class DialogService {
       },
     ];
 
-    showDialog(
+    showModalBottomSheet(
       context: context,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: GlassCard(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Theme.of(context).colorScheme.primary,
-                      Theme.of(context).colorScheme.secondary,
-                    ],
-                  ),
-                  shape: BoxShape.circle,
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => GlassCard(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [
+                    Theme.of(context).colorScheme.primary,
+                    Theme.of(context).colorScheme.secondary,
+                  ],
                 ),
-                child: const Icon(
-                  Icons.folder_rounded,
-                  color: Colors.white,
-                  size: 48,
-                ),
+                shape: BoxShape.circle,
               ),
-              const SizedBox(height: 20),
-              Text(
-                'Storage Location',
-                style: Theme.of(
+              child: const Icon(
+                Icons.folder_rounded,
+                color: Colors.white,
+                size: 48,
+              ),
+            ),
+            const SizedBox(height: 20),
+            Text(
+              'Storage Location',
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 12),
+            Text(
+              'Choose where to save converted images',
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                color: Theme.of(
                   context,
-                ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
+                ).colorScheme.onSurface.withValues(alpha: 0.7),
               ),
-              const SizedBox(height: 12),
-              Text(
-                'Choose where to save converted images',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withValues(alpha: 0.7),
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              ...storageOptions.map((option) {
-                final isSelected = storageLocation == option['path'];
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: GlassContainer(
-                    padding: const EdgeInsets.all(16),
-                    borderRadius: 16,
-                    child: InkWell(
-                      onTap: () {
-                        updateStorageLocation(option['path']!);
-                        Navigator.of(context).pop();
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            content: Text(
-                              'Storage location updated to ${option['title']}',
-                            ),
-                            behavior: SnackBarBehavior.floating,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12),
-                            ),
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            ...storageOptions.map((option) {
+              final isSelected = storageLocation == option['path'];
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: GlassContainer(
+                  padding: const EdgeInsets.all(16),
+                  borderRadius: 16,
+                  child: InkWell(
+                    onTap: () {
+                      updateStorageLocation(option['path']!);
+                      Navigator.of(context).pop();
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            'Storage location updated to ${option['title']}',
                           ),
-                        );
-                      },
-                      borderRadius: BorderRadius.circular(16),
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(8),
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? Theme.of(
-                                      context,
-                                    ).colorScheme.primary.withValues(alpha: 0.2)
-                                  : Theme.of(context).colorScheme.surface
-                                        .withValues(alpha: 0.5),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            child: Icon(
-                              Icons.folder_rounded,
-                              color: isSelected
-                                  ? Theme.of(context).colorScheme.primary
-                                  : Theme.of(context).colorScheme.onSurface
-                                        .withValues(alpha: 0.6),
-                              size: 24,
-                            ),
+                          behavior: SnackBarBehavior.floating,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          const SizedBox(width: 12),
-                          Expanded(
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  option['title']!,
-                                  style: Theme.of(context).textTheme.titleSmall
-                                      ?.copyWith(
-                                        fontWeight: isSelected
-                                            ? FontWeight.w700
-                                            : FontWeight.w600,
-                                        color: isSelected
-                                            ? Theme.of(
-                                                context,
-                                              ).colorScheme.primary
-                                            : null,
-                                      ),
-                                ),
-                                const SizedBox(height: 2),
-                                Text(
-                                  option['subtitle']!,
-                                  style: Theme.of(context).textTheme.bodySmall
-                                      ?.copyWith(
-                                        color: Theme.of(context)
-                                            .colorScheme
-                                            .onSurface
-                                            .withValues(alpha: 0.6),
-                                      ),
-                                ),
-                              ],
-                            ),
+                        ),
+                      );
+                    },
+                    borderRadius: BorderRadius.circular(16),
+                    child: Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? Theme.of(
+                                    context,
+                                  ).colorScheme.primary.withValues(alpha: 0.2)
+                                : Theme.of(
+                                    context,
+                                  ).colorScheme.surface.withValues(alpha: 0.5),
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          if (isSelected)
-                            Icon(
-                              Icons.check_circle_rounded,
-                              color: Theme.of(context).colorScheme.primary,
-                              size: 24,
-                            ),
-                        ],
-                      ),
+                          child: Icon(
+                            Icons.folder_rounded,
+                            color: isSelected
+                                ? Theme.of(context).colorScheme.primary
+                                : Theme.of(context).colorScheme.onSurface
+                                      .withValues(alpha: 0.6),
+                            size: 24,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                option['title']!,
+                                style: Theme.of(context).textTheme.titleSmall
+                                    ?.copyWith(
+                                      fontWeight: isSelected
+                                          ? FontWeight.w700
+                                          : FontWeight.w600,
+                                      color: isSelected
+                                          ? Theme.of(
+                                              context,
+                                            ).colorScheme.primary
+                                          : null,
+                                    ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                option['subtitle']!,
+                                style: Theme.of(context).textTheme.bodySmall
+                                    ?.copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurface
+                                          .withValues(alpha: 0.6),
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        if (isSelected)
+                          Icon(
+                            Icons.check_circle_rounded,
+                            color: Theme.of(context).colorScheme.primary,
+                            size: 24,
+                          ),
+                      ],
                     ),
                   ),
-                );
-              }),
-            ],
-          ),
+                ),
+              );
+            }),
+          ],
         ),
       ),
     );
