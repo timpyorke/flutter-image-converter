@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter_image_converters/const/conversion_state_type.dart';
 import 'package:flutter_image_converters/const/image_format.dart';
+import 'package:flutter_image_converters/views/convert/models/convert_view_state.dart';
 import '../models/image_data.dart';
 import '../models/conversion_settings.dart';
 import '../services/image_service.dart';
 import '../usecases/convert_and_save_images_usecase.dart';
-
-enum ConversionState { idle, picking, converting, saving, success, error }
 
 /// ViewModel for Image Conversion operations
 class ConversionViewModel extends ChangeNotifier {
@@ -19,183 +19,158 @@ class ConversionViewModel extends ChangeNotifier {
        _convertAndSaveUseCase = convertAndSaveUseCase;
 
   // State
-  ConversionState _state = ConversionState.idle;
-  List<ImageData> _sourceImages = [];
-  List<ImageData> _convertedImages = [];
-  List<String> _savedPaths = [];
-  ConversionSettings _settings = ConversionSettings(
-    targetFormat: ImageFormat.png,
-    quality: 90,
-  );
-  String? _errorMessage;
-  int _convertedCount = 0;
-  int _totalCount = 0;
+  ConvertViewState _state = ConvertViewState.initial();
 
   // Getters
-  ConversionState get state => _state;
-  List<ImageData> get sourceImages => _sourceImages;
-  List<ImageData> get convertedImages => _convertedImages;
-  List<String> get savedPaths => _savedPaths;
-  ConversionSettings get settings => _settings;
-  String? get errorMessage => _errorMessage;
-  bool get hasSourceImages => _sourceImages.isNotEmpty;
-  bool get hasConvertedImages => _convertedImages.isNotEmpty;
-  bool get hasSavedImages => _savedPaths.isNotEmpty;
-  bool get isLoading =>
-      _state == ConversionState.picking ||
-      _state == ConversionState.converting ||
-      _state == ConversionState.saving;
-  int get convertedCount => _convertedCount;
-  int get totalCount => _totalCount;
-  double get progress => _totalCount > 0 ? _convertedCount / _totalCount : 0.0;
+  ConvertViewState get viewState => _state;
+  ConversionStateType get state => _state.state;
+  List<ImageData> get sourceImages => _state.sourceImages;
+  List<ImageData> get convertedImages => _state.convertedImages;
+  List<String> get savedPaths => _state.savedPaths;
+  ConversionSettings get settings => _state.settings;
+  String? get errorMessage => _state.errorMessage;
+  bool get hasSourceImages => _state.hasSourceImages;
+  bool get hasConvertedImages => _state.hasConvertedImages;
+  bool get hasSavedImages => _state.hasSavedImages;
+  bool get isLoading => _state.isLoading;
+  int get convertedCount => _state.convertedCount;
+  int get totalCount => _state.totalCount;
+  double get progress => _state.progress;
 
   /// Pick multiple images from gallery
   Future<void> pickImages() async {
-    _setState(ConversionState.picking);
-    _errorMessage = null;
+    _state = _state.copyWithPicking();
+    notifyListeners();
 
     try {
       final images = await _imageService.pickMultipleImages();
 
       if (images.isNotEmpty) {
-        _sourceImages = images;
-        _convertedImages = [];
-        _convertedCount = 0;
-        _totalCount = 0;
-        _setState(ConversionState.idle);
+        _state = _state.copyWithSourceImages(images);
       } else {
-        _setState(ConversionState.idle);
+        _state = _state.copyWithIdle();
       }
+      notifyListeners();
     } catch (e) {
-      _errorMessage = e.toString();
-      _setState(ConversionState.error);
+      _state = _state.copyWithError(e.toString());
+      notifyListeners();
     }
   }
 
   /// Convert all selected images
   Future<void> convertImages() async {
-    if (_sourceImages.isEmpty) {
-      _errorMessage = 'No images selected';
-      _setState(ConversionState.error);
+    if (_state.sourceImages.isEmpty) {
+      _state = _state.copyWithError('No images selected');
+      notifyListeners();
       return;
     }
 
-    _setState(ConversionState.converting);
-    _errorMessage = null;
-    _convertedImages = [];
-    _convertedCount = 0;
-    _totalCount = _sourceImages.length;
+    _state = _state.copyWithConverting();
+    notifyListeners();
 
     try {
-      for (final sourceImage in _sourceImages) {
-        final converted = await _imageService.convertImage(
+      final List<ImageData> converted = [];
+      int count = 0;
+
+      for (final sourceImage in _state.sourceImages) {
+        final convertedImage = await _imageService.convertImage(
           sourceImage,
-          _settings,
+          _state.settings,
         );
-        _convertedImages.add(converted);
-        _convertedCount++;
+        converted.add(convertedImage);
+        count++;
+        _state = _state.copyWithProgress(count);
         notifyListeners(); // Update progress
       }
 
-      _setState(ConversionState.success);
+      _state = _state.copyWithSuccess(convertedImages: converted);
+      notifyListeners();
     } catch (e) {
-      _errorMessage = e.toString();
-      _setState(ConversionState.error);
+      _state = _state.copyWithError(e.toString());
+      notifyListeners();
     }
   }
 
   /// Convert and save all selected images in background
   Future<void> convertAndSaveImages() async {
-    if (_sourceImages.isEmpty) {
-      _errorMessage = 'No images selected';
-      _setState(ConversionState.error);
+    if (_state.sourceImages.isEmpty) {
+      _state = _state.copyWithError('No images selected');
+      notifyListeners();
       return;
     }
 
-    _setState(ConversionState.converting);
-    _errorMessage = null;
-    _convertedImages = [];
-    _savedPaths = [];
-    _convertedCount = 0;
-    _totalCount = _sourceImages.length * 2; // Converting + Saving
+    _state = _state.copyWithConvertingAndSaving();
+    notifyListeners();
 
     try {
       final result = await _convertAndSaveUseCase.execute(
-        sourceImages: _sourceImages,
-        settings: _settings,
+        sourceImages: _state.sourceImages,
+        settings: _state.settings,
         onProgress: (current, total) {
-          _convertedCount = _sourceImages.length + current;
+          _state = _state.copyWithProgress(
+            _state.sourceImages.length + current,
+          );
           notifyListeners();
         },
       );
 
-      _convertedImages = result.convertedImages;
-      _savedPaths = result.savedPaths;
-      _convertedCount = _totalCount;
-
+      String? errorMsg;
       if (result.hasFailures) {
-        _errorMessage =
+        errorMsg =
             'Saved ${result.successCount} of ${result.totalProcessed} images';
       }
 
-      _setState(ConversionState.success);
+      _state = _state.copyWithSuccess(
+        convertedImages: result.convertedImages,
+        savedPaths: result.savedPaths,
+        errorMessage: errorMsg,
+      );
+      notifyListeners();
     } catch (e) {
-      _errorMessage = e.toString();
-      _setState(ConversionState.error);
+      _state = _state.copyWithError(e.toString());
+      notifyListeners();
     }
   }
 
   /// Update conversion settings
   void updateSettings(ConversionSettings newSettings) {
-    _settings = newSettings;
+    _state = _state.copyWith(settings: newSettings);
     notifyListeners();
   }
 
   /// Update target format
   void updateTargetFormat(ImageFormat format) {
-    _settings = _settings.copyWith(targetFormat: format);
+    _state = _state.copyWith(
+      settings: _state.settings.copyWith(targetFormat: format),
+    );
     notifyListeners();
   }
 
   /// Update quality
   void updateQuality(int quality) {
-    _settings = _settings.copyWith(quality: quality);
+    _state = _state.copyWith(
+      settings: _state.settings.copyWith(quality: quality),
+    );
     notifyListeners();
   }
 
   /// Clear all images
   void clear() {
-    _sourceImages = [];
-    _convertedImages = [];
-    _savedPaths = [];
-    _errorMessage = null;
-    _convertedCount = 0;
-    _totalCount = 0;
-    _setState(ConversionState.idle);
+    _state = _state.copyWithClear();
+    notifyListeners();
   }
 
   /// Remove a specific source image
   void removeSourceImage(int index) {
-    if (index >= 0 && index < _sourceImages.length) {
-      _sourceImages.removeAt(index);
-      if (_sourceImages.isEmpty) {
-        clear();
-      } else {
-        notifyListeners();
-      }
-    }
+    _state = _state.copyWithRemovedImage(index);
+    notifyListeners();
   }
 
   /// Reset error state
   void clearError() {
-    _errorMessage = null;
-    if (_state == ConversionState.error) {
-      _setState(ConversionState.idle);
+    if (_state.state == ConversionStateType.error) {
+      _state = _state.copyWithIdle();
+      notifyListeners();
     }
-  }
-
-  void _setState(ConversionState newState) {
-    _state = newState;
-    notifyListeners();
   }
 }
