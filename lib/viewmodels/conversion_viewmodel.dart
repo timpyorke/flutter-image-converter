@@ -1,7 +1,9 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_image_converters/const/conversion_state_type.dart';
 import 'package:flutter_image_converters/const/image_format.dart';
 import 'package:flutter_image_converters/providers/shared_pref_provider.dart';
+import 'package:flutter_image_converters/services/dialog_service.dart';
 import 'package:flutter_image_converters/views/convert/models/convert_view_state.dart';
 import '../models/image_data.dart';
 import '../models/conversion_settings.dart';
@@ -10,17 +12,17 @@ import '../usecases/convert_and_save_images_usecase.dart';
 
 /// ViewModel for Image Conversion operations
 class ConversionViewModel extends ChangeNotifier {
-  final ImageService _imageService;
-  final ConvertAndSaveImagesUseCase _convertAndSaveUseCase;
-  final SharedPrefProvider _sharedPrefProvider;
+  final ConvertAndSaveImagesUseCase convertAndSaveUseCase;
+  final SharedPrefProvider sharedPrefProvider;
+  final DialogService dialogService;
+  final ImageService imageService;
 
   ConversionViewModel({
-    required ImageService imageService,
-    required ConvertAndSaveImagesUseCase convertAndSaveUseCase,
-    required SharedPrefProvider sharedPrefProvider,
-  }) : _imageService = imageService,
-       _convertAndSaveUseCase = convertAndSaveUseCase,
-       _sharedPrefProvider = sharedPrefProvider;
+    required this.dialogService,
+    required this.convertAndSaveUseCase,
+    required this.sharedPrefProvider,
+    required this.imageService,
+  });
 
   // State
   ConvertViewState _state = ConvertViewState.initial();
@@ -40,7 +42,7 @@ class ConversionViewModel extends ChangeNotifier {
   int get convertedCount => _state.convertedCount;
   int get totalCount => _state.totalCount;
   double get progress => _state.progress;
-  bool get shouldAutoSave => _sharedPrefProvider.getSaveToGallery();
+  bool get shouldAutoSave => sharedPrefProvider.getSaveToGallery();
   bool get shouldShowSaveButton => !shouldAutoSave && hasConvertedImages;
 
   /// Pick multiple images from gallery
@@ -49,7 +51,7 @@ class ConversionViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final images = await _imageService.pickMultipleImages();
+      final images = await imageService.pickMultipleImages();
 
       if (images.isNotEmpty) {
         _state = _state.copyWithSourceImages(images);
@@ -85,7 +87,7 @@ class ConversionViewModel extends ChangeNotifier {
       int count = 0;
 
       for (final sourceImage in _state.sourceImages) {
-        final convertedImage = await _imageService.convertImage(
+        final convertedImage = await imageService.convertImage(
           sourceImage,
           _state.settings,
         );
@@ -125,7 +127,7 @@ class ConversionViewModel extends ChangeNotifier {
 
     try {
       final totalImages = _state.sourceImages.length;
-      final result = await _convertAndSaveUseCase.execute(
+      final result = await convertAndSaveUseCase.execute(
         sourceImages: _state.sourceImages,
         settings: _state.settings,
         onProgress: (current, total) {
@@ -196,5 +198,17 @@ class ConversionViewModel extends ChangeNotifier {
       _state = _state.copyWithIdle();
       notifyListeners();
     }
+  }
+
+  void onShowConvertAdDialog(
+    BuildContext context, {
+    required int imageCount,
+    required Future<void> Function() onContinue,
+  }) {
+    dialogService.showConvertAdDialog(
+      context,
+      imageCount: sourceImages.length,
+      onContinue: convertImages,
+    );
   }
 }

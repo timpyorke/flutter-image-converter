@@ -55,6 +55,7 @@ Future<void> setupDependencyInjection() async {
       imageService: getIt<ImageService>(),
       convertAndSaveUseCase: getIt<ConvertAndSaveImagesUseCase>(),
       sharedPrefProvider: getIt<SharedPrefProvider>(),
+      dialogService: getIt<DialogService>(),
     ),
   );
 

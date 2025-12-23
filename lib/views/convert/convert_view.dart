@@ -9,43 +9,13 @@ import 'package:provider/provider.dart';
 import '../../viewmodels/conversion_viewmodel.dart';
 import '../../core/widgets/widgets.dart';
 
-class ConvertView extends StatefulWidget {
+class ConvertView extends StatelessWidget {
   const ConvertView({super.key});
-
-  @override
-  State<ConvertView> createState() => _ConvertViewState();
-}
-
-class _ConvertViewState extends State<ConvertView> {
-  final DialogService _dialogService = getIt<DialogService>();
-  bool _previousHasSavedImages = false;
 
   @override
   Widget build(BuildContext context) {
     return Consumer<ConversionViewModel>(
       builder: (context, viewModel, child) {
-        // Show auto-save success toast
-        if (viewModel.hasSavedImages &&
-            !_previousHasSavedImages &&
-            viewModel.shouldAutoSave) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (!_previousHasSavedImages && viewModel.hasSavedImages) {
-              final count = viewModel.savedPaths.length;
-              ToastHelper.showSuccess(
-                context,
-                'Automatically Saved!',
-                subtitle:
-                    '$count image${count > 1 ? 's' : ''} saved to gallery',
-              );
-              setState(() {
-                _previousHasSavedImages = true;
-              });
-            }
-          });
-        } else if (!viewModel.hasSavedImages) {
-          _previousHasSavedImages = false;
-        }
-
         if (viewModel.isLoading) {
           return const Center(child: CircularProgressIndicator());
         }
@@ -89,7 +59,7 @@ class _ConvertViewState extends State<ConvertView> {
               GradientButton(
                 onPressed: viewModel.isLoading
                     ? null
-                    : () => _dialogService.showConvertAdDialog(
+                    : () => viewModel.onShowConvertAdDialog(
                         context,
                         imageCount: viewModel.sourceImages.length,
                         onContinue: viewModel.convertImages,

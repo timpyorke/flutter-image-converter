@@ -7,18 +7,47 @@ import 'package:provider/provider.dart';
 import '../../viewmodels/resize_viewmodel.dart';
 import '../../core/widgets/widgets.dart';
 
-class ResizeView extends StatefulWidget {
+class ResizeView extends StatelessWidget {
   const ResizeView({super.key});
 
   @override
-  State<ResizeView> createState() => _ResizeViewState();
+  Widget build(BuildContext context) {
+    final dialogService = getIt<DialogService>();
+
+    return Consumer<ResizeViewModel>(
+      builder: (context, viewModel, child) {
+        return _ResizeViewContent(
+          viewModel: viewModel,
+          dialogService: dialogService,
+        );
+      },
+    );
+  }
 }
 
-class _ResizeViewState extends State<ResizeView> {
-  final DialogService _dialogService = getIt<DialogService>();
-  final _widthController = TextEditingController();
-  final _heightController = TextEditingController();
-  bool _previousHasResizedImage = false;
+class _ResizeViewContent extends StatefulWidget {
+  final ResizeViewModel viewModel;
+  final DialogService dialogService;
+
+  const _ResizeViewContent({
+    required this.viewModel,
+    required this.dialogService,
+  });
+
+  @override
+  State<_ResizeViewContent> createState() => _ResizeViewContentState();
+}
+
+class _ResizeViewContentState extends State<_ResizeViewContent> {
+  late final TextEditingController _widthController;
+  late final TextEditingController _heightController;
+
+  @override
+  void initState() {
+    super.initState();
+    _widthController = TextEditingController();
+    _heightController = TextEditingController();
+  }
 
   @override
   void dispose() {
@@ -29,101 +58,77 @@ class _ResizeViewState extends State<ResizeView> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ResizeViewModel>(
-      builder: (context, viewModel, child) {
-        // Show auto-save success toast
-        if (viewModel.hasResizedImage &&
-            !_previousHasResizedImage &&
-            viewModel.shouldAutoSave &&
-            viewModel.errorMessage == null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            if (!_previousHasResizedImage && viewModel.hasResizedImage) {
-              ToastHelper.showSuccess(
-                context,
-                'Image Saved!',
-                subtitle: 'Your resized image has been automatically saved',
-              );
-              setState(() {
-                _previousHasResizedImage = true;
-              });
-            }
-          });
-        } else if (!viewModel.hasResizedImage) {
-          _previousHasResizedImage = false;
-        }
+    final viewModel = widget.viewModel;
+    final dialogService = widget.dialogService;
 
-        // Update controllers when source image changes
-        if (viewModel.hasSourceImage && _widthController.text.isEmpty) {
-          _widthController.text =
-              viewModel.sourceImage!.width?.toString() ?? '';
-          _heightController.text =
-              viewModel.sourceImage!.height?.toString() ?? '';
-        }
+    // Update controllers when source image changes
+    if (viewModel.hasSourceImage && _widthController.text.isEmpty) {
+      _widthController.text = viewModel.sourceImage!.width?.toString() ?? '';
+      _heightController.text = viewModel.sourceImage!.height?.toString() ?? '';
+    }
 
-        if (viewModel.isLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
+    if (viewModel.isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
-        if (viewModel.errorMessage != null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            ToastHelper.showError(
-              context,
-              'Error Occurred',
-              subtitle: viewModel.errorMessage,
-            );
-            viewModel.clearError();
-          });
-        }
-
-        // Show centered empty state when no image
-        if (!viewModel.hasSourceImage && !viewModel.hasResizedImage) {
-          return PickImageButtonWidget(
-            title: 'Resize Your Images',
-            subtitle: 'Select an image to get started',
-            onPressed: viewModel.pickImage,
-          );
-        }
-
-        return SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 100.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Source Image Section
-              _buildSourceImageCard(context, viewModel),
-
-              const SizedBox(height: 16),
-
-              // Settings Section
-              _buildSettingsCard(context, viewModel),
-              const SizedBox(height: 16),
-
-              // Resize Button
-              if (viewModel.canResize)
-                GradientButton(
-                  onPressed: () => _dialogService.showResizeAdDialog(
-                    context,
-                    onContinue: viewModel.resizeImage,
-                  ),
-                  child: const Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(Icons.photo_size_select_large, color: Colors.white),
-                      SizedBox(width: 12),
-                      Text('Resize Image'),
-                    ],
-                  ),
-                ),
-
-              // Result Section
-              if (viewModel.hasResizedImage) ...[
-                const SizedBox(height: 24),
-                _buildResultCard(context, viewModel),
-              ],
-            ],
-          ),
+    if (viewModel.errorMessage != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        ToastHelper.showError(
+          context,
+          'Error Occurred',
+          subtitle: viewModel.errorMessage,
         );
-      },
+        viewModel.clearError();
+      });
+    }
+
+    // Show centered empty state when no image
+    if (!viewModel.hasSourceImage && !viewModel.hasResizedImage) {
+      return PickImageButtonWidget(
+        title: 'Resize Your Images',
+        subtitle: 'Select an image to get started',
+        onPressed: viewModel.pickImage,
+      );
+    }
+
+    return SingleChildScrollView(
+      padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 100.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          // Source Image Section
+          _buildSourceImageCard(context, viewModel),
+
+          const SizedBox(height: 16),
+
+          // Settings Section
+          _buildSettingsCard(context, viewModel),
+          const SizedBox(height: 16),
+
+          // Resize Button
+          if (viewModel.canResize)
+            GradientButton(
+              onPressed: () => dialogService.showResizeAdDialog(
+                context,
+                onContinue: viewModel.resizeImage,
+              ),
+              child: const Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.photo_size_select_large, color: Colors.white),
+                  SizedBox(width: 12),
+                  Text('Resize Image'),
+                ],
+              ),
+            ),
+
+          // Result Section
+          if (viewModel.hasResizedImage) ...[
+            const SizedBox(height: 24),
+            _buildResultCard(context, viewModel),
+          ],
+        ],
+      ),
     );
   }
 
