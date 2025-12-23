@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_image_converters/core/di/service_locator.dart';
+import 'package:flutter_image_converters/core/utils/toast_helper.dart';
 import 'package:flutter_image_converters/core/widgets/pick_image_button_widget.dart';
+import 'package:flutter_image_converters/services/dialog_service.dart';
 import 'package:provider/provider.dart';
 import '../../viewmodels/resize_viewmodel.dart';
 import '../../core/widgets/widgets.dart';
@@ -12,8 +15,10 @@ class ResizeView extends StatefulWidget {
 }
 
 class _ResizeViewState extends State<ResizeView> {
+  final DialogService _dialogService = getIt<DialogService>();
   final _widthController = TextEditingController();
   final _heightController = TextEditingController();
+  bool _previousHasResizedImage = false;
 
   @override
   void dispose() {
@@ -26,6 +31,27 @@ class _ResizeViewState extends State<ResizeView> {
   Widget build(BuildContext context) {
     return Consumer<ResizeViewModel>(
       builder: (context, viewModel, child) {
+        // Show auto-save success toast
+        if (viewModel.hasResizedImage &&
+            !_previousHasResizedImage &&
+            viewModel.shouldAutoSave &&
+            viewModel.errorMessage == null) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!_previousHasResizedImage && viewModel.hasResizedImage) {
+              ToastHelper.showSuccess(
+                context,
+                'Image Saved!',
+                subtitle: 'Your resized image has been automatically saved',
+              );
+              setState(() {
+                _previousHasResizedImage = true;
+              });
+            }
+          });
+        } else if (!viewModel.hasResizedImage) {
+          _previousHasResizedImage = false;
+        }
+
         // Update controllers when source image changes
         if (viewModel.hasSourceImage && _widthController.text.isEmpty) {
           _widthController.text =
@@ -40,16 +66,10 @@ class _ResizeViewState extends State<ResizeView> {
 
         if (viewModel.errorMessage != null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(viewModel.errorMessage!),
-                backgroundColor: Colors.red,
-                action: SnackBarAction(
-                  label: 'Dismiss',
-                  textColor: Colors.white,
-                  onPressed: () => viewModel.clearError(),
-                ),
-              ),
+            ToastHelper.showError(
+              context,
+              'Error Occurred',
+              subtitle: viewModel.errorMessage,
             );
             viewModel.clearError();
           });
@@ -81,8 +101,10 @@ class _ResizeViewState extends State<ResizeView> {
               // Resize Button
               if (viewModel.canResize)
                 GradientButton(
-                  onPressed: () =>
-                      _showAdsDialogBeforeResize(context, viewModel),
+                  onPressed: () => _dialogService.showResizeAdDialog(
+                    context,
+                    onContinue: viewModel.resizeImage,
+                  ),
                   child: const Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -414,16 +436,23 @@ class _ResizeViewState extends State<ResizeView> {
           _buildImageInfo(context, viewModel.resizedImage!),
           const SizedBox(height: 20),
           GradientButton(
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('Save functionality coming soon!'),
-                  behavior: SnackBarBehavior.floating,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-              );
+            onPressed: () async {
+              final success = await viewModel.saveResizedImage();
+              if (context.mounted) {
+                if (success) {
+                  ToastHelper.showSuccess(
+                    context,
+                    'Image Saved!',
+                    subtitle: 'Your resized image has been saved to gallery',
+                  );
+                } else {
+                  ToastHelper.showError(
+                    context,
+                    'Save Failed',
+                    subtitle: viewModel.errorMessage ?? 'Could not save image',
+                  );
+                }
+              }
             },
             child: const Row(
               mainAxisSize: MainAxisSize.min,
@@ -482,130 +511,6 @@ class _ResizeViewState extends State<ResizeView> {
           ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w700),
         ),
       ],
-    );
-  }
-
-  void _showAdsDialogBeforeResize(
-    BuildContext context,
-    ResizeViewModel viewModel,
-  ) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: GlassCard(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Ad Banner Placeholder
-              Container(
-                height: 250,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Theme.of(
-                        context,
-                      ).colorScheme.primary.withValues(alpha: 0.1),
-                      Theme.of(
-                        context,
-                      ).colorScheme.secondary.withValues(alpha: 0.1),
-                      Theme.of(
-                        context,
-                      ).colorScheme.tertiary.withValues(alpha: 0.1),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.outline.withValues(alpha: 0.2),
-                  ),
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.ads_click_rounded,
-                        size: 64,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primary.withValues(alpha: 0.4),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Advertisement',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.5),
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Ad Banner Placeholder',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.4),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'Ready to resize your image?',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Your image will be resized to the specified dimensions',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withValues(alpha: 0.7),
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  Expanded(
-                    child: GradientButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        viewModel.resizeImage();
-                      },
-                      child: const Text('Continue'),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: GradientButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        viewModel.resizeImage();
-                      },
-                      child: const Text('Continue'),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
     );
   }
 

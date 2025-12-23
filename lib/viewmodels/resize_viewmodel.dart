@@ -82,7 +82,12 @@ class ResizeViewModel extends ChangeNotifier {
 
       // Auto-save if enabled
       if (shouldAutoSave) {
-        await saveResizedImage();
+        final saved = await saveResizedImage();
+        if (saved) {
+          // Update state to indicate successful auto-save
+          _state = _state.copyWith(errorMessage: null);
+          notifyListeners();
+        }
       }
     } catch (e) {
       _state = _state.copyWithError(e.toString());
@@ -91,19 +96,21 @@ class ResizeViewModel extends ChangeNotifier {
   }
 
   /// Save the resized image
-  Future<void> saveResizedImage() async {
+  Future<bool> saveResizedImage() async {
     if (_state.resizedImage == null) {
       _state = _state.copyWithError('No resized image to save');
       notifyListeners();
-      return;
+      return false;
     }
 
     try {
       final storageLocation = _sharedPrefProvider.getStorageLocation();
       await _imageService.saveImage(_state.resizedImage!, storageLocation);
+      return true;
     } catch (e) {
       _state = _state.copyWithError('Failed to save image: $e');
       notifyListeners();
+      return false;
     }
   }
 

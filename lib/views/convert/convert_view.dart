@@ -1,34 +1,61 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_converters/const/image_format.dart';
+import 'package:flutter_image_converters/core/di/service_locator.dart';
+import 'package:flutter_image_converters/core/utils/toast_helper.dart';
 import 'package:flutter_image_converters/core/widgets/pick_image_button_widget.dart';
+import 'package:flutter_image_converters/services/dialog_service.dart';
 import 'package:provider/provider.dart';
 import '../../viewmodels/conversion_viewmodel.dart';
 import '../../core/widgets/widgets.dart';
 
-class ConvertView extends StatelessWidget {
+class ConvertView extends StatefulWidget {
   const ConvertView({super.key});
+
+  @override
+  State<ConvertView> createState() => _ConvertViewState();
+}
+
+class _ConvertViewState extends State<ConvertView> {
+  final DialogService _dialogService = getIt<DialogService>();
+  bool _previousHasSavedImages = false;
 
   @override
   Widget build(BuildContext context) {
     return Consumer<ConversionViewModel>(
       builder: (context, viewModel, child) {
+        // Show auto-save success toast
+        if (viewModel.hasSavedImages &&
+            !_previousHasSavedImages &&
+            viewModel.shouldAutoSave) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (!_previousHasSavedImages && viewModel.hasSavedImages) {
+              final count = viewModel.savedPaths.length;
+              ToastHelper.showSuccess(
+                context,
+                'Automatically Saved!',
+                subtitle:
+                    '$count image${count > 1 ? 's' : ''} saved to gallery',
+              );
+              setState(() {
+                _previousHasSavedImages = true;
+              });
+            }
+          });
+        } else if (!viewModel.hasSavedImages) {
+          _previousHasSavedImages = false;
+        }
+
         if (viewModel.isLoading) {
           return const Center(child: CircularProgressIndicator());
         }
 
         if (viewModel.errorMessage != null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(viewModel.errorMessage!),
-                backgroundColor: Colors.red,
-                action: SnackBarAction(
-                  label: 'Dismiss',
-                  textColor: Colors.white,
-                  onPressed: () => viewModel.clearError(),
-                ),
-              ),
+            ToastHelper.showError(
+              context,
+              'Error Occurred',
+              subtitle: viewModel.errorMessage,
             );
             viewModel.clearError();
           });
@@ -62,7 +89,11 @@ class ConvertView extends StatelessWidget {
               GradientButton(
                 onPressed: viewModel.isLoading
                     ? null
-                    : () => _showAdsDialogBeforeConvert(context, viewModel),
+                    : () => _dialogService.showConvertAdDialog(
+                        context,
+                        imageCount: viewModel.sourceImages.length,
+                        onContinue: viewModel.convertImages,
+                      ),
                 height: 60,
                 child: viewModel.isLoading
                     ? Row(
@@ -657,22 +688,21 @@ class ConvertView extends StatelessWidget {
             onPressed: () async {
               await viewModel.convertAndSaveImages();
               if (context.mounted) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(
-                      viewModel.hasSavedImages
-                          ? 'Successfully saved ${viewModel.savedPaths.length} image${viewModel.savedPaths.length > 1 ? "s" : ""}!'
-                          : 'Failed to save images',
-                    ),
-                    behavior: SnackBarBehavior.floating,
-                    backgroundColor: viewModel.hasSavedImages
-                        ? Colors.green.shade600
-                        : Colors.red.shade600,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                );
+                if (viewModel.hasSavedImages) {
+                  final count = viewModel.savedPaths.length;
+                  ToastHelper.showSuccess(
+                    context,
+                    'Successfully Saved!',
+                    subtitle:
+                        '$count image${count > 1 ? "s" : ""} saved to gallery',
+                  );
+                } else {
+                  ToastHelper.showError(
+                    context,
+                    'Failed to Save',
+                    subtitle: viewModel.errorMessage ?? 'Could not save images',
+                  );
+                }
               }
             },
             child: Row(
@@ -687,129 +717,6 @@ class ConvertView extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  void _showAdsDialogBeforeConvert(
-    BuildContext context,
-    ConversionViewModel viewModel,
-  ) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: GlassCard(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Ad Banner Placeholder
-              Container(
-                height: 250,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Theme.of(
-                        context,
-                      ).colorScheme.primary.withValues(alpha: 0.1),
-                      Theme.of(
-                        context,
-                      ).colorScheme.secondary.withValues(alpha: 0.1),
-                      Theme.of(
-                        context,
-                      ).colorScheme.tertiary.withValues(alpha: 0.1),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.outline.withValues(alpha: 0.2),
-                  ),
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.ads_click_rounded,
-                        size: 64,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primary.withValues(alpha: 0.4),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Advertisement',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.5),
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Ad Banner Placeholder',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.4),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'Ready to convert your images?',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'This will convert ${viewModel.sourceImages.length} image${viewModel.sourceImages.length > 1 ? "s" : ""}',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withValues(alpha: 0.7),
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  Expanded(
-                    child: GradientButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      child: const Text('Cancel'),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: GradientButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        viewModel.convertImages();
-                      },
-                      child: const Text('Continue'),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
