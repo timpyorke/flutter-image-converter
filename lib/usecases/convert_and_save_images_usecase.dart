@@ -107,8 +107,19 @@ class ConvertAndSaveImagesUseCase {
     Directory? directory;
 
     if (Platform.isAndroid) {
-      // For Android, save to Pictures directory
-      directory = Directory('/storage/emulated/0/Pictures/ImageConverter');
+      // For Android 10+, use app-specific external storage or MediaStore
+      // First try external storage directory (app-specific, no permission needed)
+      try {
+        final externalDir = await getExternalStorageDirectory();
+        if (externalDir != null) {
+          directory = Directory('${externalDir.path}/ImageConverter');
+        }
+      } catch (e) {
+        debugPrint('Failed to get external storage: $e');
+      }
+
+      // Fallback to Pictures directory if available
+      directory ??= Directory('/storage/emulated/0/Pictures/ImageConverter');
     } else if (Platform.isIOS) {
       // For iOS, use application documents directory
       directory = await getApplicationDocumentsDirectory();
@@ -129,7 +140,7 @@ class ConvertAndSaveImagesUseCase {
     // Generate unique filename
     final timestamp = DateTime.now().millisecondsSinceEpoch;
     final extension = format.extension;
-    final fileName = 'converted_$timestamp$extension';
+    final fileName = 'converted_$timestamp.$extension';
     final filePath = '${directory.path}/$fileName';
 
     // Write file
@@ -142,15 +153,26 @@ class ConvertAndSaveImagesUseCase {
   /// Request storage permission
   Future<bool> _requestStoragePermission() async {
     if (Platform.isAndroid) {
-      // For Android 13+, use MANAGE_EXTERNAL_STORAGE or scoped storage
-      final androidInfo = await Permission.storage.request();
-      if (androidInfo.isGranted) {
+      // For Android 13+ (API 33+), photos permission is sufficient for MediaStore
+      final photosStatus = await Permission.photos.status;
+      if (photosStatus.isGranted) {
         return true;
       }
 
-      // Try photos permission for Android 13+
-      final photosPermission = await Permission.photos.request();
-      return photosPermission.isGranted;
+      // Request photos permission
+      final photosResult = await Permission.photos.request();
+      if (photosResult.isGranted) {
+        return true;
+      }
+
+      // Fallback to storage permission for older Android versions
+      final storageStatus = await Permission.storage.status;
+      if (storageStatus.isGranted) {
+        return true;
+      }
+
+      final storageResult = await Permission.storage.request();
+      return storageResult.isGranted;
     } else if (Platform.isIOS) {
       final status = await Permission.photos.request();
       return status.isGranted;

@@ -148,6 +148,13 @@ class ImageService {
       if (imageData.bytes == null) {
         throw Exception('No image data to save');
       }
+
+      // Ensure directory exists
+      final dir = Directory(directory);
+      if (!await dir.exists()) {
+        await dir.create(recursive: true);
+      }
+
       final format = imageData.format ?? 'jpg';
       final fileName =
           imageData.name ??
