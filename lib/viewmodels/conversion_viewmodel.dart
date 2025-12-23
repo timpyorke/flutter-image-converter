@@ -1,26 +1,26 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_image_converters/const/conversion_state_type.dart';
 import 'package:flutter_image_converters/const/image_format.dart';
+import 'package:flutter_image_converters/providers/shared_pref_provider.dart';
 import 'package:flutter_image_converters/views/convert/models/convert_view_state.dart';
 import '../models/image_data.dart';
 import '../models/conversion_settings.dart';
 import '../services/image_service.dart';
-import '../services/storage_service.dart';
 import '../usecases/convert_and_save_images_usecase.dart';
 
 /// ViewModel for Image Conversion operations
 class ConversionViewModel extends ChangeNotifier {
   final ImageService _imageService;
   final ConvertAndSaveImagesUseCase _convertAndSaveUseCase;
-  final StorageService _storageService;
+  final SharedPrefProvider _sharedPrefProvider;
 
   ConversionViewModel({
     required ImageService imageService,
     required ConvertAndSaveImagesUseCase convertAndSaveUseCase,
-    required StorageService storageService,
+    required SharedPrefProvider sharedPrefProvider,
   }) : _imageService = imageService,
        _convertAndSaveUseCase = convertAndSaveUseCase,
-       _storageService = storageService;
+       _sharedPrefProvider = sharedPrefProvider;
 
   // State
   ConvertViewState _state = ConvertViewState.initial();
@@ -40,7 +40,7 @@ class ConversionViewModel extends ChangeNotifier {
   int get convertedCount => _state.convertedCount;
   int get totalCount => _state.totalCount;
   double get progress => _state.progress;
-  bool get shouldAutoSave => _storageService.getBool('saveToGallery') ?? true;
+  bool get shouldAutoSave => _sharedPrefProvider.getSaveToGallery();
   bool get shouldShowSaveButton => !shouldAutoSave && hasConvertedImages;
 
   /// Pick multiple images from gallery

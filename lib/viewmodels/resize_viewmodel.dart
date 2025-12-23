@@ -1,21 +1,21 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_image_converters/const/resize_state_type.dart';
 import 'package:flutter_image_converters/models/resize_setting.dart';
+import 'package:flutter_image_converters/providers/shared_pref_provider.dart';
 import 'package:flutter_image_converters/views/resize/models/resize_view_state.dart';
 import '../models/image_data.dart';
 import '../services/image_service.dart';
-import '../services/storage_service.dart';
 
 /// ViewModel for Image Resize operations
 class ResizeViewModel extends ChangeNotifier {
   final ImageService _imageService;
-  final StorageService _storageService;
+  final SharedPrefProvider _sharedPrefProvider;
 
   ResizeViewModel({
     required ImageService imageService,
-    required StorageService storageService,
+    required SharedPrefProvider sharedPrefProvider,
   }) : _imageService = imageService,
-       _storageService = storageService;
+       _sharedPrefProvider = sharedPrefProvider;
 
   // State
   ResizeViewState _state = ResizeViewState.initial();
@@ -31,7 +31,7 @@ class ResizeViewModel extends ChangeNotifier {
   bool get hasResizedImage => _state.hasResizedImage;
   bool get isLoading => _state.isLoading;
   bool get canResize => _state.canResize;
-  bool get shouldAutoSave => _storageService.getBool('saveToGallery') ?? true;
+  bool get shouldAutoSave => _sharedPrefProvider.getSaveToGallery();
   bool get shouldShowSaveButton => !shouldAutoSave && hasResizedImage;
 
   /// Pick an image from gallery
@@ -99,9 +99,7 @@ class ResizeViewModel extends ChangeNotifier {
     }
 
     try {
-      final storageLocation =
-          _storageService.getString('storageLocation') ??
-          'Pictures/ImageConverter';
+      final storageLocation = _sharedPrefProvider.getStorageLocation();
       await _imageService.saveImage(_state.resizedImage!, storageLocation);
     } catch (e) {
       _state = _state.copyWithError('Failed to save image: $e');

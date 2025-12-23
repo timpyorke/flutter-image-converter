@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_image_converters/const/image_format.dart';
+import 'package:flutter_image_converters/providers/shared_pref_provider.dart';
 import 'package:flutter_image_converters/services/dialog_service.dart';
 import 'package:flutter_image_converters/views/settings/models/setting_view_state.dart';
 import '../models/app_settings.dart';
-import '../services/storage_service.dart';
 
 /// ViewModel for app settings
 class SettingsViewModel extends ChangeNotifier {
   SettingViewState _state = SettingViewState.initial();
-  final StorageService storageService;
+  final SharedPrefProvider sharedPrefProvider;
   final DialogService dialogService;
 
   SettingsViewModel({
-    required this.storageService,
+    required this.sharedPrefProvider,
     required this.dialogService,
   }) {
     _loadSettings();
@@ -50,14 +50,12 @@ class SettingsViewModel extends ChangeNotifier {
       _state = _state.copyWithLoading();
       notifyListeners();
 
-      final themeModeIndex = storageService.getInt('themeMode') ?? 0;
-      final defaultFormatIndex = storageService.getInt('defaultFormat') ?? 1;
-      final defaultQuality = storageService.getInt('defaultQuality') ?? 90;
-      final saveToGallery = storageService.getBool('saveToGallery') ?? true;
-      final language = storageService.getString('language') ?? 'en';
-      final storageLocation =
-          storageService.getString('storageLocation') ??
-          'Pictures/ImageConverter';
+      final themeModeIndex = sharedPrefProvider.getThemeMode();
+      final defaultFormatIndex = sharedPrefProvider.getDefaultFormat();
+      final defaultQuality = sharedPrefProvider.getDefaultQuality();
+      final saveToGallery = sharedPrefProvider.getSaveToGallery();
+      final language = sharedPrefProvider.getLanguage();
+      final storageLocation = sharedPrefProvider.getStorageLocation();
 
       final loadedSettings = AppSettings(
         themeMode: ThemeMode.values[themeModeIndex],
@@ -79,22 +77,16 @@ class SettingsViewModel extends ChangeNotifier {
   /// Save settings to SharedPreferences
   Future<void> _saveSettings() async {
     try {
-      await storageService.setInt('themeMode', _state.settings.themeMode.index);
-      await storageService.setInt(
-        'defaultFormat',
+      await sharedPrefProvider.setThemeMode(_state.settings.themeMode.index);
+      await sharedPrefProvider.setDefaultFormat(
         _state.settings.defaultFormat.index,
       );
-      await storageService.setInt(
-        'defaultQuality',
+      await sharedPrefProvider.setDefaultQuality(
         _state.settings.defaultQuality,
       );
-      await storageService.setBool(
-        'saveToGallery',
-        _state.settings.saveToGallery,
-      );
-      await storageService.setString('language', _state.settings.language);
-      await storageService.setString(
-        'storageLocation',
+      await sharedPrefProvider.setSaveToGallery(_state.settings.saveToGallery);
+      await sharedPrefProvider.setLanguage(_state.settings.language);
+      await sharedPrefProvider.setStorageLocation(
         _state.settings.storageLocation,
       );
     } catch (e) {

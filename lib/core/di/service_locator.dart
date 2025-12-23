@@ -25,18 +25,17 @@ Future<void> setupDependencyInjection() async {
   await getIt.isReady<StorageService>();
 
   //**
+  //* Providers - Register as singletons
+  //**/
+  getIt.registerLazySingleton<SharedPrefProvider>(
+    () => SharedPrefProvider(getIt<StorageService>()),
+  );
+
+  //**
   //* UseCases - Register as factories
   //**/
   getIt.registerFactory<ConvertAndSaveImagesUseCase>(
     () => ConvertAndSaveImagesUseCase(imageService: getIt<ImageService>()),
-  );
-
-  //**
-  //* Providers - Register as factories
-  //**/
-
-  getIt.registerFactory<SharedPrefProvider>(
-    () => SharedPrefProvider(getIt<StorageService>()),
   );
 
   //**
@@ -46,7 +45,7 @@ Future<void> setupDependencyInjection() async {
 
   getIt.registerFactory<SettingsViewModel>(
     () => SettingsViewModel(
-      storageService: getIt<StorageService>(),
+      sharedPrefProvider: getIt<SharedPrefProvider>(),
       dialogService: getIt<DialogService>(),
     ),
   );
@@ -55,14 +54,14 @@ Future<void> setupDependencyInjection() async {
     () => ConversionViewModel(
       imageService: getIt<ImageService>(),
       convertAndSaveUseCase: getIt<ConvertAndSaveImagesUseCase>(),
-      storageService: getIt<StorageService>(),
+      sharedPrefProvider: getIt<SharedPrefProvider>(),
     ),
   );
 
   getIt.registerFactory<ResizeViewModel>(
     () => ResizeViewModel(
       imageService: getIt<ImageService>(),
-      storageService: getIt<StorageService>(),
+      sharedPrefProvider: getIt<SharedPrefProvider>(),
     ),
   );
 }
