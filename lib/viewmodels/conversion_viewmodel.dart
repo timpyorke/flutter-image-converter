@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_image_converters/const/app_strings.dart';
 import 'package:flutter_image_converters/const/conversion_state_type.dart';
 import 'package:flutter_image_converters/const/image_format.dart';
+import 'package:flutter_image_converters/core/utils/toast_helper.dart';
 import 'package:flutter_image_converters/providers/shared_pref_provider.dart';
 import 'package:flutter_image_converters/services/dialog_service.dart';
 import 'package:flutter_image_converters/views/convert/models/convert_view_state.dart';
@@ -229,7 +231,31 @@ class ConversionViewModel extends ChangeNotifier {
     dialogService.showConvertAdDialog(
       context,
       imageCount: sourceImages.length,
-      onContinue: convertImages,
+      onContinue: () => convertImagesWithProgress(context),
     );
+  }
+
+  /// Convert images with background processing and show toast on completion
+  Future<void> convertImagesWithProgress(BuildContext context) async {
+    // Start processing (dialog will dismiss, overlay will show)
+    final imageCount = sourceImages.length;
+
+    // Convert images
+    if (shouldAutoSave) {
+      await convertAndSaveImages();
+    } else {
+      await convertImages();
+    }
+
+    // Show success toast after completion
+    if (context.mounted && hasConvertedImages) {
+      ToastHelper.showSuccess(
+        context,
+        context.l10n.conversionComplete,
+        subtitle: shouldAutoSave
+            ? context.l10n.savedNImagesSuccessfully(imageCount)
+            : context.l10n.convertedNImagesSuccessfully(imageCount),
+      );
+    }
   }
 }

@@ -17,10 +17,7 @@ class ConvertView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<ConversionViewModel>(
       builder: (context, viewModel, child) {
-        if (viewModel.isLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
-
+        // Show error toast
         if (viewModel.errorMessage != null) {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ToastHelper.showError(
@@ -32,101 +29,100 @@ class ConvertView extends StatelessWidget {
           });
         }
 
-        // Show centered empty state when no images
+        // Build main content
+        Widget mainContent;
+
         if (!viewModel.hasSourceImages && !viewModel.hasConvertedImages) {
-          return PickImageButtonWidget(
+          // Empty state
+          mainContent = PickImageButtonWidget(
             title: context.l10n.convertYourImages,
             subtitle: context.l10n.selectImagesToGetStarted,
             onPressed: viewModel.pickImages,
           );
+        } else {
+          // Main content with images
+          mainContent = SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(
+              AppDimensions.paddingL,
+              AppDimensions.paddingL,
+              AppDimensions.paddingL,
+              AppDimensions.bottomPaddingWithNav,
+            ),
+            child: Column(
+              spacing: AppDimensions.spacingM,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Source Images Section
+                SourceImagesSection(
+                  imageCount: viewModel.sourceImages.length,
+                  pickImages: viewModel.pickImages,
+                  clear: viewModel.clear,
+                  sourceImages: viewModel.sourceImages,
+                  removeSourceImage: viewModel.removeSourceImage,
+                ),
+
+                // Settings Section
+                ConvertSettingsCard(
+                  quality: viewModel.settings.quality,
+                  targetFormat: viewModel.settings.targetFormat,
+                  updateTargetFormat: viewModel.updateTargetFormat,
+                  updateQuality: viewModel.updateQuality,
+                ),
+
+                // Convert Button
+                GradientButton(
+                  onPressed: viewModel.isLoading
+                      ? null
+                      : () => viewModel.onShowConvertAdDialog(
+                          context,
+                          imageCount: viewModel.sourceImages.length,
+                          onContinue: viewModel.convertImages,
+                        ),
+                  height: 60,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(
+                        Icons.auto_fix_high_rounded,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(width: 12),
+                      Text(
+                        'Convert ${viewModel.sourceImages.length} Image${viewModel.sourceImages.length > 1 ? "s" : ""}',
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Result Section
+                if (viewModel.hasConvertedImages) ...[
+                  ConvertResultSection(
+                    quality: viewModel.convertedImages.length,
+                    savedPaths: viewModel.savedPaths.length,
+                    hasSavedImages: viewModel.hasSavedImages,
+                    convertAndSaveImages: () =>
+                        viewModel.onConvertAndSaveImages(context),
+                    convertedImages: viewModel.convertedImages,
+                    sourceImages: viewModel.sourceImages,
+                  ),
+                ],
+              ],
+            ),
+          );
         }
 
-        return SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(
-            AppDimensions.paddingL,
-            AppDimensions.paddingL,
-            AppDimensions.paddingL,
-            AppDimensions.bottomPaddingWithNav,
-          ),
-          child: Column(
-            spacing: AppDimensions.spacingM,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // Source Images Section
-              SourceImagesSection(
-                imageCount: viewModel.sourceImages.length,
-                pickImages: viewModel.pickImages,
-                clear: viewModel.clear,
-                sourceImages: viewModel.sourceImages,
-                removeSourceImage: viewModel.removeSourceImage,
+        // Wrap with processing overlay when loading
+        return Stack(
+          children: [
+            mainContent,
+            if (viewModel.isLoading)
+              ProcessingOverlay(
+                current: viewModel.convertedCount,
+                total: viewModel.totalCount,
+                message: context.l10n.convertingInBackground,
               ),
-
-              // Settings Section
-              ConvertSettingsCard(
-                quality: viewModel.settings.quality,
-                targetFormat: viewModel.settings.targetFormat,
-                updateTargetFormat: viewModel.updateTargetFormat,
-                updateQuality: viewModel.updateQuality,
-              ),
-
-              // Convert Button
-              GradientButton(
-                onPressed: viewModel.isLoading
-                    ? null
-                    : () => viewModel.onShowConvertAdDialog(
-                        context,
-                        imageCount: viewModel.sourceImages.length,
-                        onContinue: viewModel.convertImages,
-                      ),
-                height: 60,
-                child: viewModel.isLoading
-                    ? Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const SizedBox(
-                            width: 24,
-                            height: 24,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2.5,
-                              color: Colors.white,
-                            ),
-                          ),
-                          const SizedBox(width: 16),
-                          Text(
-                            'Converting ${viewModel.convertedCount}/${viewModel.totalCount}...',
-                          ),
-                        ],
-                      )
-                    : Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.auto_fix_high_rounded,
-                            color: Colors.white,
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            'Convert ${viewModel.sourceImages.length} Image${viewModel.sourceImages.length > 1 ? "s" : ""}',
-                          ),
-                        ],
-                      ),
-              ),
-
-              // Result Section
-              if (viewModel.hasConvertedImages) ...[
-                ConvertResultSection(
-                  quality: viewModel.convertedImages.length,
-                  savedPaths: viewModel.savedPaths.length,
-                  hasSavedImages: viewModel.hasSavedImages,
-                  convertAndSaveImages: () =>
-                      viewModel.onConvertAndSaveImages(context),
-                  convertedImages: viewModel.convertedImages,
-                  sourceImages: viewModel.sourceImages,
-                ),
-              ],
-            ],
-          ),
+          ],
         );
       },
     );

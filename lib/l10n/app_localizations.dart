@@ -911,6 +911,54 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Next'**
   String get next;
+
+  /// No description provided for @processing.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing...'**
+  String get processing;
+
+  /// No description provided for @processingImages.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing Images...'**
+  String get processingImages;
+
+  /// No description provided for @processingNImages.
+  ///
+  /// In en, this message translates to:
+  /// **'Processing {current} of {total}...'**
+  String processingNImages(int current, int total);
+
+  /// No description provided for @convertingInBackground.
+  ///
+  /// In en, this message translates to:
+  /// **'Converting in background...'**
+  String get convertingInBackground;
+
+  /// No description provided for @resizingInBackground.
+  ///
+  /// In en, this message translates to:
+  /// **'Resizing in background...'**
+  String get resizingInBackground;
+
+  /// No description provided for @pleaseWait.
+  ///
+  /// In en, this message translates to:
+  /// **'Please wait...'**
+  String get pleaseWait;
+
+  /// No description provided for @convertedNImagesSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Successfully converted {count} image(s)!'**
+  String convertedNImagesSuccessfully(int count);
+
+  /// No description provided for @allImagesProcessed.
+  ///
+  /// In en, this message translates to:
+  /// **'All images processed successfully!'**
+  String get allImagesProcessed;
 }
 
 class _AppLocalizationsDelegate

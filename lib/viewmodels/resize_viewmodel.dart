@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_image_converters/const/app_strings.dart';
 import 'package:flutter_image_converters/const/resize_state_type.dart';
 import 'package:flutter_image_converters/core/utils/toast_helper.dart';
 import 'package:flutter_image_converters/models/resize_setting.dart';
@@ -112,6 +113,23 @@ class ResizeViewModel extends ChangeNotifier {
     } catch (e) {
       _state = _state.copyWithError(e.toString());
       notifyListeners();
+    }
+  }
+
+  /// Resize the current image with progress feedback
+  Future<void> resizeImageWithProgress(BuildContext context) async {
+    // Start the resize process
+    await resizeImage();
+
+    // Show success toast after completion
+    if (context.mounted && hasResizedImage) {
+      ToastHelper.showSuccess(
+        context,
+        context.l10n.resizeComplete,
+        subtitle: shouldAutoSave
+            ? context.l10n.resizedImageSavedToGallery
+            : context.l10n.imageResizedSuccessfully,
+      );
     }
   }
 

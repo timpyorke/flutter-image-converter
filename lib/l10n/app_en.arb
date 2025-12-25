@@ -187,5 +187,30 @@
     "warning": "Warning",
     "info": "Info",
     "back": "Back",
-    "next": "Next"
+    "next": "Next",
+    "processing": "Processing...",
+    "processingImages": "Processing Images...",
+    "processingNImages": "Processing {current} of {total}...",
+    "@processingNImages": {
+        "placeholders": {
+            "current": {
+                "type": "int"
+            },
+            "total": {
+                "type": "int"
+            }
+        }
+    },
+    "convertingInBackground": "Converting in background...",
+    "resizingInBackground": "Resizing in background...",
+    "pleaseWait": "Please wait...",
+    "convertedNImagesSuccessfully": "Successfully converted {count} image(s)!",
+    "@convertedNImagesSuccessfully": {
+        "placeholders": {
+            "count": {
+                "type": "int"
+            }
+        }
+    },
+    "allImagesProcessed": "All images processed successfully!"
 }

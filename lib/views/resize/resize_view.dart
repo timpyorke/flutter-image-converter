@@ -33,80 +33,92 @@ class ResizeView extends StatelessWidget {
           });
         }
 
-        // Show loading indicator
-        if (viewModel.isLoading) {
-          return const Center(child: CircularProgressIndicator());
-        }
+        // Build main content
+        Widget mainContent;
 
-        // Show centered empty state when no image
         if (!viewModel.hasSourceImage && !viewModel.hasResizedImage) {
-          return PickImageButtonWidget(
+          // Empty state
+          mainContent = PickImageButtonWidget(
             title: context.l10n.resizeYourImages,
             subtitle: context.l10n.selectAnImageToGetStarted,
             onPressed: viewModel.pickImage,
           );
+        } else {
+          // Main content with image
+          mainContent = SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(
+              AppDimensions.paddingL,
+              AppDimensions.paddingL,
+              AppDimensions.paddingL,
+              AppDimensions.bottomPaddingWithNav,
+            ),
+            child: Column(
+              spacing: AppDimensions.spacingL,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Source Image Section
+                ResetSourceImageCard(
+                  sourceImage: viewModel.sourceImage,
+                  clear: viewModel.clear,
+                ),
+
+                // Settings Section
+                ResetSettingCard(
+                  maintainAspectRatio: viewModel.settings.maintainAspectRatio,
+                  toggleAspectRatio: viewModel.toggleAspectRatio,
+                  widthController: viewModel.widthController,
+                  heightController: viewModel.heightController,
+                  sourceImage: viewModel.sourceImage,
+                ),
+
+                // Resize Button
+                if (viewModel.canResize)
+                  GradientButton(
+                    onPressed: () => dialogService.showResizeAdDialog(
+                      context,
+                      onContinue: () =>
+                          viewModel.resizeImageWithProgress(context),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const Icon(
+                          Icons.photo_size_select_large,
+                          color: Colors.white,
+                        ),
+                        const SizedBox(width: AppDimensions.spacingM),
+                        Text(context.l10n.resizeImage),
+                      ],
+                    ),
+                  ),
+
+                // Result Section
+                if (viewModel.hasResizedImage) ...[
+                  const SizedBox(height: AppDimensions.spacingXxl),
+                  ResetResultCard(
+                    errorMessage: viewModel.errorMessage ?? '',
+                    resizedImage: viewModel.resizedImage,
+                    saveResizedImage: () =>
+                        viewModel.onSaveResizedImage(context),
+                    shouldShowSaveButton: viewModel.shouldShowSaveButton,
+                  ),
+                ],
+              ],
+            ),
+          );
         }
 
-        return SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(
-            AppDimensions.paddingL,
-            AppDimensions.paddingL,
-            AppDimensions.paddingL,
-            AppDimensions.bottomPaddingWithNav,
-          ),
-          child: Column(
-            spacing: AppDimensions.spacingL,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              // Source Image Section
-              ResetSourceImageCard(
-                sourceImage: viewModel.sourceImage,
-                clear: viewModel.clear,
+        // Wrap with processing overlay when loading
+        return Stack(
+          children: [
+            mainContent,
+            if (viewModel.isLoading)
+              ProcessingOverlay(
+                current: 1,
+                total: 1,
+                message: context.l10n.resizingInBackground,
               ),
-
-              // Settings Section
-              ResetSettingCard(
-                maintainAspectRatio: viewModel.settings.maintainAspectRatio,
-                toggleAspectRatio: viewModel.toggleAspectRatio,
-                widthController: viewModel.widthController,
-                heightController: viewModel.heightController,
-                sourceImage: viewModel.sourceImage,
-              ),
-
-              // Resize Button
-              if (viewModel.canResize)
-                GradientButton(
-                  onPressed: () => dialogService.showResizeAdDialog(
-                    context,
-                    onContinue: viewModel.resizeImage,
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(
-                        Icons.photo_size_select_large,
-                        color: Colors.white,
-                      ),
-                      const SizedBox(width: AppDimensions.spacingM),
-                      Text(context.l10n.resizeImage),
-                    ],
-                  ),
-                ),
-
-              // Result Section
-              if (viewModel.hasResizedImage) ...[
-                const SizedBox(height: AppDimensions.spacingXxl),
-                ResetResultCard(
-                  errorMessage: viewModel.errorMessage ?? '',
-                  shouldShowSaveButton: viewModel.shouldShowSaveButton,
-                  saveResizedImage: () {
-                    return viewModel.onSaveResizedImage(context);
-                  },
-                  resizedImage: viewModel.resizedImage,
-                ),
-              ],
-            ],
-          ),
+          ],
         );
       },
     );

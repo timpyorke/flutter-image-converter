@@ -424,4 +424,32 @@ class AppLocalizationsJa extends AppLocalizations {
 
   @override
   String get next => 'Next';
+
+  @override
+  String get processing => 'Processing...';
+
+  @override
+  String get processingImages => 'Processing Images...';
+
+  @override
+  String processingNImages(int current, int total) {
+    return 'Processing $current of $total...';
+  }
+
+  @override
+  String get convertingInBackground => 'Converting in background...';
+
+  @override
+  String get resizingInBackground => 'Resizing in background...';
+
+  @override
+  String get pleaseWait => 'Please wait...';
+
+  @override
+  String convertedNImagesSuccessfully(int count) {
+    return 'Successfully converted $count image(s)!';
+  }
+
+  @override
+  String get allImagesProcessed => 'All images processed successfully!';
 }
