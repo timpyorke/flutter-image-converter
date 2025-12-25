@@ -1,5 +1,6 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_image_converters/const/resize_state_type.dart';
+import 'package:flutter_image_converters/core/utils/toast_helper.dart';
 import 'package:flutter_image_converters/models/resize_setting.dart';
 import 'package:flutter_image_converters/providers/shared_pref_provider.dart';
 import 'package:flutter_image_converters/views/resize/models/resize_view_state.dart';
@@ -11,11 +12,23 @@ class ResizeViewModel extends ChangeNotifier {
   final ImageService _imageService;
   final SharedPrefProvider _sharedPrefProvider;
 
+  // TextEditingControllers for dimension inputs
+  late final TextEditingController widthController;
+  late final TextEditingController heightController;
+
   ResizeViewModel({
     required ImageService imageService,
     required SharedPrefProvider sharedPrefProvider,
   }) : _imageService = imageService,
-       _sharedPrefProvider = sharedPrefProvider;
+       _sharedPrefProvider = sharedPrefProvider {
+    // Initialize controllers
+    widthController = TextEditingController();
+    heightController = TextEditingController();
+
+    // Add listeners for automatic updates
+    widthController.addListener(_onWidthChanged);
+    heightController.addListener(_onHeightChanged);
+  }
 
   // State
   ResizeViewState _state = ResizeViewState.initial();
@@ -34,6 +47,50 @@ class ResizeViewModel extends ChangeNotifier {
   bool get shouldAutoSave => _sharedPrefProvider.getSaveToGallery();
   bool get shouldShowSaveButton => !shouldAutoSave && hasResizedImage;
 
+  /// Handle width controller changes
+  void _onWidthChanged() {
+    final width = int.tryParse(widthController.text);
+    if (width != null && width != _state.settings.width) {
+      updateWidth(width);
+
+      // Update height if aspect ratio is maintained
+      if (_state.settings.maintainAspectRatio && _state.sourceImage != null) {
+        final sourceWidth = _state.sourceImage!.width ?? 1;
+        final sourceHeight = _state.sourceImage!.height ?? 1;
+        final newHeight = (sourceHeight * width / sourceWidth).round();
+
+        // Update without triggering listener loop
+        heightController.removeListener(_onHeightChanged);
+        heightController.text = newHeight.toString();
+        heightController.addListener(_onHeightChanged);
+
+        updateHeight(newHeight);
+      }
+    }
+  }
+
+  /// Handle height controller changes
+  void _onHeightChanged() {
+    final height = int.tryParse(heightController.text);
+    if (height != null && height != _state.settings.height) {
+      updateHeight(height);
+
+      // Update width if aspect ratio is maintained
+      if (_state.settings.maintainAspectRatio && _state.sourceImage != null) {
+        final sourceWidth = _state.sourceImage!.width ?? 1;
+        final sourceHeight = _state.sourceImage!.height ?? 1;
+        final newWidth = (sourceWidth * height / sourceHeight).round();
+
+        // Update without triggering listener loop
+        widthController.removeListener(_onWidthChanged);
+        widthController.text = newWidth.toString();
+        widthController.addListener(_onWidthChanged);
+
+        updateWidth(newWidth);
+      }
+    }
+  }
+
   /// Pick an image from gallery
   Future<void> pickImage() async {
     _state = _state.copyWithPicking();
@@ -43,6 +100,10 @@ class ResizeViewModel extends ChangeNotifier {
       final image = await _imageService.pickImage();
 
       if (image != null) {
+        // Update controllers with source image dimensions
+        widthController.text = image.width?.toString() ?? '';
+        heightController.text = image.height?.toString() ?? '';
+
         _state = _state.copyWithSourceImage(image);
       } else {
         _state = _state.copyWithIdle();
@@ -82,7 +143,7 @@ class ResizeViewModel extends ChangeNotifier {
 
       // Auto-save if enabled
       if (shouldAutoSave) {
-        final saved = await saveResizedImage();
+        final saved = await _saveResizedImage();
         if (saved) {
           // Update state to indicate successful auto-save
           _state = _state.copyWith(errorMessage: null);
@@ -95,8 +156,23 @@ class ResizeViewModel extends ChangeNotifier {
     }
   }
 
+  void onSaveResizedImage(BuildContext context) async {
+    final success = await _saveResizedImage();
+    if (context.mounted) {
+      if (success) {
+        ToastHelper.showSuccess(
+          context,
+          'Image Saved!',
+          subtitle: 'Your resized image has been saved to gallery',
+        );
+      } else {
+        ToastHelper.showError(context, 'Save Failed', subtitle: errorMessage);
+      }
+    }
+  }
+
   /// Save the resized image
-  Future<bool> saveResizedImage() async {
+  Future<bool> _saveResizedImage() async {
     if (_state.resizedImage == null) {
       _state = _state.copyWithError('No resized image to save');
       notifyListeners();
@@ -149,6 +225,8 @@ class ResizeViewModel extends ChangeNotifier {
 
   /// Clear all images
   void clear() {
+    widthController.clear();
+    heightController.clear();
     _state = _state.copyWithClear();
     notifyListeners();
   }
@@ -159,5 +237,14 @@ class ResizeViewModel extends ChangeNotifier {
       _state = _state.copyWithIdle();
       notifyListeners();
     }
+  }
+
+  @override
+  void dispose() {
+    widthController.removeListener(_onWidthChanged);
+    heightController.removeListener(_onHeightChanged);
+    widthController.dispose();
+    heightController.dispose();
+    super.dispose();
   }
 }
