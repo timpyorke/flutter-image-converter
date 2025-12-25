@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_image_converters/const/app_dimensions.dart';
+import 'package:flutter_image_converters/const/app_strings.dart';
 import 'package:flutter_image_converters/core/utils/toast_helper.dart';
 import 'package:flutter_image_converters/core/widgets/pick_image_button_widget.dart';
 import 'package:flutter_image_converters/views/convert/widgets/Source_images_section.dart';
@@ -23,7 +25,7 @@ class ConvertView extends StatelessWidget {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ToastHelper.showError(
               context,
-              'Error Occurred',
+              context.l10n.errorOccurred,
               subtitle: viewModel.errorMessage,
             );
             viewModel.clearError();
@@ -33,16 +35,21 @@ class ConvertView extends StatelessWidget {
         // Show centered empty state when no images
         if (!viewModel.hasSourceImages && !viewModel.hasConvertedImages) {
           return PickImageButtonWidget(
-            title: 'Select Images to Convert',
-            subtitle: 'Choose multiple images from your gallery',
+            title: context.l10n.convertYourImages,
+            subtitle: context.l10n.selectImagesToGetStarted,
             onPressed: viewModel.pickImages,
           );
         }
 
         return SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 100.0),
+          padding: const EdgeInsets.fromLTRB(
+            AppDimensions.paddingL,
+            AppDimensions.paddingL,
+            AppDimensions.paddingL,
+            AppDimensions.bottomPaddingWithNav,
+          ),
           child: Column(
-            spacing: 12,
+            spacing: AppDimensions.spacingM,
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.center,
             children: [

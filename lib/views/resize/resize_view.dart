@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_image_converters/const/app_dimensions.dart';
+import 'package:flutter_image_converters/const/app_strings.dart';
 import 'package:flutter_image_converters/core/di/service_locator.dart';
 import 'package:flutter_image_converters/core/utils/toast_helper.dart';
 import 'package:flutter_image_converters/core/widgets/pick_image_button_widget.dart';
@@ -24,7 +26,7 @@ class ResizeView extends StatelessWidget {
           WidgetsBinding.instance.addPostFrameCallback((_) {
             ToastHelper.showError(
               context,
-              'Error Occurred',
+              context.l10n.errorOccurred,
               subtitle: viewModel.errorMessage,
             );
             viewModel.clearError();
@@ -36,30 +38,24 @@ class ResizeView extends StatelessWidget {
           return const Center(child: CircularProgressIndicator());
         }
 
-        if (viewModel.errorMessage != null) {
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            ToastHelper.showError(
-              context,
-              'Error Occurred',
-              subtitle: viewModel.errorMessage,
-            );
-            viewModel.clearError();
-          });
-        }
-
         // Show centered empty state when no image
         if (!viewModel.hasSourceImage && !viewModel.hasResizedImage) {
           return PickImageButtonWidget(
-            title: 'Resize Your Images',
-            subtitle: 'Select an image to get started',
+            title: context.l10n.resizeYourImages,
+            subtitle: context.l10n.selectAnImageToGetStarted,
             onPressed: viewModel.pickImage,
           );
         }
 
         return SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(16.0, 16.0, 16.0, 100.0),
+          padding: const EdgeInsets.fromLTRB(
+            AppDimensions.paddingL,
+            AppDimensions.paddingL,
+            AppDimensions.paddingL,
+            AppDimensions.bottomPaddingWithNav,
+          ),
           child: Column(
-            spacing: 16,
+            spacing: AppDimensions.spacingL,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // Source Image Section
@@ -84,19 +80,22 @@ class ResizeView extends StatelessWidget {
                     context,
                     onContinue: viewModel.resizeImage,
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Icon(Icons.photo_size_select_large, color: Colors.white),
-                      SizedBox(width: 12),
-                      Text('Resize Image'),
+                      const Icon(
+                        Icons.photo_size_select_large,
+                        color: Colors.white,
+                      ),
+                      const SizedBox(width: AppDimensions.spacingM),
+                      Text(context.l10n.resizeImage),
                     ],
                   ),
                 ),
 
               // Result Section
               if (viewModel.hasResizedImage) ...[
-                const SizedBox(height: 24),
+                const SizedBox(height: AppDimensions.spacingXxl),
                 ResetResultCard(
                   errorMessage: viewModel.errorMessage ?? '',
                   shouldShowSaveButton: viewModel.shouldShowSaveButton,

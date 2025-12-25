@@ -659,6 +659,258 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Failed to save images'**
   String get failedToSaveImages;
+
+  /// No description provided for @errorOccurred.
+  ///
+  /// In en, this message translates to:
+  /// **'Error Occurred'**
+  String get errorOccurred;
+
+  /// No description provided for @failedToPickImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to pick image'**
+  String get failedToPickImage;
+
+  /// No description provided for @failedToPickImages.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to pick images'**
+  String get failedToPickImages;
+
+  /// No description provided for @failedToConvertImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to convert image'**
+  String get failedToConvertImage;
+
+  /// No description provided for @failedToResizeImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to resize image'**
+  String get failedToResizeImage;
+
+  /// No description provided for @failedToSaveImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save image'**
+  String get failedToSaveImage;
+
+  /// No description provided for @failedToDecodeImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to decode image'**
+  String get failedToDecodeImage;
+
+  /// No description provided for @failedToLoadImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load image'**
+  String get failedToLoadImage;
+
+  /// No description provided for @failedToConvertImages.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to convert images'**
+  String get failedToConvertImages;
+
+  /// No description provided for @failedToGetExternalStorage.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to get external storage'**
+  String get failedToGetExternalStorage;
+
+  /// No description provided for @noImageSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'No image selected'**
+  String get noImageSelected;
+
+  /// No description provided for @invalidResizeDimensions.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid resize dimensions'**
+  String get invalidResizeDimensions;
+
+  /// No description provided for @noResizedImageToSave.
+  ///
+  /// In en, this message translates to:
+  /// **'No resized image to save'**
+  String get noResizedImageToSave;
+
+  /// No description provided for @couldNotSaveImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not save image'**
+  String get couldNotSaveImage;
+
+  /// No description provided for @saveFailed.
+  ///
+  /// In en, this message translates to:
+  /// **'Save Failed'**
+  String get saveFailed;
+
+  /// No description provided for @imageSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Image Saved!'**
+  String get imageSaved;
+
+  /// No description provided for @imagesSaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Images Saved!'**
+  String get imagesSaved;
+
+  /// No description provided for @imagesConvertedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Your images have been converted successfully'**
+  String get imagesConvertedSuccessfully;
+
+  /// No description provided for @imageSavedToGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Your image has been saved to gallery'**
+  String get imageSavedToGallery;
+
+  /// No description provided for @imagesSavedToGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Your images have been saved to gallery'**
+  String get imagesSavedToGallery;
+
+  /// No description provided for @imageResizedSuccessfully.
+  ///
+  /// In en, this message translates to:
+  /// **'Your image has been resized successfully'**
+  String get imageResizedSuccessfully;
+
+  /// No description provided for @resizedImageSavedToGallery.
+  ///
+  /// In en, this message translates to:
+  /// **'Your resized image has been saved to gallery'**
+  String get resizedImageSavedToGallery;
+
+  /// No description provided for @selectFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Format'**
+  String get selectFormat;
+
+  /// No description provided for @higher.
+  ///
+  /// In en, this message translates to:
+  /// **'Higher'**
+  String get higher;
+
+  /// No description provided for @smaller.
+  ///
+  /// In en, this message translates to:
+  /// **'Smaller'**
+  String get smaller;
+
+  /// No description provided for @reduceByPercent.
+  ///
+  /// In en, this message translates to:
+  /// **'Reduce by %'**
+  String get reduceByPercent;
+
+  /// No description provided for @pixels.
+  ///
+  /// In en, this message translates to:
+  /// **'px'**
+  String get pixels;
+
+  /// No description provided for @cacheCleared.
+  ///
+  /// In en, this message translates to:
+  /// **'Cache Cleared'**
+  String get cacheCleared;
+
+  /// No description provided for @cacheClearedMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'Temporary files have been cleared'**
+  String get cacheClearedMessage;
+
+  /// No description provided for @privacyTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Your Privacy Matters'**
+  String get privacyTitle;
+
+  /// No description provided for @privacyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'All image processing is done locally on your device. Your images never leave your device and are not uploaded to any servers or third parties.'**
+  String get privacyDescription;
+
+  /// No description provided for @ok.
+  ///
+  /// In en, this message translates to:
+  /// **'OK'**
+  String get ok;
+
+  /// No description provided for @confirm.
+  ///
+  /// In en, this message translates to:
+  /// **'Confirm'**
+  String get confirm;
+
+  /// No description provided for @delete.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete'**
+  String get delete;
+
+  /// No description provided for @close.
+  ///
+  /// In en, this message translates to:
+  /// **'Close'**
+  String get close;
+
+  /// No description provided for @done.
+  ///
+  /// In en, this message translates to:
+  /// **'Done'**
+  String get done;
+
+  /// No description provided for @error.
+  ///
+  /// In en, this message translates to:
+  /// **'Error'**
+  String get error;
+
+  /// No description provided for @success.
+  ///
+  /// In en, this message translates to:
+  /// **'Success'**
+  String get success;
+
+  /// No description provided for @warning.
+  ///
+  /// In en, this message translates to:
+  /// **'Warning'**
+  String get warning;
+
+  /// No description provided for @info.
+  ///
+  /// In en, this message translates to:
+  /// **'Info'**
+  String get info;
+
+  /// No description provided for @back.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get back;
+
+  /// No description provided for @next.
+  ///
+  /// In en, this message translates to:
+  /// **'Next'**
+  String get next;
 }
 
 class _AppLocalizationsDelegate

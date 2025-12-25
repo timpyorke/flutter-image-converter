@@ -298,4 +298,134 @@ class AppLocalizationsTh extends AppLocalizations {
 
   @override
   String get failedToSaveImages => 'ไม่สามารถบันทึกรูปภาพ';
+
+  @override
+  String get errorOccurred => 'Error Occurred';
+
+  @override
+  String get failedToPickImage => 'Failed to pick image';
+
+  @override
+  String get failedToPickImages => 'Failed to pick images';
+
+  @override
+  String get failedToConvertImage => 'Failed to convert image';
+
+  @override
+  String get failedToResizeImage => 'Failed to resize image';
+
+  @override
+  String get failedToSaveImage => 'Failed to save image';
+
+  @override
+  String get failedToDecodeImage => 'Failed to decode image';
+
+  @override
+  String get failedToLoadImage => 'Failed to load image';
+
+  @override
+  String get failedToConvertImages => 'Failed to convert images';
+
+  @override
+  String get failedToGetExternalStorage => 'Failed to get external storage';
+
+  @override
+  String get noImageSelected => 'No image selected';
+
+  @override
+  String get invalidResizeDimensions => 'Invalid resize dimensions';
+
+  @override
+  String get noResizedImageToSave => 'No resized image to save';
+
+  @override
+  String get couldNotSaveImage => 'Could not save image';
+
+  @override
+  String get saveFailed => 'Save Failed';
+
+  @override
+  String get imageSaved => 'Image Saved!';
+
+  @override
+  String get imagesSaved => 'Images Saved!';
+
+  @override
+  String get imagesConvertedSuccessfully =>
+      'Your images have been converted successfully';
+
+  @override
+  String get imageSavedToGallery => 'Your image has been saved to gallery';
+
+  @override
+  String get imagesSavedToGallery => 'Your images have been saved to gallery';
+
+  @override
+  String get imageResizedSuccessfully =>
+      'Your image has been resized successfully';
+
+  @override
+  String get resizedImageSavedToGallery =>
+      'Your resized image has been saved to gallery';
+
+  @override
+  String get selectFormat => 'Select Format';
+
+  @override
+  String get higher => 'Higher';
+
+  @override
+  String get smaller => 'Smaller';
+
+  @override
+  String get reduceByPercent => 'Reduce by %';
+
+  @override
+  String get pixels => 'px';
+
+  @override
+  String get cacheCleared => 'Cache Cleared';
+
+  @override
+  String get cacheClearedMessage => 'Temporary files have been cleared';
+
+  @override
+  String get privacyTitle => 'Your Privacy Matters';
+
+  @override
+  String get privacyDescription =>
+      'All image processing is done locally on your device. Your images never leave your device and are not uploaded to any servers or third parties.';
+
+  @override
+  String get ok => 'OK';
+
+  @override
+  String get confirm => 'Confirm';
+
+  @override
+  String get delete => 'Delete';
+
+  @override
+  String get close => 'Close';
+
+  @override
+  String get done => 'Done';
+
+  @override
+  String get error => 'Error';
+
+  @override
+  String get success => 'Success';
+
+  @override
+  String get warning => 'Warning';
+
+  @override
+  String get info => 'Info';
+
+  @override
+  String get back => 'Back';
+
+  @override
+  String get next => 'Next';
 }

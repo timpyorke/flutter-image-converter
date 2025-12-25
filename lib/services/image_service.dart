@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_image_converters/const/error_keys.dart';
 import 'package:flutter_image_converters/models/resize_setting.dart';
 import 'package:image_picker/image_picker.dart';
 import '../models/image_data.dart';
@@ -36,7 +37,11 @@ class ImageService {
         sizeInBytes: bytes.length,
       );
     } catch (e) {
-      throw Exception('Failed to pick image: $e');
+      throw LocalizedException(
+        ErrorKeys.failedToPickImage,
+        fallbackMessage: 'Failed to pick image: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -75,7 +80,11 @@ class ImageService {
 
       return images;
     } catch (e) {
-      throw Exception('Failed to pick images: $e');
+      throw LocalizedException(
+        ErrorKeys.failedToPickImages,
+        fallbackMessage: 'Failed to pick images: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -107,7 +116,11 @@ class ImageService {
         ),
       );
     } catch (e) {
-      throw Exception('Failed to convert image: $e');
+      throw LocalizedException(
+        ErrorKeys.failedToConvertImage,
+        fallbackMessage: 'Failed to convert image: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -138,7 +151,11 @@ class ImageService {
         sizeInBytes: result.bytes.length,
       );
     } catch (e) {
-      throw Exception('Failed to resize image: $e');
+      throw LocalizedException(
+        ErrorKeys.failedToResizeImage,
+        fallbackMessage: 'Failed to resize image: $e',
+        originalError: e,
+      );
     }
   }
 
@@ -166,7 +183,11 @@ class ImageService {
 
       return filePath;
     } catch (e) {
-      throw Exception('Failed to save image: $e');
+      throw LocalizedException(
+        ErrorKeys.failedToSaveImage,
+        fallbackMessage: 'Failed to save image: $e',
+        originalError: e,
+      );
     }
   }
 
