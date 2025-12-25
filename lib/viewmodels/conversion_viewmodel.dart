@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_converters/const/conversion_state_type.dart';
 import 'package:flutter_image_converters/const/image_format.dart';
