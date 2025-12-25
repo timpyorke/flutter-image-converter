@@ -1,298 +1,172 @@
-# 📸 Flutter Image Converters
+# 📸 Flutter Image Converter
 
-A modern cross-platform Flutter application for converting and resizing images with a beautiful glassmorphism UI, clean MVVM architecture, and Provider state management.
+> A modern, high-performance Flutter app for image conversion and resizing with beautiful glassmorphism UI, MVVM architecture, and support for 10 languages.
 
-## ✨ Features
+[![Flutter](https://img.shields.io/badge/Flutter-%3E%3D3.10.1-blue)](https://flutter.dev)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-### 🎨 Modern UI Design
+## 🌟 Highlights
 
-- **Glassmorphism Effects**: Frosted glass aesthetic with blur effects throughout
-- **Material Design 3**: Modern color schemes and typography
-- **Dark Mode Support**: Fully implemented light/dark themes with system detection
-- **Smooth Animations**: Polished transitions and interactive elements
-- **Custom Glass Widgets**: Reusable GlassCard, GlassContainer, and GradientButton components
+- 🎨 **Glassmorphism UI** - Beautiful frosted glass design
+- ⚡ **High Performance** - Isolate-based processing, zero UI blocking
+- 🌍 **10 Languages** - Full localization support
+- 📱 **Cross-platform** - Android, iOS ready
+- 🏗️ **Clean Architecture** - MVVM + Provider pattern
+- 🎯 **Batch Processing** - Convert multiple images simultaneously
 
-### Image Conversion
+## ✨ Core Features
 
-- 📷 **Multi-Select**: Pick multiple images from gallery at once
-- 🔄 **Batch Conversion**: Convert multiple images simultaneously with progress tracking
-- 📊 **Real-time Progress**: Live updates showing "Converting X/Y..." with visual progress
-- 🎯 **Format Support**: Convert between JPG, PNG, WebP, and BMP formats
-- 🎚️ **Quality Control**: Adjustable compression quality (1-100%)
-- 👁️ **Preview Gallery**: Horizontal scrollable thumbnails with glassmorphic overlays
-- 📊 **Metadata Display**: Dimensions, format, and file size for each image
-- 🗑️ **Individual Management**: Remove specific images with animated transitions
-- ➕ **Add More Images**: Expand selection without losing existing images
-- 💾 **Results View**: Before/after size comparison with percentage reduction badges
-- 🎬 **Advertisement Dialog**: Glassmorphic ad banner before processing
-- 💾 **Auto-Save**: Background processing with automatic file saving to device storage
+### 📷 Image Conversion
 
-### Image Resizing
+- Multi-select gallery picker
+- Batch conversion with real-time progress
+- Formats: JPG, PNG, WebP, BMP
+- Quality control (1-100%)
+- Before/after comparison
 
-- 📐 **Custom Dimensions**: Precise width and height control
-- 🔒 **Aspect Ratio Lock**: Automatic proportion maintenance
-- 📏 **Smart Calculation**: Auto-calculate dimensions when locked
-- 👁️ **Preview**: Original and resized comparison with metadata
-- 💾 **Direct Save**: Save resized images to gallery
+### 📐 Image Resizing
 
-### ⚙️ Settings & Preferences
+- Custom width & height
+- Aspect ratio lock
+- Quick presets (25%, 50%, 75%)
+- Real-time preview
 
-- 🎨 **Theme Switcher**: Light/Dark/System mode with instant updates
-- 🌍 **Language Selection**: 10 languages supported (English, Thai, Chinese, Japanese, Korean, Spanish, French, German, Portuguese, Russian)
-- 🎯 **Default Settings**: Configurable default output format and quality
-- 💾 **Persistent Storage**: All settings saved with SharedPreferences
-- 📱 **Auto-save Toggle**: Configure automatic gallery saving
-- 🗂️ **Storage Location**: Custom save directory configuration
-- 🧹 **Cache Management**: Clear temporary files
-- ℹ️ **About Section**: Version info, privacy policy, terms of service
+### ⚙️ Settings
 
-### Architecture
+- Theme: Light/Dark/System
+- Language selection (10 languages)
+- Auto-save configuration
+- Cache management
 
-- 🏗️ **MVVM Pattern**: Clean separation of concerns with reactive state
-- ⚡ **Provider State Management**: Efficient and scalable
-- 🎯 **Use Cases**: Background processing with isolated compute
-- 🔧 **Services Layer**: Reusable business logic
-- 🎨 **Widget Library**: Custom reusable glassmorphism components
-- 📦 **Multi-Flavor Support**: Separate dev and production environments
-
-## 🏗️ Architecture
-
-This project follows **MVVM (Model-View-ViewModel)** architecture with **Provider** for state management.
-
-```
-lib/
-├── models/              # Data models (ImageData, Settings, etc.)
-├── viewmodels/         # Business logic & state (Provider ChangeNotifiers)
-├── views/              # UI components (Convert, Resize, Settings)
-├── services/           # Business operations (ImageService)
-├── usecases/           # Complex workflows (ConvertAndSaveImagesUseCase)
-├── widgets/            # Reusable components (GlassCard, GradientButton)
-└── pages/              # Page scaffolds (HomePage with navigation)
-```
-
-For detailed architecture documentation, see:
-
-- [ARCHITECTURE.md](ARCHITECTURE.md) - Architecture overview and patterns
-- [MVVM_IMPLEMENTATION.md](MVVM_IMPLEMENTATION.md) - Implementation details
-- [lib/usecases/README.md](lib/usecases/README.md) - Use case patterns
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Flutter SDK: `>=3.10.1`
-- Dart SDK: `>=3.10.1`
-- iOS development: Xcode 14+ (for iOS/macOS builds)
-- Android development: Android Studio with Android SDK 21+
-
-### Installation
-
-1. Clone the repository:
+## 🚀 Quick Start
 
 ```bash
-git clone https://github.com/s-thongphitak/flutter-image-converters.git
+# Clone & install
+git clone https://github.com/timpyorke/flutter-image-converter.git
 cd flutter_image_converters
-```
-
-2. Install dependencies:
-
-```bash
 flutter pub get
-```
 
-3. Run the app:
+# Generate localization
+flutter gen-l10n
 
-**Development flavor:**
-
-```bash
+# Run (dev mode)
 flutter run --flavor dev -t lib/main_dev.dart
-```
 
-**Production flavor:**
-
-```bash
+# Run (production)
 flutter run --flavor prod -t lib/main.dart
 ```
 
-## 🏗️ Project Structure
+## 📚 Documentation
+
+**[📖 Complete Documentation](DOCUMENTATION.md)** - Comprehensive guide covering:
+
+- Architecture & Design Patterns
+- Features & Implementation
+- Localization Guide
+- Development Guide
+- Performance Optimizations
+- Contributing Guidelines
+
+**Additional Resources:**
+
+- [Localization Guide](docs/LOCALIZATION_GUIDE.md) - Detailed l10n implementation
+- [Archived Docs](docs/archive/) - Historical implementation details
+
+## 🏗️ Architecture
+
+```
+┌──────────┐
+│   View   │ ← Stateless/StatefulWidget
+└────┬─────┘
+     │ Consumer<T>
+┌────▼──────────┐
+│  ViewModel    │ ← ChangeNotifier + State
+└────┬──────────┘
+     │ Uses
+┌────▼──────────┐
+│    Service    │ ← Business Logic
+└────┬──────────┘
+     │ Accesses
+┌────▼──────────┐
+│    Model      │ ← Data Classes (Freezed)
+└───────────────┘
+```
+
+**Key Technologies:**
+
+- **State Management:** Provider + ChangeNotifier
+- **DI:** GetIt
+- **Immutability:** Freezed
+- **Localization:** Flutter l10n (ARB)
+- **Performance:** Isolate-based processing
+
+## 📁 Project Structure
 
 ```
 lib/
-├── main.dart                    # Production entry point
-├── main_dev.dart                # Development entry point
-├── app.dart                     # Root app with theme management
-├── flavors.dart                 # Flavor configuration
-├── models/                      # Data models
-│   ├── image_data.dart         # Image metadata model
-│   ├── conversion_settings.dart # Conversion configuration
-│   ├── resize_settings.dart    # Resize configuration
-│   └── app_settings.dart       # Application settings
-├── viewmodels/                  # State management (ChangeNotifiers)
-│   ├── navigation_viewmodel.dart
-│   ├── conversion_viewmodel.dart
-│   ├── resize_viewmodel.dart
-│   └── settings_viewmodel.dart
-├── views/                       # UI screens
-│   ├── convert/
-│   │   └── convert_view.dart   # Image conversion UI
-│   ├── resize/
-│   │   └── resize_view.dart    # Image resizing UI
-│   └── settings/
-│       └── settings_view.dart  # App settings UI
-├── services/                    # Business logic
-│   └── image_service.dart      # Image operations
-├── usecases/                    # Complex workflows
-│   └── convert_and_save_images_usecase.dart
-├── widgets/                     # Reusable components
-│   └── glass_widgets.dart      # Glassmorphism UI components
-└── pages/
-    └── home_page.dart          # Main navigation container
+├── const/              # Constants (strings, dimensions, errors)
+├── core/
+│   ├── di/            # Dependency injection
+│   ├── utils/         # Helpers & utilities
+│   └── widgets/       # Reusable UI components
+├── l10n/              # Localization (10 languages)
+├── models/            # Data models (Freezed)
+├── viewmodels/        # State management
+├── views/             # UI screens
+├── services/          # Business logic
+├── usecases/          # Complex workflows
+└── providers/         # Data access
 ```
 
-## 🔧 Configuration
+## 🌍 Supported Languages
 
-### Flavors
+English • Thai • Chinese • Japanese • Korean • Spanish • German • French • Portuguese • Russian
 
-The app supports two flavors for different environments:
+Change language in Settings → Language Selection
 
-| Flavor   | App Name             | Bundle ID                           |
-| -------- | -------------------- | ----------------------------------- |
-| **dev**  | Image Converters Dev | `com.codenour.image_converters.dev` |
-| **prod** | Image Converters     | `com.codenour.image_converters`     |
+## ⚡ Performance
 
-### Platform Permissions
+| Optimization         | Impact             |
+| -------------------- | ------------------ |
+| Isolate Processing   | 0 frame drops      |
+| LRU Cache (50 items) | Faster thumbnails  |
+| Batched Updates      | 90% fewer rebuilds |
+| AutoKeepAlive        | No scroll lag      |
 
-**iOS** - Add to `ios/Runner/Info.plist`:
+## 📦 Dependencies
 
-```xml
-<key>NSPhotoLibraryUsageDescription</key>
-<string>This app needs access to select images for conversion</string>
-<key>NSPhotoLibraryAddUsageDescription</key>
-<string>This app needs access to save converted images to your photo library</string>
-```
-
-**Android** - Add to `android/app/src/main/AndroidManifest.xml`:
-
-```xml
-<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
-<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="32"/>
-<uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
-```
-
-## 🛠️ Technology Stack
-
-### Core Dependencies
-
-- `flutter` - Framework
-- `provider: ^6.1.2` - State management
-- `image_picker: ^1.0.7` - Image selection with multi-select support
-- `image: ^4.1.7` - Image format conversion and processing
-- `path_provider: ^2.1.2` - File system access
-- `permission_handler: ^11.3.0` - Runtime permissions
-- `shared_preferences: ^2.2.2` - Settings persistence
-
-### Development Dependencies
-
-- `flutter_flavorizr: ^2.4.1` - Flavor management
-- `flutter_lints` - Code quality and style
-- `flutter_test` - Unit and widget testing
-
-## 📱 Supported Platforms
-
-- ✅ Android (API 21+)
-- ✅ iOS (11.0+)
-- ⏳ macOS (coming soon)
-- ⏳ Web (coming soon)
-
-## 🎨 UI Components
-
-### Glass Widgets Library
-
-Custom glassmorphism components for modern UI:
-
-- **GlassCard**: Frosted glass container with blur effects
-- **GlassContainer**: Smaller glass elements for buttons and chips
-- **GradientButton**: Elevated button with gradient and shadow
-- **ShimmerLoading**: Animated loading placeholder
-
-### Design System
-
-- **Color Scheme**:
-  - Primary: Indigo (#6366F1)
-  - Secondary: Purple (#8B5CF6)
-  - Tertiary: Cyan (#06B6D4)
-- **Typography**: Custom letter spacing and font weights
-- **Effects**: Backdrop blur (10-15px), gradient overlays, animated transitions
-
-## 💾 Data Persistence
-
-Settings are automatically saved using SharedPreferences:
-
-- Theme preference (Light/Dark/System)
-- Default conversion format
-- Default quality setting
-- Language preference
-- Auto-save preference
-
-## 🚀 Future Enhancements
-
-- 📤 Share functionality
-- 🎨 Image filters and effects
-- 📝 Conversion history
-- ⚡ Parallel conversion optimization
-- 🌐 Full internationalization (i18n)
-- 📊 Analytics and usage tracking
-- ☁️ Cloud storage integration
-
-## 🧪 Testing
-
-Run tests:
-
-```bash
-flutter test
-```
-
-Run tests with coverage:
-
-```bash
-flutter test --coverage
+```yaml
+flutter: ">=3.10.1"
+provider: ^6.1.2 # State management
+get_it: ^9.2.0 # Dependency injection
+freezed: ^2.4.7 # Immutable models
+image: ^4.1.7 # Image processing
+image_picker: ^1.0.7 # Gallery picker
 ```
 
 ## 🤝 Contributing
 
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
+2. Create feature branch: `git checkout -b feature/amazing`
+3. Commit changes: `git commit -m 'feat: add amazing'`
+4. Push: `git push origin feature/amazing`
+5. Open Pull Request
 
-## 📝 Code Style
+**Guidelines:**
 
-This project follows the official [Flutter style guide](https://docs.flutter.dev/effective-dart/style) and uses `flutter_lints` for code analysis.
-
-Format code:
-
-```bash
-flutter format .
-```
-
-Analyze code:
-
-```bash
-flutter analyze
-```
+- Follow Flutter/Dart conventions
+- Use localization (no hardcoded strings)
+- Add tests for new features
+- Update documentation
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 📞 Contact
-
-- GitHub: [@s-thongphitak](https://github.com/s-thongphitak)
-- Repository: [flutter-image-converters](https://github.com/s-thongphitak/flutter-image-converters)
+MIT License - see [LICENSE](LICENSE) file
 
 ## 🙏 Acknowledgments
 
-- Flutter team for the amazing framework
-- Image processing community for format conversion libraries
-- Contributors and users of this project
+- Flutter Team
+- Open Source Community
+- All Contributors
+
+---

@@ -1,27 +1,140 @@
-# Localization Guide
+# Localization Implementation Guide
 
-## Overview
+## 📁 Project Structure
 
-This project uses Flutter's official internationalization (intl) package to support multiple languages.
+```
+lib/
+├── l10n/
+│   ├── app_en.arb              # English (template)
+│   ├── app_th.arb              # Thai
+│   ├── app_zh.arb              # Chinese
+│   ├── app_ja.arb              # Japanese
+│   ├── app_ko.arb              # Korean
+│   ├── app_es.arb              # Spanish
+│   ├── app_de.arb              # German
+│   ├── app_fr.arb              # French
+│   ├── app_pt.arb              # Portuguese
+│   ├── app_ru.arb              # Russian
+│   └── app_localizations.dart  # Generated
+├── const/
+│   ├── app_strings.dart        # BuildContext extension for l10n
+│   ├── error_keys.dart         # Error keys for services
+│   └── app_dimensions.dart     # UI dimensions
+```
 
-## Supported Languages
+## 🎯 Usage Patterns
 
-Currently, the app supports **10 languages** with full translations:
+### 1. **In Widgets with BuildContext**
 
-- 🇬🇧 **English** (`en`) - Default
-- 🇹🇭 **Thai** (`th`)
-- 🇨🇳 **Chinese** (`zh`)
-- 🇯🇵 **Japanese** (`ja`)
-- 🇰🇷 **Korean** (`ko`)
-- 🇪🇸 **Spanish** (`es`)
-- 🇫🇷 **French** (`fr`)
-- 🇩🇪 **German** (`de`)
-- 🇵🇹 **Portuguese** (`pt`)
-- 🇷🇺 **Russian** (`ru`)
+Use the `context.l10n` extension:
 
-## Configuration Files
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_image_converters/const/app_strings.dart';
 
-### `l10n.yaml`
+class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Text(context.l10n.errorOccurred);
+    // or
+    return Text(context.strings.errorOccurred);
+  }
+}
+```
+
+### 2. **In Services (without BuildContext)**
+
+Use `LocalizedException` with error keys:
+
+```dart
+import 'package:flutter_image_converters/const/error_keys.dart';
+
+class ImageService {
+  Future<void> pickImage() async {
+    try {
+      // ... operation
+    } catch (e) {
+      throw LocalizedException(
+        ErrorKeys.failedToPickImage,
+        fallbackMessage: 'Failed to pick image: $e',
+        originalError: e,
+      );
+    }
+  }
+}
+```
+
+### 3. **Displaying Errors in UI**
+
+```dart
+if (viewModel.errorMessage != null) {
+  ToastHelper.showError(
+    context,
+    context.l10n.errorOccurred,
+    subtitle: viewModel.errorMessage,
+  );
+}
+```
+
+### 4. **Pluralization**
+
+```dart
+Text(context.l10n.convertNImages(imageCount))
+// Displays: "Convert 1 Image" or "Convert 3 Images"
+```
+
+### 5. **With Parameters**
+
+```dart
+Text(context.l10n.converting(current, total))
+// Displays: "Converting 3/10..."
+```
+
+## 📝 Adding New Strings
+
+### Step 1: Add to English ARB (template)
+
+Edit `lib/l10n/app_en.arb`:
+
+```json
+{
+  "newStringKey": "New String Value",
+  "@newStringKey": {
+    "description": "Description for translators"
+  }
+}
+```
+
+### Step 2: Generate Localization Files
+
+```bash
+flutter gen-l10n
+```
+
+### Step 3: Use in Code
+
+```dart
+Text(context.l10n.newStringKey)
+```
+
+## 🌍 Supported Languages
+
+| Language   | Code | File       | Status      |
+| ---------- | ---- | ---------- | ----------- |
+| English    | en   | app_en.arb | ✅ Complete |
+| Thai       | th   | app_th.arb | 🔄 Partial  |
+| Chinese    | zh   | app_zh.arb | 🔄 Partial  |
+| Japanese   | ja   | app_ja.arb | 🔄 Partial  |
+| Korean     | ko   | app_ko.arb | 🔄 Partial  |
+| Spanish    | es   | app_es.arb | 🔄 Partial  |
+| German     | de   | app_de.arb | 🔄 Partial  |
+| French     | fr   | app_fr.arb | 🔄 Partial  |
+| Portuguese | pt   | app_pt.arb | 🔄 Partial  |
+| Russian    | ru   | app_ru.arb | 🔄 Partial  |
+
+## 🔧 Configuration Files
+
+### l10n.yaml
 
 ```yaml
 arb-dir: lib/l10n
@@ -29,184 +142,147 @@ template-arb-file: app_en.arb
 output-localization-file: app_localizations.dart
 ```
 
-### Translation Files
+### pubspec.yaml
 
-- `lib/l10n/app_en.arb` - English (template)
-- `lib/l10n/app_th.arb` - Thai
-- `lib/l10n/app_zh.arb` - Chinese
-- `lib/l10n/app_ja.arb` - Japanese
-- `lib/l10n/app_ko.arb` - Korean
-- `lib/l10n/app_es.arb` - Spanish
-- `lib/l10n/app_fr.arb` - French
-- `lib/l10n/app_de.arb` - German
-- `lib/l10n/app_pt.arb` - Portuguese
-- `lib/l10n/app_ru.arb` - Russian
-
-## Adding a New Language
-
-### Step 1: Create ARB File
-
-Create a new `.arb` file in `lib/l10n/` following the naming convention `app_<locale>.arb`:
-
-```json
-{
-  "@@locale": "es",
-  "appTitle": "Convertidor de Imágenes",
-  "convert": "Convertir",
-  ...
-}
+```yaml
+flutter:
+  generate: true
 ```
 
-### Step 2: Add to Supported Locales
+## 🎨 Best Practices
 
-Update `lib/app.dart` to include the new locale:
+### ✅ DO:
+
+1. **Use context.l10n in widgets**
+
+   ```dart
+   Text(context.l10n.errorOccurred)
+   ```
+
+2. **Use descriptive keys**
+
+   ```dart
+   "failedToPickImage" // ✅ Good
+   "error1"            // ❌ Bad
+   ```
+
+3. **Provide descriptions in ARB**
+
+   ```json
+   "@errorOccurred": {
+     "description": "Generic error message shown to user"
+   }
+   ```
+
+4. **Use LocalizedException for service errors**
+   ```dart
+   throw LocalizedException(
+     ErrorKeys.failedToSaveImage,
+     fallbackMessage: 'Failed to save image: $e',
+   );
+   ```
+
+### ❌ DON'T:
+
+1. **Don't hardcode strings**
+
+   ```dart
+   Text('Error Occurred') // ❌ Bad
+   ```
+
+2. **Don't use AppStrings in new code**
+
+   ```dart
+   Text(AppStrings.errorOccurred) // ❌ Deprecated
+   ```
+
+3. **Don't try to use context.l10n in services**
+   ```dart
+   // ❌ Services don't have BuildContext
+   class MyService {
+     void doSomething(BuildContext context) {
+       // Bad practice - services shouldn't take context
+     }
+   }
+   ```
+
+## 🔄 Migration Status
+
+### ✅ Completed:
+
+- ✅ ResizeView using context.l10n
+- ✅ ConvertView using context.l10n
+- ✅ ImageService using LocalizedException
+- ✅ ImageProcessingIsolate using standard exceptions
+- ✅ BuildContext extension created
+- ✅ Error keys system implemented
+
+### 🔄 To Do:
+
+- 🔄 Translate all strings to other languages
+- 🔄 Update widget components
+- 🔄 Update dialog texts
+- 🔄 Update settings view
+- 🔄 Update ViewModels error handling
+
+## 🧪 Testing Localization
+
+### Change Language at Runtime
 
 ```dart
-supportedLocales: const [
-  Locale('en'), // English
-  Locale('th'), // Thai
-  Locale('zh'), // Chinese
-  Locale('ja'), // Japanese
-  Locale('ko'), // Korean
-  Locale('es'), // Spanish
-  Locale('fr'), // French
-  Locale('de'), // German
-  Locale('pt'), // Portuguese
-  Locale('ru'), // Russian
-  Locale('xx'), // Your New Language (NEW)
-],
+MaterialApp(
+  locale: const Locale('th'), // Force Thai
+  localizationsDelegates: AppLocalizations.localizationsDelegates,
+  supportedLocales: AppLocalizations.supportedLocales,
+  // ...
+);
 ```
 
-### Step 3: Run Code Generation
+### Test with Different Locales
 
 ```bash
-flutter pub get
+# Run app in Thai
+flutter run --locale=th
+
+# Run app in Japanese
+flutter run --locale=ja
 ```
 
-Flutter will automatically generate localization code based on ARB files.
+## 📊 Translation Progress
 
-## Using Localizations in Code
+Run this to see translation status:
 
-### Basic Usage
+```bash
+flutter gen-l10n
+```
+
+Output will show untranslated messages per language.
+
+## 🚀 Quick Reference
 
 ```dart
-import 'package:flutter_image_converters/l10n/app_localizations.dart';
+// ✅ In Widgets
+context.l10n.errorOccurred
+context.l10n.imageSaved
+context.l10n.convertNImages(count)
 
-// In build method:
-final l10n = AppLocalizations.of(context)!;
+// ✅ In Services
+throw LocalizedException(ErrorKeys.failedToPickImage)
 
-Text(l10n.convert)
-Text(l10n.settings)
+// ✅ Error Display
+ToastHelper.showError(context, context.l10n.errorOccurred)
+
+// ❌ Deprecated (don't use)
+AppStrings.errorOccurred
 ```
 
-### Placeholders
+## 📚 Resources
 
-Some strings use placeholders for dynamic content:
-
-```dart
-// Converting {current}/{total}...
-l10n.converting(current: 1, total: 5)  // "Converting 1/5..."
-
-// {count} image(s) converted successfully
-l10n.nImagesConvertedSuccessfully(count: 3)  // "3 images converted successfully"
-
-// Language changed to {language}
-l10n.languageChangedTo(language: 'English')  // "Language changed to English"
-```
-
-### Plurals
-
-The ARB files use ICU message format for pluralization:
-
-```json
-"convertNImages": "Convert {count, plural, =1{1 Image} other{{count} Images}}"
-```
-
-## Available String Keys
-
-### Navigation
-
-- `convert`, `resize`, `settings`
-
-### Actions
-
-- `pickImages`, `selectImage`, `selectImages`
-- `cancel`, `continueAction`, `save`, `clear`, `reset`
-
-### Labels
-
-- `format`, `quality`, `width`, `height`
-- `name`, `dimensions`, `size`, `before`, `after`
-
-### Sections
-
-- `appearance`, `conversionDefaults`, `storage`, `advanced`, `about`
-- `theme`, `language`, `defaultOutputFormat`, `defaultQuality`
-
-### Theme Options
-
-- `light`, `dark`, `system`
-
-### Messages
-
-- `conversionComplete`, `resizeComplete`
-- `noImagesSelected`, `pickImageError`
-- `conversionError`, `resizeError`
-
-See `lib/l10n/app_en.arb` for the complete list of available strings.
-
-## Changing Language
-
-Users can change the app language from:
-**Settings → Advanced → Language**
-
-The selected language is persisted using SharedPreferences and will be restored on app restart.
-
-## Development Tips
-
-1. **Always use `l10n` strings**: Never hardcode UI strings in widgets
-2. **Test both languages**: Switch between English and Thai to ensure proper layout
-3. **Handle long text**: Some languages (like German) have longer words
-4. **Use context**: Get `AppLocalizations.of(context)!` in build methods
-5. **Hot reload**: Language changes require app restart
-
-## Troubleshooting
-
-### "AppLocalizations not found"
-
-- Run `flutter pub get` to generate localization files
-- Check that `generate: true` is in `pubspec.yaml`
-- Verify ARB files have correct format
-
-### Language not switching
-
-- Ensure locale is added to `supportedLocales` in `app.dart`
-- Check that ARB file exists for the locale
-- Verify app is restarted after changing language
-
-### Missing translations
-
-- Check console for missing key warnings
-- Ensure all keys in template ARB are in translation ARB
-- Use English fallback for missing translations
-
-## File Structure
-
-```
-lib/
-├── l10n/
-│   ├── app_en.arb           # English translations (template)
-│   ├── app_th.arb           # Thai translations
-│   └── app_localizations.dart  # Auto-generated (DO NOT EDIT)
-├── app.dart                 # LocalizationsDelegates configuration
-└── views/
-    └── settings/
-        └── settings_view.dart  # Language selector UI
-l10n.yaml                    # Localization configuration
-```
-
-## Resources
-
-- [Flutter Internationalization](https://docs.flutter.dev/development/accessibility-and-localization/internationalization)
+- [Flutter Internationalization Guide](https://docs.flutter.dev/ui/accessibility-and-localization/internationalization)
+- [ARB File Format](https://github.com/google/app-resource-bundle/wiki/ApplicationResourceBundleSpecification)
 - [ICU Message Format](https://unicode-org.github.io/icu/userguide/format_parse/messages/)
-- [ARB File Format](https://github.com/google/app-resource-bundle)
+
+---
+
+**Last Updated:** December 25, 2025  
+**Current Version:** 1.0.0
