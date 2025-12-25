@@ -25,6 +25,18 @@ Detailed guide for implementing and managing multi-language support:
 - Translation workflow
 - Testing different locales
 
+### [🚀 Production Deployment Guide](PRODUCTION_DEPLOYMENT.md)
+
+Complete guide for publishing to Google Play and App Store:
+
+- Pre-deployment checklist
+- Android deployment (Google Play)
+- iOS deployment (App Store)
+- Version management & release notes
+- CI/CD integration with GitHub Actions & Fastlane
+- Post-deployment monitoring
+- Troubleshooting common issues
+
 ## Archived Documentation
 
 The `archive/` folder contains historical implementation details and migration guides:

@@ -113,6 +113,28 @@ class ConversionViewModel extends ChangeNotifier {
     }
   }
 
+  void onConvertAndSaveImages(BuildContext context) async {
+    await convertAndSaveImages();
+    if (context.mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+            hasSavedImages
+                ? 'Successfully saved ${savedPaths.length} image${savedPaths.length > 1 ? "s" : ""}!'
+                : 'Failed to save images',
+          ),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: hasSavedImages
+              ? Colors.green.shade600
+              : Colors.red.shade600,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+      );
+    }
+  }
+
   /// Convert and save all selected images in background
   Future<void> convertAndSaveImages() async {
     if (_state.sourceImages.isEmpty) {

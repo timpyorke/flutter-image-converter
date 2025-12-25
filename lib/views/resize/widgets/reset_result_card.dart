@@ -10,8 +10,8 @@ class ResetResultCard extends StatelessWidget {
     super.key,
     required this.errorMessage,
     required this.shouldShowSaveButton,
-    this.resizedImage,
     required this.saveResizedImage,
+    this.resizedImage,
   });
 
   final String errorMessage;
@@ -75,7 +75,7 @@ class ResetResultCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 20),
-          if (resizedImage!.bytes != null)
+          if (resizedImage?.bytes != null)
             CachedImageThumbnail(
               imageData: resizedImage!,
               height: 200,
@@ -85,7 +85,7 @@ class ResetResultCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(16),
             ),
           const SizedBox(height: 20),
-          ResetImageInfo(imageData: resizedImage!),
+          ResetImageInfo(imageData: resizedImage),
           const SizedBox(height: 20),
           if (shouldShowSaveButton)
             GradientButton(

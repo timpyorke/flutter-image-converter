@@ -102,6 +102,7 @@ class ResizeView extends StatelessWidget {
                   saveResizedImage: () {
                     return viewModel.onSaveResizedImage(context);
                   },
+                  resizedImage: viewModel.resizedImage,
                 ),
               ],
             ],

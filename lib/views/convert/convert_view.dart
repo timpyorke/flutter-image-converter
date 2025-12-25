@@ -5,7 +5,7 @@ import 'package:flutter_image_converters/core/utils/toast_helper.dart';
 import 'package:flutter_image_converters/core/widgets/pick_image_button_widget.dart';
 import 'package:flutter_image_converters/views/convert/widgets/Source_images_section.dart';
 import 'package:flutter_image_converters/views/convert/widgets/convert_settings_card.dart';
-import 'package:flutter_image_converters/views/convert/widgets/result_section.dart';
+import 'package:flutter_image_converters/views/convert/widgets/convert_result_section.dart';
 import 'package:provider/provider.dart';
 import '../../viewmodels/conversion_viewmodel.dart';
 import '../../core/widgets/widgets.dart';
@@ -115,15 +115,14 @@ class ConvertView extends StatelessWidget {
 
               // Result Section
               if (viewModel.hasConvertedImages) ...[
-                ResultSection(
-                  quality: viewModel.settings.quality,
-                  targetFormat: viewModel.settings.targetFormat,
-                  updateTargetFormat: (format) {
-                    viewModel.updateTargetFormat(format);
-                  },
-                  updateQuality: (qulity) {
-                    viewModel.updateQuality(qulity);
-                  },
+                ConvertResultSection(
+                  quality: viewModel.convertedImages.length,
+                  savedPaths: viewModel.savedPaths.length,
+                  hasSavedImages: viewModel.hasSavedImages,
+                  convertAndSaveImages: () =>
+                      viewModel.onConvertAndSaveImages(context),
+                  convertedImages: viewModel.convertedImages,
+                  sourceImages: viewModel.sourceImages,
                 ),
               ],
             ],
