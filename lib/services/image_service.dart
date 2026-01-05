@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
+import 'package:heif_converter/heif_converter.dart';
 import 'package:flutter_image_converters/const/error_keys.dart';
 import 'package:flutter_image_converters/models/resize_setting.dart';
 import 'package:image_picker/image_picker.dart';
@@ -22,7 +23,26 @@ class ImageService {
 
       if (pickedFile == null) return null;
 
-      final bytes = await pickedFile.readAsBytes();
+      Uint8List bytes;
+      final format = _getFormatFromPath(pickedFile.path);
+
+      // Handle special formats
+      if (format == 'heic' || format == 'heif') {
+        final result =
+            await HeifConverter.convert(pickedFile.path, format: 'png');
+        if (result != null) {
+          bytes = await File(result).readAsBytes();
+          // Clean up temp file
+          try {
+            await File(result).delete();
+          } catch (_) {}
+        } else {
+          bytes = await pickedFile.readAsBytes();
+        }
+      } else {
+        bytes = await pickedFile.readAsBytes();
+      }
+
       final image = await ImageProcessingIsolate.decodeImage(bytes);
 
       if (image == null) return null;
@@ -56,7 +76,24 @@ class ImageService {
 
       for (final pickedFile in pickedFiles) {
         try {
-          final bytes = await pickedFile.readAsBytes();
+          Uint8List bytes;
+          final format = _getFormatFromPath(pickedFile.path);
+
+          if (format == 'heic' || format == 'heif') {
+            final result =
+                await HeifConverter.convert(pickedFile.path, format: 'png');
+            if (result != null) {
+              bytes = await File(result).readAsBytes();
+              try {
+                await File(result).delete();
+              } catch (_) {}
+            } else {
+              bytes = await pickedFile.readAsBytes();
+            }
+          } else {
+            bytes = await pickedFile.readAsBytes();
+          }
+
           final image = await ImageProcessingIsolate.decodeImage(bytes);
 
           if (image != null) {
@@ -173,8 +210,7 @@ class ImageService {
       }
 
       final format = imageData.format ?? 'jpg';
-      final fileName =
-          imageData.name ??
+      final fileName = imageData.name ??
           'image_${DateTime.now().millisecondsSinceEpoch}.$format';
       final filePath = '$directory/$fileName';
       final file = File(filePath);

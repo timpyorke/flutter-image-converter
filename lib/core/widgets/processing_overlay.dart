@@ -32,8 +32,8 @@ class ProcessingOverlay extends StatelessWidget {
               children: [
                 // Loading indicator
                 SizedBox(
-                  width: 80,
-                  height: 80,
+                  width: 120,
+                  height: 120,
                   child: Stack(
                     alignment: Alignment.center,
                     children: [
@@ -42,10 +42,14 @@ class ProcessingOverlay extends StatelessWidget {
                         strokeWidth: 6,
                         backgroundColor: Colors.grey.shade300,
                       ),
-                      Text(
-                        '$percentage%',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: Text(
+                          '$percentage%',
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
                         ),
                       ),
                     ],
@@ -57,8 +61,8 @@ class ProcessingOverlay extends StatelessWidget {
                 Text(
                   message ?? context.l10n.processingNImages(current, total),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                        fontWeight: FontWeight.w600,
+                      ),
                   textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: AppDimensions.spacingS),
