@@ -133,6 +133,7 @@ class DialogService {
                 Expanded(
                   child: GradientButton(
                     onPressed: () => Navigator.of(context).pop(),
+                    color: Colors.redAccent,
                     child: Center(
                       child: Text(
                         'Cancel',
@@ -599,6 +600,7 @@ class DialogService {
                 children: [
                   Expanded(
                     child: GradientButton(
+                      color: Colors.redAccent,
                       onPressed: () => Navigator.of(context).pop(),
                       child: const Text('Cancel'),
                     ),
@@ -721,6 +723,7 @@ class DialogService {
                 children: [
                   Expanded(
                     child: GradientButton(
+                      color: Colors.redAccent,
                       onPressed: () => Navigator.of(context).pop(),
                       child: const Text('Cancel'),
                     ),
