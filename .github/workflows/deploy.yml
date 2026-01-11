@@ -35,14 +35,14 @@ jobs:
       # Dev Build (APK) - Triggered on Push to Main
       - name: Build Dev APK
         if: github.event_name == 'push'
-        run: flutter build apk --release --flavor dev -t lib/main_dev.dart
+        run: flutter build apk --debug --flavor dev -t lib/main_dev.dart
         
       - name: Upload Dev APK
         if: github.event_name == 'push'
         uses: actions/upload-artifact@v4
         with:
-          name: app-dev-release
-          path: build/app/outputs/flutter-apk/app-dev-release.apk
+          name: app-dev-debug
+          path: build/app/outputs/flutter-apk/app-dev-debug.apk
           retention-days: 7
 
       # Prod Build (App Bundle) - Triggered on Release Tag
@@ -57,3 +57,47 @@ jobs:
           name: app-prod-release
           path: build/app/outputs/bundle/prodRelease/app-prod-release.aab
           retention-days: 90
+
+  build_ios:
+    name: Build iOS (No Codesign)
+    runs-on: macos-latest
+    timeout-minutes: 45
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+          
+      - name: Get Dependencies
+        run: flutter pub get
+        
+      - name: Generate Code
+        run: dart run build_runner build --delete-conflicting-outputs
+        
+      - name: Install Pods
+        run: |
+          cd ios
+          pod install
+          cd ..
+          
+      # iOS Build (No Codesign) - Just checks if it compiles
+      - name: Build iOS (Dev) - No Codesign
+        if: github.event_name == 'push'
+        run: flutter build ios --release --no-codesign --flavor dev -t lib/main_dev.dart
+
+      - name: Compress Runner.app
+        if: github.event_name == 'push'
+        run: |
+          cd build/ios/iphoneos
+          tar -czf message_app_ios_dev.tar.gz Runner.app
+          
+      - name: Upload iOS App (Unsigned)
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-app-dev-unsigned
+          path: build/ios/iphoneos/message_app_ios_dev.tar.gz
+          retention-days: 7

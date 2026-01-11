@@ -1,18 +1,15 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:flutter/services.dart';
 
 import 'app.dart';
-import 'core/di/service_locator.dart';
 import 'flavors.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await MobileAds.instance.initialize();
-
-  // Initialize dependency injection
-  await setupDependencyInjection();
-
-  F.appFlavor = Flavor.prod;
+void main() {
+  F.appFlavor = Flavor.values.firstWhere(
+    (element) => element.name == appFlavor,
+  );
 
   runApp(const App());
 }

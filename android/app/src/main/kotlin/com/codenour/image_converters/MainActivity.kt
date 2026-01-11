@@ -1,4 +1,4 @@
-package com.example.flutter_image_converters
+package com.codenour.image_converters
 
 import io.flutter.embedding.android.FlutterActivity
 
