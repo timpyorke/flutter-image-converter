@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'app.dart';
@@ -13,7 +12,7 @@ void main() async {
   // Initialize dependency injection
   await setupDependencyInjection();
 
-  F.appFlavor = Flavor.dev;
+  F.appFlavor = Flavor.prod;
 
   runApp(const App());
 }
