@@ -1,0 +1,47 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_image_converters/const/image_format.dart';
+
+/// Application settings model
+class AppSettings {
+  final ThemeMode themeMode;
+  final ImageFormat defaultFormat;
+  final int defaultQuality;
+  final bool saveToGallery;
+  final String language;
+  final String version;
+  final String storageLocation;
+  final bool hasSeenTutorial;
+
+  AppSettings({
+    this.themeMode = ThemeMode.system,
+    this.defaultFormat = ImageFormat.png,
+    this.defaultQuality = 90,
+    this.saveToGallery = true,
+    this.language = 'en',
+    this.version = '1.0.0',
+    this.storageLocation = 'Pictures/ImageConverter',
+    this.hasSeenTutorial = false,
+  });
+
+  AppSettings copyWith({
+    ThemeMode? themeMode,
+    ImageFormat? defaultFormat,
+    int? defaultQuality,
+    bool? saveToGallery,
+    String? language,
+    String? version,
+    String? storageLocation,
+    bool? hasSeenTutorial,
+  }) {
+    return AppSettings(
+      themeMode: themeMode ?? this.themeMode,
+      defaultFormat: defaultFormat ?? this.defaultFormat,
+      defaultQuality: defaultQuality ?? this.defaultQuality,
+      saveToGallery: saveToGallery ?? this.saveToGallery,
+      language: language ?? this.language,
+      version: version ?? this.version,
+      storageLocation: storageLocation ?? this.storageLocation,
+      hasSeenTutorial: hasSeenTutorial ?? this.hasSeenTutorial,
+    );
+  }
+}
