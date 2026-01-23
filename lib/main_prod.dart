@@ -9,7 +9,7 @@ import 'flavors.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");
-  await MobileAds.instance.initialize();
+  MobileAds.instance.initialize();
 
   // Initialize dependency injection
   await setupDependencyInjection();
