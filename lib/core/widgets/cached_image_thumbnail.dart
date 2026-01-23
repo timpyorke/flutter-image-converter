@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../models/image_data.dart';
-import '../../services/image_service.dart';
+import '../../presentation/models/image_data.dart';
+import '../services/image_service.dart';
 import '../../core/di/service_locator.dart';
 
 /// Optimized image thumbnail widget with caching

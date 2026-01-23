@@ -27,6 +27,7 @@ dependencies:
   firebase_core: ^4.3.0
   firebase_analytics: ^12.1.0
   firebase_crashlytics: ^5.0.6
+  flutter_dotenv: ^5.1.0
 
 dev_dependencies:
   flutter_test:
@@ -44,6 +45,7 @@ flutter:
     - assets/images/tutorial_welcome.png
     - assets/images/tutorial_convert.png
     - assets/images/tutorial_resize.png
+    - .env
 
   # Enable generation of localization files
   generate: true

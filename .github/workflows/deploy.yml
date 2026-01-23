@@ -26,6 +26,11 @@ jobs:
           channel: 'stable'
           cache: true
           
+      - name: Create .env file
+        run: |
+          echo "FIREBASE_ANDROID_API_KEY=${{ secrets.FIREBASE_ANDROID_API_KEY }}" >> .env
+          echo "FIREBASE_IOS_API_KEY=${{ secrets.FIREBASE_IOS_API_KEY }}" >> .env
+
       - name: Get Dependencies
         run: flutter pub get
         
@@ -71,6 +76,11 @@ jobs:
           channel: 'stable'
           cache: true
           
+      - name: Create .env file
+        run: |
+          echo "FIREBASE_ANDROID_API_KEY=${{ secrets.FIREBASE_ANDROID_API_KEY }}" >> .env
+          echo "FIREBASE_IOS_API_KEY=${{ secrets.FIREBASE_IOS_API_KEY }}" >> .env
+
       - name: Get Dependencies
         run: flutter pub get
         

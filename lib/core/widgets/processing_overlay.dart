@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_image_converters/const/app_dimensions.dart';
+import 'package:flutter_image_converters/core/const/app_dimensions.dart';
 import 'package:flutter_image_converters/l10n/l10n.dart';
 
 /// Overlay widget to show processing progress

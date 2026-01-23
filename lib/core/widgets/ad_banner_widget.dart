@@ -1,4 +1,4 @@
-import 'package:flutter_image_converters/config/ad_config.dart';
+import 'package:flutter_image_converters/core/config/ad_config.dart';
 import 'package:flutter/material.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 

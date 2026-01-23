@@ -1,14 +1,14 @@
 import 'package:flutter_image_converters/providers/shared_pref_provider.dart';
-import 'package:flutter_image_converters/services/dialog_service.dart';
+import 'package:flutter_image_converters/core/services/dialog_service.dart';
 import 'package:get_it/get_it.dart';
 
-import '../../services/image_service.dart';
-import '../../services/storage_service.dart';
-import '../../usecases/convert_and_save_images_usecase.dart';
-import '../../viewmodels/conversion_viewmodel.dart';
-import '../../viewmodels/navigation_viewmodel.dart';
-import '../../viewmodels/resize_viewmodel.dart';
-import '../../viewmodels/settings_viewmodel.dart';
+import '../services/image_service.dart';
+import '../services/storage_service.dart';
+import '../usecases/convert_and_save_images_usecase.dart';
+import '../../presentation/viewmodels/conversion_viewmodel.dart';
+import '../../presentation/viewmodels/navigation_viewmodel.dart';
+import '../../presentation/viewmodels/resize_viewmodel.dart';
+import '../../presentation/viewmodels/settings_viewmodel.dart';
 
 final getIt = GetIt.instance;
 

@@ -1,4 +1,4 @@
-import 'package:flutter_image_converters/services/storage_service.dart';
+import 'package:flutter_image_converters/core/services/storage_service.dart';
 
 class SharedPrefProvider {
   final StorageService storageService;

@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:flutter_image_converters/const/app_constants.dart';
+import 'package:flutter_image_converters/core/const/app_constants.dart';
 import 'package:path_provider/path_provider.dart';
 
 class StorageHelper {

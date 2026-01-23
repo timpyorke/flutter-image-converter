@@ -3,6 +3,7 @@
 import 'package:firebase_core/firebase_core.dart' show FirebaseOptions;
 import 'package:flutter/foundation.dart'
     show defaultTargetPlatform, kIsWeb, TargetPlatform;
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 /// Default [FirebaseOptions] for use with your Firebase apps.
 ///
@@ -49,20 +50,20 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAtDO9DEPox_USDC57WNcFTrIRleMo-OVo',
-    appId: '1:162488874272:android:b1d99b0433b0028f049345',
-    messagingSenderId: '162488874272',
-    projectId: 'image-converter-cebd1',
-    storageBucket: 'image-converter-cebd1.firebasestorage.app',
-  );
+  static FirebaseOptions get android => FirebaseOptions(
+        apiKey: dotenv.env['FIREBASE_ANDROID_API_KEY']!,
+        appId: '1:162488874272:android:b1d99b0433b0028f049345',
+        messagingSenderId: '162488874272',
+        projectId: 'image-converter-cebd1',
+        storageBucket: 'image-converter-cebd1.firebasestorage.app',
+      );
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyAv6FSex8v_FzM-658kCPQPA-8rIr_9rZo',
-    appId: '1:162488874272:ios:366c772a30129e7e049345',
-    messagingSenderId: '162488874272',
-    projectId: 'image-converter-cebd1',
-    storageBucket: 'image-converter-cebd1.firebasestorage.app',
-    iosBundleId: 'com.example.flutterImageConverters',
-  );
+  static FirebaseOptions get ios => FirebaseOptions(
+        apiKey: dotenv.env['FIREBASE_IOS_API_KEY']!,
+        appId: '1:162488874272:ios:366c772a30129e7e049345',
+        messagingSenderId: '162488874272',
+        projectId: 'image-converter-cebd1',
+        storageBucket: 'image-converter-cebd1.firebasestorage.app',
+        iosBundleId: 'com.example.flutterImageConverters',
+      );
 }
