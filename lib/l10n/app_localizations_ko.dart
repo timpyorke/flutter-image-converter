@@ -378,6 +378,21 @@ class AppLocalizationsKo extends AppLocalizations {
   String get reduceByPercent => 'Reduce by %';
 
   @override
+  String get max => 'Max';
+
+  @override
+  String get targetFormat => 'Target Format';
+
+  @override
+  String get low => 'Low';
+
+  @override
+  String get medium => 'Medium';
+
+  @override
+  String get high => 'High';
+
+  @override
   String get pixels => 'px';
 
   @override
@@ -453,4 +468,81 @@ class AppLocalizationsKo extends AppLocalizations {
 
   @override
   String get allImagesProcessed => 'All images processed successfully!';
+
+  @override
+  String get tutorialWelcomeTitle => 'Welcome to Image Converter';
+
+  @override
+  String get tutorialWelcomeDescription =>
+      'The all-in-one tool to convert and resize your images effortlessly. Let\'s get started!';
+
+  @override
+  String get tutorialConvertTitle => 'Convert Images Easily';
+
+  @override
+  String get tutorialConvertDescription =>
+      'Transform your photos into different formats like PNG, JPG, and WEBP with just a few taps.';
+
+  @override
+  String get tutorialResizeTitle => 'Resize with Precision';
+
+  @override
+  String get tutorialResizeDescription =>
+      'Adjust image dimensions while maintaining quality. Perfect for social media and storage optimization.';
+
+  @override
+  String get getStarted => 'Get Started';
+
+  @override
+  String get skip => 'Skip';
+
+  @override
+  String get failedToLoadSettings => 'Failed to load settings';
+
+  @override
+  String get failedToSaveSettings => 'Failed to save settings';
+
+  @override
+  String get addMore => 'Add more';
+
+  @override
+  String get clearAll => 'Clear all';
+
+  @override
+  String get selected => 'selected';
+
+  @override
+  String get storageLocationDescription => 'Choose where to save your images';
+
+  @override
+  String get storageLocationTitle => 'Storage Location';
+
+  @override
+  String get chooseStorageLocation => 'Choose where to save converted images';
+
+  @override
+  String get storageLocationUpdatedTo => 'Storage location updated to';
+
+  @override
+  String get privacyPolicyDescription => 'How we handle your data';
+
+  @override
+  String get termsOfServiceDescription => 'App usage terms';
+
+  @override
+  String get clearCacheDialogDescription =>
+      'This will clear temporary files and free up storage space. Your images and settings will not be affected.';
+
+  @override
+  String get sourceImageBytesNull => 'Source image bytes are null';
+
+  @override
+  String get noImageDataToSave => 'No image data to save';
+
+  @override
+  String get noImageDataForThumbnail => 'No image data for thumbnail';
+
+  @override
+  String get resetSettingsDescription =>
+      'This will reset all settings to their default values. This action cannot be undone.';
 }

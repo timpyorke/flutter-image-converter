@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_converters/const/app_dimensions.dart';
 import 'package:flutter_image_converters/core/widgets/nav_item_widget.dart';
 import 'package:provider/provider.dart';
 import '../l10n/app_localizations.dart';
@@ -31,7 +32,7 @@ class HomePage extends StatelessWidget {
               Container(
                 margin: const EdgeInsets.only(right: 8),
                 child: ClipRRect(
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(AppDimensions.radiusM),
                   child: BackdropFilter(
                     filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
                     child: Container(
@@ -39,7 +40,8 @@ class HomePage extends StatelessWidget {
                         color: Theme.of(
                           context,
                         ).colorScheme.surface.withValues(alpha: 0.7),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius:
+                            BorderRadius.circular(AppDimensions.radiusM),
                         border: Border.all(
                           color: Theme.of(
                             context,
@@ -70,14 +72,14 @@ class HomePage extends StatelessWidget {
                       CircularProgressIndicator(
                         color: Theme.of(context).colorScheme.primary,
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: AppDimensions.spacingL),
                       Text(
                         l10n.loading,
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.6),
-                        ),
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withValues(alpha: 0.6),
+                            ),
                       ),
                     ],
                   ),
@@ -91,13 +93,13 @@ class HomePage extends StatelessWidget {
                       : const ResizeView(key: ValueKey('resize')),
                 ),
           bottomNavigationBar: Container(
-            margin: const EdgeInsets.all(20),
+            margin: const EdgeInsets.all(AppDimensions.paddingXl),
             child: ClipRRect(
               borderRadius: BorderRadius.circular(30),
               child: BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
                 child: Container(
-                  height: 70,
+                  height: AppDimensions.navBarHeight,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       begin: Alignment.topLeft,
@@ -112,7 +114,8 @@ class HomePage extends StatelessWidget {
                               Colors.white.withValues(alpha: 0.7),
                             ],
                     ),
-                    borderRadius: BorderRadius.circular(30),
+                    borderRadius:
+                        BorderRadius.circular(AppDimensions.radiusFull),
                     border: Border.all(
                       color: Theme.of(context).brightness == Brightness.dark
                           ? Colors.white.withValues(alpha: 0.2)

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_image_converters/core/widgets/glass_card.dart';
+import 'package:flutter_image_converters/l10n/l10n.dart';
 import 'package:flutter_image_converters/views/settings/widgets/setting_tile.dart';
 
 class SettingStorageCard extends StatelessWidget {
@@ -24,8 +25,8 @@ class SettingStorageCard extends StatelessWidget {
         children: [
           SettingTile(
             icon: Icons.save_alt_rounded,
-            title: 'Auto-save to Gallery',
-            subtitle: 'Automatically save converted images',
+            title: context.l10n.autoSaveToGallery,
+            subtitle: context.l10n.automaticallySaveConverted,
             trailing: Switch(
               value: saveToGallery,
               onChanged: (_) => toggleSaveToGallery(),
@@ -35,7 +36,7 @@ class SettingStorageCard extends StatelessWidget {
           const SizedBox(height: 16),
           SettingTile(
             icon: Icons.folder_rounded,
-            title: 'Storage Location',
+            title: context.l10n.storageLocation,
             subtitle: storageLocation,
             trailing: Icon(
               Icons.chevron_right_rounded,

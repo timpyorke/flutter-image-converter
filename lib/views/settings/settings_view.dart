@@ -44,24 +44,7 @@ class SettingsView extends StatelessWidget {
                     ),
                   ],
                 ),
-                // Conversion Defaults Section
-                SectionTitle(
-                  title: l10n.conversionDefaults,
-                  body: [
-                    SettingDefaultFormatCard(
-                      defaultFormat: viewModel.defaultFormat,
-                      updateDefaultFormat: (format) {
-                        viewModel.updateDefaultFormat(format);
-                      },
-                    ),
-                    SettingDefaultQualityCard(
-                      defaultQuality: viewModel.defaultQuality,
-                      updateDefaultQuality: (quality) {
-                        viewModel.updateDefaultQuality(quality);
-                      },
-                    ),
-                  ],
-                ),
+
                 // Storage Section
                 SectionTitle(
                   title: l10n.storage,
@@ -113,24 +96,6 @@ class SettingsView extends StatelessWidget {
                           ),
                         );
                       },
-                    ),
-                    Center(
-                      child: GradientButton(
-                        onPressed: () {
-                          viewModel.onShowResetDialog(context);
-                        },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(
-                              Icons.restore_rounded,
-                              color: Colors.white,
-                            ),
-                            const SizedBox(width: 12),
-                            Text(l10n.resetToDefaults),
-                          ],
-                        ),
-                      ),
                     ),
                   ],
                 ),

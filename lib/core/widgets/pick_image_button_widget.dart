@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_image_converters/l10n/l10n.dart';
 import 'package:flutter_image_converters/core/widgets/widgets.dart';
 
 class PickImageButtonWidget extends StatelessWidget {
@@ -47,22 +48,23 @@ class PickImageButtonWidget extends StatelessWidget {
           Text(
             subtitle,
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Theme.of(
-                context,
-              ).colorScheme.onSurface.withValues(alpha: 0.6),
-            ),
+                  color: Theme.of(
+                    context,
+                  ).colorScheme.onSurface.withValues(alpha: 0.6),
+                ),
           ),
           const SizedBox(height: 32),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: GradientButton(
               onPressed: onPressed,
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.add_photo_alternate_rounded, color: Colors.white),
+                  const Icon(Icons.add_photo_alternate_rounded,
+                      color: Colors.white),
                   SizedBox(width: 12),
-                  Text('Select Images'),
+                  Text(context.l10n.selectImages),
                 ],
               ),
             ),

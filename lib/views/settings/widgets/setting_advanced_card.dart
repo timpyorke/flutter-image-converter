@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_image_converters/l10n/l10n.dart';
 import 'package:flutter_image_converters/core/widgets/glass_card.dart';
 import 'package:flutter_image_converters/views/settings/widgets/setting_tile.dart';
 
@@ -22,7 +23,7 @@ class SettingAdvancedCard extends StatelessWidget {
         children: [
           SettingTile(
             icon: Icons.language_rounded,
-            title: 'Language',
+            title: context.l10n.language,
             subtitle: language,
             trailing: Icon(
               Icons.chevron_right_rounded,
@@ -35,8 +36,8 @@ class SettingAdvancedCard extends StatelessWidget {
           const SizedBox(height: 16),
           SettingTile(
             icon: Icons.delete_sweep_rounded,
-            title: 'Clear Cache',
-            subtitle: 'Free up storage space',
+            title: context.l10n.clearCache,
+            subtitle: context.l10n.clearCacheDescription,
             trailing: Icon(
               Icons.chevron_right_rounded,
               color: Theme.of(

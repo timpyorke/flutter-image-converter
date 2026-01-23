@@ -42,4 +42,11 @@ class SharedPrefProvider {
       storageService.setString(storageLocationKey, value);
   String getStorageLocation() =>
       storageService.getString(storageLocationKey) ?? 'Pictures/ImageConverter';
+
+  // Tutorial
+  static const hasSeenTutorialKey = 'hasSeenTutorial';
+  Future<void> setHasSeenTutorial(bool value) =>
+      storageService.setBool(hasSeenTutorialKey, value);
+  bool getHasSeenTutorial() =>
+      storageService.getBool(hasSeenTutorialKey) ?? false;
 }

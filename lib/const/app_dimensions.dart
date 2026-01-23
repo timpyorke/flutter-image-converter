@@ -21,11 +21,16 @@ class AppDimensions {
   static const double paddingXxxl = 32.0;
 
   // Border Radius
+  static const double radiusXs = 4.0;
   static const double radiusS = 8.0;
   static const double radiusM = 12.0;
   static const double radiusL = 16.0;
   static const double radiusXl = 20.0;
   static const double radiusXxl = 24.0;
+  static const double radiusFull = 30.0;
+
+  // Navigation
+  static const double navBarHeight = 70.0;
 
   // Icon Sizes
   static const double iconXs = 16.0;

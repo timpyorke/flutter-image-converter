@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_image_converters/l10n/l10n.dart';
 import 'package:flutter_image_converters/core/widgets/glass_card.dart';
 import 'package:flutter_image_converters/views/settings/widgets/setting_tile.dart';
 
@@ -22,7 +23,7 @@ class SettingAboutCard extends StatelessWidget {
         children: [
           SettingTile(
             icon: Icons.info_rounded,
-            title: 'Version',
+            title: context.l10n.version,
             subtitle: version,
             trailing: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -33,7 +34,7 @@ class SettingAboutCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Text(
-                'Latest',
+                context.l10n.version,
                 style: TextStyle(
                   color: Theme.of(context).colorScheme.primary,
                   fontWeight: FontWeight.w600,
@@ -45,8 +46,8 @@ class SettingAboutCard extends StatelessWidget {
           const SizedBox(height: 16),
           SettingTile(
             icon: Icons.privacy_tip_rounded,
-            title: 'Privacy Policy',
-            subtitle: 'How we handle your data',
+            title: context.l10n.privacyPolicy,
+            subtitle: context.l10n.privacyPolicyDescription,
             trailing: Icon(
               Icons.chevron_right_rounded,
               color: Theme.of(
@@ -58,8 +59,8 @@ class SettingAboutCard extends StatelessWidget {
           const SizedBox(height: 16),
           SettingTile(
             icon: Icons.description_rounded,
-            title: 'Terms of Service',
-            subtitle: 'App usage terms',
+            title: context.l10n.termsOfService,
+            subtitle: context.l10n.termsOfServiceDescription,
             trailing: Icon(
               Icons.chevron_right_rounded,
               color: Theme.of(

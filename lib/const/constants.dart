@@ -1,6 +1,5 @@
 // Export all constants for easy importing
 export 'app_dimensions.dart';
-export 'app_strings.dart';
 export 'conversion_state_type.dart';
 export 'error_keys.dart';
 export 'image_format.dart';

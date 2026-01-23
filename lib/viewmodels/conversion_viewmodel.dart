@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_image_converters/const/app_strings.dart';
+import 'package:flutter_image_converters/l10n/l10n.dart';
 import 'package:flutter_image_converters/const/conversion_state_type.dart';
 import 'package:flutter_image_converters/const/image_format.dart';
 import 'package:flutter_image_converters/core/utils/toast_helper.dart';
@@ -126,9 +126,8 @@ class ConversionViewModel extends ChangeNotifier {
                 : 'Failed to save images',
           ),
           behavior: SnackBarBehavior.floating,
-          backgroundColor: hasSavedImages
-              ? Colors.green.shade600
-              : Colors.red.shade600,
+          backgroundColor:
+              hasSavedImages ? Colors.green.shade600 : Colors.red.shade600,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
@@ -149,10 +148,12 @@ class ConversionViewModel extends ChangeNotifier {
     notifyListeners();
 
     try {
+      final storageLocation = sharedPrefProvider.getStorageLocation();
       final totalImages = _state.sourceImages.length;
       final result = await convertAndSaveUseCase.execute(
         sourceImages: _state.sourceImages,
         settings: _state.settings,
+        saveToPath: storageLocation,
         onProgress: (current, total) {
           // Only notify every 10% progress to reduce UI updates
           if (current % (total ~/ 10 + 1) == 0 || current == total) {
@@ -228,10 +229,11 @@ class ConversionViewModel extends ChangeNotifier {
     required int imageCount,
     required Future<void> Function() onContinue,
   }) {
-    dialogService.showConvertAdDialog(
+    dialogService.showAdDialog(
       context,
-      imageCount: sourceImages.length,
       onContinue: () => convertImagesWithProgress(context),
+      title: context.l10n.readyToConvert,
+      subtitle: context.l10n.thisWillConvertNImages(sourceImages.length),
     );
   }
 

@@ -555,7 +555,7 @@ abstract class AppLocalizations {
   /// No description provided for @clearCacheDescription.
   ///
   /// In en, this message translates to:
-  /// **'This will clear temporary files and free up storage space. Your images and settings will not be affected.'**
+  /// **'Free up space by clearing temporary files'**
   String get clearCacheDescription;
 
   /// No description provided for @cacheClearedSuccessfully.
@@ -816,6 +816,36 @@ abstract class AppLocalizations {
   /// **'Reduce by %'**
   String get reduceByPercent;
 
+  /// No description provided for @max.
+  ///
+  /// In en, this message translates to:
+  /// **'Max'**
+  String get max;
+
+  /// No description provided for @targetFormat.
+  ///
+  /// In en, this message translates to:
+  /// **'Target Format'**
+  String get targetFormat;
+
+  /// No description provided for @low.
+  ///
+  /// In en, this message translates to:
+  /// **'Low'**
+  String get low;
+
+  /// No description provided for @medium.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium'**
+  String get medium;
+
+  /// No description provided for @high.
+  ///
+  /// In en, this message translates to:
+  /// **'High'**
+  String get high;
+
   /// No description provided for @pixels.
   ///
   /// In en, this message translates to:
@@ -959,6 +989,150 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'All images processed successfully!'**
   String get allImagesProcessed;
+
+  /// No description provided for @tutorialWelcomeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Welcome to Image Converter'**
+  String get tutorialWelcomeTitle;
+
+  /// No description provided for @tutorialWelcomeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'The all-in-one tool to convert and resize your images effortlessly. Let\'s get started!'**
+  String get tutorialWelcomeDescription;
+
+  /// No description provided for @tutorialConvertTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Convert Images Easily'**
+  String get tutorialConvertTitle;
+
+  /// No description provided for @tutorialConvertDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Transform your photos into different formats like PNG, JPG, and WEBP with just a few taps.'**
+  String get tutorialConvertDescription;
+
+  /// No description provided for @tutorialResizeTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Resize with Precision'**
+  String get tutorialResizeTitle;
+
+  /// No description provided for @tutorialResizeDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Adjust image dimensions while maintaining quality. Perfect for social media and storage optimization.'**
+  String get tutorialResizeDescription;
+
+  /// No description provided for @getStarted.
+  ///
+  /// In en, this message translates to:
+  /// **'Get Started'**
+  String get getStarted;
+
+  /// No description provided for @skip.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip'**
+  String get skip;
+
+  /// No description provided for @failedToLoadSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to load settings'**
+  String get failedToLoadSettings;
+
+  /// No description provided for @failedToSaveSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to save settings'**
+  String get failedToSaveSettings;
+
+  /// No description provided for @addMore.
+  ///
+  /// In en, this message translates to:
+  /// **'Add more'**
+  String get addMore;
+
+  /// No description provided for @clearAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Clear all'**
+  String get clearAll;
+
+  /// No description provided for @selected.
+  ///
+  /// In en, this message translates to:
+  /// **'selected'**
+  String get selected;
+
+  /// No description provided for @storageLocationDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose where to save your images'**
+  String get storageLocationDescription;
+
+  /// No description provided for @storageLocationTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage Location'**
+  String get storageLocationTitle;
+
+  /// No description provided for @chooseStorageLocation.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose where to save converted images'**
+  String get chooseStorageLocation;
+
+  /// No description provided for @storageLocationUpdatedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Storage location updated to'**
+  String get storageLocationUpdatedTo;
+
+  /// No description provided for @privacyPolicyDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'How we handle your data'**
+  String get privacyPolicyDescription;
+
+  /// No description provided for @termsOfServiceDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'App usage terms'**
+  String get termsOfServiceDescription;
+
+  /// No description provided for @clearCacheDialogDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'This will clear temporary files and free up storage space. Your images and settings will not be affected.'**
+  String get clearCacheDialogDescription;
+
+  /// No description provided for @sourceImageBytesNull.
+  ///
+  /// In en, this message translates to:
+  /// **'Source image bytes are null'**
+  String get sourceImageBytesNull;
+
+  /// No description provided for @noImageDataToSave.
+  ///
+  /// In en, this message translates to:
+  /// **'No image data to save'**
+  String get noImageDataToSave;
+
+  /// No description provided for @noImageDataForThumbnail.
+  ///
+  /// In en, this message translates to:
+  /// **'No image data for thumbnail'**
+  String get noImageDataForThumbnail;
+
+  /// No description provided for @resetSettingsDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'This will reset all settings to their default values. This action cannot be undone.'**
+  String get resetSettingsDescription;
 }
 
 class _AppLocalizationsDelegate

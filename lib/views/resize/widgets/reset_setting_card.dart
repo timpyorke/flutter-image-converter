@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_image_converters/const/app_dimensions.dart';
+import 'package:flutter_image_converters/l10n/l10n.dart';
 import 'package:flutter_image_converters/core/widgets/glass_card.dart';
 import 'package:flutter_image_converters/core/widgets/glass_container.dart';
 import 'package:flutter_image_converters/models/image_data.dart';
@@ -24,12 +26,12 @@ class ResetSettingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GlassCard(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppDimensions.paddingXl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            'Resize Settings',
+            context.l10n.resizeSettings,
             style: Theme.of(
               context,
             ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
@@ -38,18 +40,20 @@ class ResetSettingCard extends StatelessWidget {
 
           // Aspect Ratio Lock
           GlassContainer(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            borderRadius: 16,
+            padding: const EdgeInsets.symmetric(
+                horizontal: AppDimensions.paddingL,
+                vertical: AppDimensions.paddingS),
+            borderRadius: AppDimensions.radiusL,
             child: CheckboxListTile(
               title: Row(
                 children: [
                   Icon(
                     Icons.aspect_ratio_rounded,
-                    size: 20,
+                    size: AppDimensions.iconS,
                     color: Theme.of(context).colorScheme.primary,
                   ),
-                  const SizedBox(width: 12),
-                  const Text('Maintain Aspect Ratio'),
+                  const SizedBox(width: AppDimensions.spacingM),
+                  Text(context.l10n.maintainAspectRatio),
                 ],
               ),
               value: maintainAspectRatio,
@@ -63,14 +67,14 @@ class ResetSettingCard extends StatelessWidget {
 
           // Quick Resize Options
           Text(
-            'Reduce by %',
+            context.l10n.reduceByPercent,
             style: Theme.of(
               context,
             ).textTheme.labelMedium?.copyWith(fontWeight: FontWeight.w600),
           ),
-          const SizedBox(height: 8),
+          const SizedBox(height: AppDimensions.spacingS),
           Wrap(
-            spacing: 8,
+            spacing: AppDimensions.spacingS,
             children: [
               PercentageChip(
                 percentage: 25,
@@ -140,10 +144,10 @@ class ResetSettingCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Width',
+                      context.l10n.width,
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
                     const SizedBox(height: 8),
                     TextField(
@@ -167,7 +171,7 @@ class ResetSettingCard extends StatelessWidget {
                             width: 2,
                           ),
                         ),
-                        suffixText: 'px',
+                        suffixText: context.l10n.pixels,
                         filled: true,
                         fillColor: Theme.of(
                           context,
@@ -178,16 +182,16 @@ class ResetSettingCard extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppDimensions.spacingL),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Height',
+                      context.l10n.height,
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                            fontWeight: FontWeight.w600,
+                          ),
                     ),
                     const SizedBox(height: 8),
                     TextField(
@@ -211,7 +215,7 @@ class ResetSettingCard extends StatelessWidget {
                             width: 2,
                           ),
                         ),
-                        suffixText: 'px',
+                        suffixText: context.l10n.pixels,
                         filled: true,
                         fillColor: Theme.of(
                           context,

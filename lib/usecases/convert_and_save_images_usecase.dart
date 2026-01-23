@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:path_provider/path_provider.dart';
+
 import 'package:permission_handler/permission_handler.dart';
 import '../const/image_format.dart';
 import '../models/image_data.dart';
@@ -9,13 +9,16 @@ import '../services/image_service.dart';
 
 /// Use case for converting and saving images in the background
 class ConvertAndSaveImagesUseCase {
-  ConvertAndSaveImagesUseCase({required ImageService imageService});
+  final ImageService imageService;
+
+  ConvertAndSaveImagesUseCase({required this.imageService});
 
   /// Convert and save images with progress callback
   Future<ConvertAndSaveResult> execute({
     required List<ImageData> sourceImages,
     required ConversionSettings settings,
     required Function(int current, int total) onProgress,
+    String? saveToPath,
   }) async {
     if (sourceImages.isEmpty) {
       throw Exception('No images to convert');
@@ -46,6 +49,7 @@ class ConvertAndSaveImagesUseCase {
             final savedPath = await _saveImage(
               convertedImages[i],
               settings.targetFormat,
+              saveToPath: saveToPath,
             );
             savedPaths.add(savedPath);
             successCount++;
@@ -98,56 +102,12 @@ class ConvertAndSaveImagesUseCase {
   }
 
   /// Save image to device storage
-  Future<String> _saveImage(ImageData imageData, ImageFormat format) async {
-    if (imageData.bytes == null) {
-      throw Exception('Image bytes are null');
-    }
-
-    // Get appropriate directory based on platform
-    Directory? directory;
-
-    if (Platform.isAndroid) {
-      // For Android 10+, use app-specific external storage or MediaStore
-      // First try external storage directory (app-specific, no permission needed)
-      try {
-        final externalDir = await getExternalStorageDirectory();
-        if (externalDir != null) {
-          directory = Directory('${externalDir.path}/ImageConverter');
-        }
-      } catch (e) {
-        debugPrint('Failed to get external storage: $e');
-      }
-
-      // Fallback to Pictures directory if available
-      directory ??= Directory('/storage/emulated/0/Pictures/ImageConverter');
-    } else if (Platform.isIOS) {
-      // For iOS, use application documents directory
-      directory = await getApplicationDocumentsDirectory();
-    } else {
-      // Fallback to downloads directory
-      directory = await getDownloadsDirectory();
-    }
-
-    if (directory == null) {
-      throw Exception('Unable to access storage directory');
-    }
-
-    // Create directory if it doesn't exist
-    if (!await directory.exists()) {
-      await directory.create(recursive: true);
-    }
-
-    // Generate unique filename
-    final timestamp = DateTime.now().millisecondsSinceEpoch;
-    final extension = format.extension;
-    final fileName = 'converted_$timestamp.$extension';
-    final filePath = '${directory.path}/$fileName';
-
-    // Write file
-    final file = File(filePath);
-    await file.writeAsBytes(imageData.bytes!);
-
-    return filePath;
+  Future<String> _saveImage(
+    ImageData imageData,
+    ImageFormat format, {
+    String? saveToPath,
+  }) async {
+    return imageService.saveImage(imageData, saveToPath ?? '');
   }
 
   /// Request storage permission

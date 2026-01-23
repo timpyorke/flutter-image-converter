@@ -49,7 +49,9 @@
 		<string>This app needs access to save converted images to your photo library</string>
 		<key>NSPhotoLibraryUsageDescription</key>
 		<string>This app needs access to select images for conversion</string>
-		<key>UIStatusBarHidden</key>
+	<key>UIStatusBarHidden</key>
 		<false/>
+		<key>GADApplicationIdentifier</key>
+		<string>ca-app-pub-9823034696974019~4818863124</string>
 	</dict>
 </plist>

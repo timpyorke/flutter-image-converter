@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_image_converters/const/app_dimensions.dart';
+import 'package:flutter_image_converters/l10n/l10n.dart';
 import 'package:flutter_image_converters/core/widgets/glass_card.dart';
 import 'package:flutter_image_converters/core/widgets/glass_container.dart';
 import 'package:flutter_image_converters/core/widgets/gradient_button.dart';
@@ -13,6 +15,7 @@ class ConvertResultSection extends StatelessWidget {
     required this.convertAndSaveImages,
     required this.convertedImages,
     required this.sourceImages,
+    this.shouldShowSaveButton = true,
   });
 
   final int quality;
@@ -21,28 +24,30 @@ class ConvertResultSection extends StatelessWidget {
   final List<ImageData> convertedImages;
   final List<ImageData> sourceImages;
   final VoidCallback convertAndSaveImages;
+  final bool shouldShowSaveButton;
 
   @override
   Widget build(BuildContext context) {
     return GlassCard(
-      padding: const EdgeInsets.all(24),
+      padding: const EdgeInsets.all(AppDimensions.paddingXxl),
       color: Theme.of(context).colorScheme.primaryContainer,
       child: Column(
+        spacing: AppDimensions.spacingM,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(12),
+                padding: const EdgeInsets.all(AppDimensions.paddingM),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [Colors.green.shade400, Colors.green.shade600],
                   ),
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(AppDimensions.radiusL),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.green.withValues(alpha: 0.3),
-                      blurRadius: 20,
+                      blurRadius: AppDimensions.blurMedium,
                       offset: const Offset(0, 8),
                     ),
                   ],
@@ -50,34 +55,33 @@ class ConvertResultSection extends StatelessWidget {
                 child: const Icon(
                   Icons.check_circle_rounded,
                   color: Colors.white,
-                  size: 28,
+                  size: AppDimensions.iconL,
                 ),
               ),
-              const SizedBox(width: 16),
+              const SizedBox(width: AppDimensions.spacingL),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Conversion Complete!',
+                      context.l10n.conversionComplete,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                            fontWeight: FontWeight.w700,
+                          ),
                     ),
                     Text(
                       '$quality image${quality > 1 ? "s" : ""} converted successfully',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onSurface.withValues(alpha: 0.7),
-                      ),
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withValues(alpha: 0.7),
+                          ),
                     ),
                   ],
                 ),
               ),
             ],
           ),
-          const SizedBox(height: 24),
           SizedBox(
             height: 220,
             child: ListView.builder(
@@ -92,15 +96,16 @@ class ConvertResultSection extends StatelessWidget {
                     (sizeDiff / sourceImage.sizeInBytes! * 100).round();
 
                 return Padding(
-                  padding: const EdgeInsets.only(right: 16),
+                  padding: const EdgeInsets.only(right: AppDimensions.paddingL),
                   child: GlassContainer(
-                    padding: const EdgeInsets.all(12),
-                    borderRadius: 20,
+                    padding: const EdgeInsets.all(AppDimensions.paddingM),
+                    borderRadius: AppDimensions.radiusXl,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ClipRRect(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius:
+                              BorderRadius.circular(AppDimensions.radiusL),
                           child: image.bytes != null
                               ? Image.memory(
                                   image.bytes!,
@@ -114,7 +119,7 @@ class ConvertResultSection extends StatelessWidget {
                                   color: Colors.grey.shade300,
                                 ),
                         ),
-                        const SizedBox(height: 12),
+                        const SizedBox(height: AppDimensions.spacingM),
                         SizedBox(
                           width: 140,
                           child: Column(
@@ -125,7 +130,7 @@ class ConvertResultSection extends StatelessWidget {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'Before',
+                                    context.l10n.before,
                                     style: TextStyle(
                                       fontSize: 10,
                                       color: Theme.of(context)
@@ -143,13 +148,13 @@ class ConvertResultSection extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              const SizedBox(height: 4),
+                              const SizedBox(height: AppDimensions.spacingXs),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    'After',
+                                    context.l10n.after,
                                     style: TextStyle(
                                       fontSize: 10,
                                       color: Theme.of(context)
@@ -168,17 +173,18 @@ class ConvertResultSection extends StatelessWidget {
                                           color: Colors.green.shade600,
                                         ),
                                       ),
-                                      const SizedBox(width: 4),
+                                      const SizedBox(
+                                          width: AppDimensions.spacingXs),
                                       if (percentReduced > 0)
                                         Container(
                                           padding: const EdgeInsets.symmetric(
-                                            horizontal: 4,
+                                            horizontal: AppDimensions.paddingXs,
                                             vertical: 2,
                                           ),
                                           decoration: BoxDecoration(
                                             color: Colors.green.shade100,
                                             borderRadius: BorderRadius.circular(
-                                              4,
+                                              AppDimensions.radiusXs,
                                             ),
                                           ),
                                           child: Text(
@@ -204,18 +210,18 @@ class ConvertResultSection extends StatelessWidget {
               },
             ),
           ),
-          const SizedBox(height: 20),
-          GradientButton(
-            onPressed: convertAndSaveImages,
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(Icons.download_rounded, color: Colors.white),
-                const SizedBox(width: 12),
-                Text('Save $quality Image${quality > 1 ? "s" : ""}'),
-              ],
+          if (shouldShowSaveButton)
+            GradientButton(
+              onPressed: convertAndSaveImages,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(Icons.download_rounded, color: Colors.white),
+                  const SizedBox(width: AppDimensions.spacingM),
+                  Text('Save $quality Image${quality > 1 ? "s" : ""}'),
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );

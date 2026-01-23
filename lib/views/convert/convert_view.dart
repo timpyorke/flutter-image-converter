@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_image_converters/const/app_dimensions.dart';
-import 'package:flutter_image_converters/const/app_strings.dart';
+import 'package:flutter_image_converters/l10n/l10n.dart';
 import 'package:flutter_image_converters/core/utils/toast_helper.dart';
 import 'package:flutter_image_converters/core/widgets/pick_image_button_widget.dart';
 import 'package:flutter_image_converters/views/convert/widgets/Source_images_section.dart';
@@ -75,10 +75,10 @@ class ConvertView extends StatelessWidget {
                   onPressed: viewModel.isLoading
                       ? null
                       : () => viewModel.onShowConvertAdDialog(
-                          context,
-                          imageCount: viewModel.sourceImages.length,
-                          onContinue: viewModel.convertImages,
-                        ),
+                            context,
+                            imageCount: viewModel.sourceImages.length,
+                            onContinue: viewModel.convertImages,
+                          ),
                   height: 60,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -105,6 +105,7 @@ class ConvertView extends StatelessWidget {
                         viewModel.onConvertAndSaveImages(context),
                     convertedImages: viewModel.convertedImages,
                     sourceImages: viewModel.sourceImages,
+                    shouldShowSaveButton: viewModel.shouldShowSaveButton,
                   ),
                 ],
               ],
@@ -116,12 +117,7 @@ class ConvertView extends StatelessWidget {
         return Stack(
           children: [
             mainContent,
-            if (viewModel.isLoading)
-              ProcessingOverlay(
-                current: viewModel.convertedCount,
-                total: viewModel.totalCount,
-                message: context.l10n.convertingInBackground,
-              ),
+            if (viewModel.isLoading) ProcessingOverlay(),
           ],
         );
       },

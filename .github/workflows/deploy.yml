@@ -1,0 +1,59 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  release:
+    types: [created]
+
+jobs:
+  build_android:
+    name: Build Android
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+          
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+          
+      - name: Get Dependencies
+        run: flutter pub get
+        
+      - name: Generate Code (Freezed/JSON)
+        run: dart run build_runner build --delete-conflicting-outputs
+
+      # Dev Build (APK) - Triggered on Push to Main
+      - name: Build Dev APK
+        if: github.event_name == 'push'
+        run: flutter build apk --release --flavor dev -t lib/main_dev.dart
+        
+      - name: Upload Dev APK
+        if: github.event_name == 'push'
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-dev-release
+          path: build/app/outputs/flutter-apk/app-dev-release.apk
+          retention-days: 7
+
+      # Prod Build (App Bundle) - Triggered on Release Tag
+      - name: Build Prod App Bundle
+        if: github.event_name == 'release'
+        run: flutter build appbundle --release --flavor prod -t lib/main_prod.dart
+
+      - name: Upload Prod Bundle
+        if: github.event_name == 'release'
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-prod-release
+          path: build/app/outputs/bundle/prodRelease/app-prod-release.aab
+          retention-days: 90

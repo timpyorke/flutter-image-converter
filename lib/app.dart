@@ -11,6 +11,7 @@ import 'viewmodels/navigation_viewmodel.dart';
 import 'viewmodels/conversion_viewmodel.dart';
 import 'viewmodels/resize_viewmodel.dart';
 import 'viewmodels/settings_viewmodel.dart';
+import 'views/tutorial/tutorial_view.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -50,7 +51,12 @@ class App extends StatelessWidget {
               Locale('ru'), // Russian
             ],
             locale: Locale(settingsVM.settings.language),
-            home: _flavorBanner(child: const HomePage(), show: kDebugMode),
+            home: _flavorBanner(
+              child: settingsVM.settings.hasSeenTutorial
+                  ? const HomePage()
+                  : const TutorialView(),
+              show: kDebugMode,
+            ),
           );
         },
       ),

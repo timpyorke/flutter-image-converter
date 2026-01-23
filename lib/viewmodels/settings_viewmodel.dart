@@ -56,6 +56,7 @@ class SettingsViewModel extends ChangeNotifier {
       final saveToGallery = sharedPrefProvider.getSaveToGallery();
       final language = sharedPrefProvider.getLanguage();
       final storageLocation = sharedPrefProvider.getStorageLocation();
+      final hasSeenTutorial = sharedPrefProvider.getHasSeenTutorial();
 
       final loadedSettings = AppSettings(
         themeMode: ThemeMode.values[themeModeIndex],
@@ -64,6 +65,7 @@ class SettingsViewModel extends ChangeNotifier {
         saveToGallery: saveToGallery,
         language: language,
         storageLocation: storageLocation,
+        hasSeenTutorial: hasSeenTutorial,
       );
 
       _state = _state.copyWithSettings(loadedSettings);
@@ -89,6 +91,9 @@ class SettingsViewModel extends ChangeNotifier {
       await sharedPrefProvider.setStorageLocation(
         _state.settings.storageLocation,
       );
+      await sharedPrefProvider.setHasSeenTutorial(
+        _state.settings.hasSeenTutorial,
+      );
     } catch (e) {
       _state = _state.copyWithError('Failed to save settings: $e');
       notifyListeners();
@@ -99,22 +104,6 @@ class SettingsViewModel extends ChangeNotifier {
   /// Update theme mode
   Future<void> updateThemeMode(ThemeMode mode) async {
     final updatedSettings = _state.settings.copyWith(themeMode: mode);
-    _state = _state.copyWithSettings(updatedSettings);
-    await _saveSettings();
-    notifyListeners();
-  }
-
-  /// Update default format
-  Future<void> updateDefaultFormat(ImageFormat format) async {
-    final updatedSettings = _state.settings.copyWith(defaultFormat: format);
-    _state = _state.copyWithSettings(updatedSettings);
-    await _saveSettings();
-    notifyListeners();
-  }
-
-  /// Update default quality
-  Future<void> updateDefaultQuality(int quality) async {
-    final updatedSettings = _state.settings.copyWith(defaultQuality: quality);
     _state = _state.copyWithSettings(updatedSettings);
     await _saveSettings();
     notifyListeners();
@@ -146,14 +135,6 @@ class SettingsViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Reset to defaults
-  Future<void> resetToDefaults() async {
-    final defaultSettings = AppSettings();
-    _state = _state.copyWithSettings(defaultSettings);
-    await _saveSettings();
-    notifyListeners();
-  }
-
   String getLanguageName() {
     const languages = {
       'en': 'English',
@@ -168,12 +149,6 @@ class SettingsViewModel extends ChangeNotifier {
       'ru': 'Русский',
     };
     return languages[language] ?? 'English';
-  }
-
-  void onShowResetDialog(BuildContext context) {
-    dialogService.showResetSettingDialog(context, () {
-      resetToDefaults();
-    });
   }
 
   void onShowClearCacheDialog(BuildContext context) {
@@ -192,5 +167,13 @@ class SettingsViewModel extends ChangeNotifier {
     ) {
       updateStorageLocation(selectedLocation);
     });
+  }
+
+  /// Complete tutorial
+  Future<void> completeTutorial() async {
+    final updatedSettings = _state.settings.copyWith(hasSeenTutorial: true);
+    _state = _state.copyWithSettings(updatedSettings);
+    await _saveSettings();
+    notifyListeners();
   }
 }

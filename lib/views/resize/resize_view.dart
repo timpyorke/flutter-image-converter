@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_image_converters/const/app_dimensions.dart';
-import 'package:flutter_image_converters/const/app_strings.dart';
+import 'package:flutter_image_converters/l10n/l10n.dart';
 import 'package:flutter_image_converters/core/di/service_locator.dart';
 import 'package:flutter_image_converters/core/utils/toast_helper.dart';
 import 'package:flutter_image_converters/core/widgets/pick_image_button_widget.dart';
@@ -74,10 +74,12 @@ class ResizeView extends StatelessWidget {
                 // Resize Button
                 if (viewModel.canResize)
                   GradientButton(
-                    onPressed: () => dialogService.showResizeAdDialog(
+                    onPressed: () => dialogService.showAdDialog(
                       context,
                       onContinue: () =>
                           viewModel.resizeImageWithProgress(context),
+                      title: context.l10n.readyToResize,
+                      subtitle: context.l10n.imageWillBeResized,
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -112,12 +114,7 @@ class ResizeView extends StatelessWidget {
         return Stack(
           children: [
             mainContent,
-            if (viewModel.isLoading)
-              ProcessingOverlay(
-                current: 1,
-                total: 1,
-                message: context.l10n.resizingInBackground,
-              ),
+            if (viewModel.isLoading) ProcessingOverlay(),
           ],
         );
       },

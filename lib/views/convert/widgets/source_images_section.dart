@@ -1,6 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_image_converters/const/app_dimensions.dart';
+import 'package:flutter_image_converters/l10n/l10n.dart';
 import 'package:flutter_image_converters/core/widgets/cached_image_thumbnail.dart';
 import 'package:flutter_image_converters/core/widgets/glass_card.dart';
 import 'package:flutter_image_converters/core/widgets/glass_container.dart';
@@ -25,7 +27,7 @@ class SourceImagesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GlassCard(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppDimensions.paddingXl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -48,24 +50,24 @@ class SourceImagesSection extends StatelessWidget {
                     child: const Icon(
                       Icons.photo_library_rounded,
                       color: Colors.white,
-                      size: 20,
+                      size: AppDimensions.iconS,
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppDimensions.spacingM),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Source Images',
+                        context.l10n.sourceImages,
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       Text(
-                        '$imageCount selected',
+                        '$imageCount ${context.l10n.selected}',
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.6),
-                        ),
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onSurface.withValues(alpha: 0.6),
+                            ),
                       ),
                     ],
                   ),
@@ -77,21 +79,23 @@ class SourceImagesSection extends StatelessWidget {
                     padding: const EdgeInsets.all(8),
                     borderRadius: 12,
                     child: IconButton(
-                      icon: const Icon(Icons.add_rounded, size: 20),
+                      icon: const Icon(Icons.add_rounded,
+                          size: AppDimensions.iconS),
                       onPressed: pickImages,
-                      tooltip: 'Add more',
+                      tooltip: context.l10n.addMore,
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                     ),
                   ),
-                  const SizedBox(width: 8),
+                  const SizedBox(width: AppDimensions.spacingS),
                   GlassContainer(
                     padding: const EdgeInsets.all(8),
                     borderRadius: 12,
                     child: IconButton(
-                      icon: const Icon(Icons.delete_outline_rounded, size: 20),
+                      icon: const Icon(Icons.delete_outline_rounded,
+                          size: AppDimensions.iconS),
                       onPressed: clear,
-                      tooltip: 'Clear all',
+                      tooltip: context.l10n.clearAll,
                       padding: EdgeInsets.zero,
                       constraints: const BoxConstraints(),
                     ),
@@ -100,7 +104,7 @@ class SourceImagesSection extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 20),
+          const SizedBox(height: AppDimensions.spacingXl),
           SizedBox(
             height: 160,
             child: ListView.builder(
@@ -110,10 +114,10 @@ class SourceImagesSection extends StatelessWidget {
               itemBuilder: (context, index) {
                 final image = sourceImages[index];
                 return Padding(
-                  padding: const EdgeInsets.only(right: 12),
+                  padding: const EdgeInsets.only(right: AppDimensions.paddingM),
                   child: GlassContainer(
                     padding: EdgeInsets.zero,
-                    borderRadius: 20,
+                    borderRadius: AppDimensions.radiusXl,
                     child: Container(
                       width: 140,
                       decoration: BoxDecoration(
@@ -142,10 +146,12 @@ class SourceImagesSection extends StatelessWidget {
                                 child: Container(
                                   decoration: BoxDecoration(
                                     color: Colors.black.withValues(alpha: 0.3),
-                                    borderRadius: BorderRadius.circular(20),
+                                    borderRadius: BorderRadius.circular(
+                                        AppDimensions.radiusXl),
                                   ),
                                   child: IconButton(
-                                    padding: const EdgeInsets.all(8),
+                                    padding: const EdgeInsets.all(
+                                        AppDimensions.paddingS),
                                     constraints: const BoxConstraints(),
                                     icon: const Icon(
                                       Icons.close_rounded,
@@ -171,12 +177,13 @@ class SourceImagesSection extends StatelessWidget {
                                 ),
                                 child: Container(
                                   padding: const EdgeInsets.symmetric(
-                                    horizontal: 8,
+                                    horizontal: AppDimensions.paddingS,
                                     vertical: 6,
                                   ),
                                   decoration: BoxDecoration(
                                     color: Colors.black.withValues(alpha: 0.5),
-                                    borderRadius: BorderRadius.circular(12),
+                                    borderRadius: BorderRadius.circular(
+                                        AppDimensions.radiusM),
                                   ),
                                   child: Text(
                                     image.dimensionsDisplay,

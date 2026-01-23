@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_image_converters/const/app_strings.dart';
+import 'package:flutter_image_converters/l10n/l10n.dart';
 import 'package:flutter_image_converters/const/resize_state_type.dart';
 import 'package:flutter_image_converters/core/utils/toast_helper.dart';
 import 'package:flutter_image_converters/models/resize_setting.dart';
@@ -20,8 +20,8 @@ class ResizeViewModel extends ChangeNotifier {
   ResizeViewModel({
     required ImageService imageService,
     required SharedPrefProvider sharedPrefProvider,
-  }) : _imageService = imageService,
-       _sharedPrefProvider = sharedPrefProvider {
+  })  : _imageService = imageService,
+        _sharedPrefProvider = sharedPrefProvider {
     // Initialize controllers
     widthController = TextEditingController();
     heightController = TextEditingController();
@@ -180,11 +180,12 @@ class ResizeViewModel extends ChangeNotifier {
       if (success) {
         ToastHelper.showSuccess(
           context,
-          'Image Saved!',
-          subtitle: 'Your resized image has been saved to gallery',
+          context.l10n.imageSaved,
+          subtitle: context.l10n.resizedImageSavedToGallery,
         );
       } else {
-        ToastHelper.showError(context, 'Save Failed', subtitle: errorMessage);
+        ToastHelper.showError(context, context.l10n.saveFailed,
+            subtitle: errorMessage);
       }
     }
   }

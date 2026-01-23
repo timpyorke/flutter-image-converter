@@ -10,6 +10,7 @@ class AppSettings {
   final String language;
   final String version;
   final String storageLocation;
+  final bool hasSeenTutorial;
 
   AppSettings({
     this.themeMode = ThemeMode.system,
@@ -19,6 +20,7 @@ class AppSettings {
     this.language = 'en',
     this.version = '1.0.0',
     this.storageLocation = 'Pictures/ImageConverter',
+    this.hasSeenTutorial = false,
   });
 
   AppSettings copyWith({
@@ -29,6 +31,7 @@ class AppSettings {
     String? language,
     String? version,
     String? storageLocation,
+    bool? hasSeenTutorial,
   }) {
     return AppSettings(
       themeMode: themeMode ?? this.themeMode,
@@ -38,6 +41,7 @@ class AppSettings {
       language: language ?? this.language,
       version: version ?? this.version,
       storageLocation: storageLocation ?? this.storageLocation,
+      hasSeenTutorial: hasSeenTutorial ?? this.hasSeenTutorial,
     );
   }
 }

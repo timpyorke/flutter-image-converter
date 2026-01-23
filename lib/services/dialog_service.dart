@@ -1,88 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_image_converters/const/app_dimensions.dart';
+import 'package:flutter_image_converters/l10n/l10n.dart';
+import 'package:flutter_image_converters/core/widgets/ad_banner_widget.dart';
 import 'package:flutter_image_converters/core/widgets/glass_card.dart';
 import 'package:flutter_image_converters/core/widgets/glass_container.dart';
 import 'package:flutter_image_converters/core/widgets/gradient_button.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class DialogService {
-  void showResetSettingDialog(
-    BuildContext context,
-    VoidCallback resetToDefaults,
-  ) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) => GlassCard(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.red.shade100,
-                shape: BoxShape.circle,
-              ),
-              child: Icon(
-                Icons.warning_rounded,
-                color: Colors.red.shade600,
-                size: 48,
-              ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              'Reset Settings?',
-              style: Theme.of(
-                context,
-              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'This will reset all settings to their default values. This action cannot be undone.',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(
-                  context,
-                ).colorScheme.onSurface.withValues(alpha: 0.7),
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 24),
-            Row(
-              children: [
-                Expanded(
-                  child: GradientButton(
-                    color: Colors.redAccent,
-                    onPressed: () => Navigator.of(context).pop(),
-                    child: Center(child: Text('Cancel')),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: GradientButton(
-                    onPressed: () {
-                      resetToDefaults;
-                      Navigator.of(context).pop();
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: const Text('Settings reset to defaults'),
-                          behavior: SnackBarBehavior.floating,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      );
-                    },
-                    child: const Text('Reset'),
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   void showClearCacheDialog(BuildContext context) {
     showModalBottomSheet(
       context: context,
@@ -112,19 +37,19 @@ class DialogService {
             ),
             const SizedBox(height: 20),
             Text(
-              'Clear Cache?',
+              context.l10n.clearCache,
               style: Theme.of(
                 context,
               ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 12),
             Text(
-              'This will clear temporary files and free up storage space. Your images and settings will not be affected.',
+              context.l10n.clearCacheDialogDescription,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(
-                  context,
-                ).colorScheme.onSurface.withValues(alpha: 0.7),
-              ),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.7),
+                  ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
@@ -136,10 +61,10 @@ class DialogService {
                     color: Colors.redAccent,
                     child: Center(
                       child: Text(
-                        'Cancel',
+                        context.l10n.cancel,
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
+                              fontWeight: FontWeight.w600,
+                            ),
                       ),
                     ),
                   ),
@@ -151,7 +76,7 @@ class DialogService {
                       Navigator.of(context).pop();
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: const Text('Cache cleared successfully'),
+                          content: Text(context.l10n.cacheClearedSuccessfully),
                           behavior: SnackBarBehavior.floating,
                           backgroundColor: Colors.green.shade600,
                           shape: RoundedRectangleBorder(
@@ -160,7 +85,7 @@ class DialogService {
                         ),
                       );
                     },
-                    child: const Text('Clear'),
+                    child: Text(context.l10n.clear),
                   ),
                 ),
               ],
@@ -201,7 +126,7 @@ class DialogService {
             Row(
               children: [
                 Container(
-                  padding: const EdgeInsets.all(12),
+                  padding: const EdgeInsets.all(AppDimensions.paddingM),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
@@ -209,21 +134,21 @@ class DialogService {
                         Theme.of(context).colorScheme.secondary,
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(AppDimensions.radiusM),
                   ),
                   child: const Icon(
                     Icons.language_rounded,
                     color: Colors.white,
-                    size: 28,
+                    size: AppDimensions.iconL,
                   ),
                 ),
-                const SizedBox(width: 16),
+                const SizedBox(width: AppDimensions.spacingL),
                 Expanded(
                   child: Text(
-                    'Select Language',
+                    context.l10n.selectLanguage,
                     style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.w700,
-                    ),
+                          fontWeight: FontWeight.w700,
+                        ),
                   ),
                 ),
               ],
@@ -235,7 +160,8 @@ class DialogService {
               child: ListView.separated(
                 shrinkWrap: true,
                 itemCount: languages.length,
-                separatorBuilder: (context, index) => const SizedBox(height: 8),
+                separatorBuilder: (context, index) =>
+                    const SizedBox(height: AppDimensions.spacingS),
                 itemBuilder: (context, index) {
                   final language = languages[index];
                   final isSelected = selectLang == language['code'];
@@ -256,9 +182,9 @@ class DialogService {
                         ),
                       );
                     },
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(AppDimensions.radiusM),
                     child: Container(
-                      padding: const EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(AppDimensions.paddingL),
                       decoration: BoxDecoration(
                         color: isSelected
                             ? Theme.of(
@@ -267,7 +193,8 @@ class DialogService {
                             : Theme.of(
                                 context,
                               ).colorScheme.surface.withValues(alpha: 0.3),
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius:
+                            BorderRadius.circular(AppDimensions.radiusM),
                         border: Border.all(
                           color: isSelected
                               ? Theme.of(context).colorScheme.primary
@@ -285,7 +212,9 @@ class DialogService {
                               children: [
                                 Text(
                                   language['nativeName']!,
-                                  style: Theme.of(context).textTheme.titleMedium
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .titleMedium
                                       ?.copyWith(
                                         fontWeight: isSelected
                                             ? FontWeight.w700
@@ -300,7 +229,9 @@ class DialogService {
                                 const SizedBox(height: 2),
                                 Text(
                                   language['name']!,
-                                  style: Theme.of(context).textTheme.bodySmall
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
                                       ?.copyWith(
                                         color: Theme.of(context)
                                             .colorScheme
@@ -315,7 +246,7 @@ class DialogService {
                             Icon(
                               Icons.check_circle_rounded,
                               color: Theme.of(context).colorScheme.primary,
-                              size: 24,
+                              size: AppDimensions.iconM,
                             ),
                         ],
                       ),
@@ -386,29 +317,29 @@ class DialogService {
             ),
             const SizedBox(height: 20),
             Text(
-              'Storage Location',
+              context.l10n.storageLocationTitle,
               style: Theme.of(
                 context,
               ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 12),
             Text(
-              'Choose where to save converted images',
+              context.l10n.chooseStorageLocation,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: Theme.of(
-                  context,
-                ).colorScheme.onSurface.withValues(alpha: 0.7),
-              ),
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSurface.withValues(alpha: 0.7),
+                  ),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 24),
             ...storageOptions.map((option) {
               final isSelected = storageLocation == option['path'];
               return Padding(
-                padding: const EdgeInsets.only(bottom: 12),
+                padding: const EdgeInsets.only(bottom: AppDimensions.paddingM),
                 child: GlassContainer(
-                  padding: const EdgeInsets.all(16),
-                  borderRadius: 16,
+                  padding: const EdgeInsets.all(AppDimensions.paddingL),
+                  borderRadius: AppDimensions.radiusL,
                   child: InkWell(
                     onTap: () {
                       updateStorageLocation(option['path']!);
@@ -425,11 +356,11 @@ class DialogService {
                         ),
                       );
                     },
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(AppDimensions.radiusL),
                     child: Row(
                       children: [
                         Container(
-                          padding: const EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(AppDimensions.paddingS),
                           decoration: BoxDecoration(
                             color: isSelected
                                 ? Theme.of(
@@ -444,19 +375,23 @@ class DialogService {
                             Icons.folder_rounded,
                             color: isSelected
                                 ? Theme.of(context).colorScheme.primary
-                                : Theme.of(context).colorScheme.onSurface
-                                      .withValues(alpha: 0.6),
+                                : Theme.of(context)
+                                    .colorScheme
+                                    .onSurface
+                                    .withValues(alpha: 0.6),
                             size: 24,
                           ),
                         ),
-                        const SizedBox(width: 12),
+                        const SizedBox(width: AppDimensions.spacingM),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 option['title']!,
-                                style: Theme.of(context).textTheme.titleSmall
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleSmall
                                     ?.copyWith(
                                       fontWeight: isSelected
                                           ? FontWeight.w700
@@ -471,7 +406,9 @@ class DialogService {
                               const SizedBox(height: 2),
                               Text(
                                 option['subtitle']!,
-                                style: Theme.of(context).textTheme.bodySmall
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
                                     ?.copyWith(
                                       color: Theme.of(context)
                                           .colorScheme
@@ -500,11 +437,12 @@ class DialogService {
     );
   }
 
-  /// Show ad dialog before converting images
-  void showConvertAdDialog(
+  /// Show ad dialog before action
+  void showAdDialog(
     BuildContext context, {
-    required int imageCount,
     required VoidCallback onContinue,
+    required String title,
+    required String subtitle,
   }) {
     showDialog(
       context: context,
@@ -512,230 +450,48 @@ class DialogService {
       builder: (context) => Dialog(
         backgroundColor: Colors.transparent,
         child: GlassCard(
-          padding: const EdgeInsets.all(24),
+          padding: const EdgeInsets.all(AppDimensions.paddingXxl),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              // Ad Banner Placeholder
-              Container(
-                height: 250,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Theme.of(
-                        context,
-                      ).colorScheme.primary.withValues(alpha: 0.1),
-                      Theme.of(
-                        context,
-                      ).colorScheme.secondary.withValues(alpha: 0.1),
-                      Theme.of(
-                        context,
-                      ).colorScheme.tertiary.withValues(alpha: 0.1),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.outline.withValues(alpha: 0.2),
-                  ),
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.ads_click_rounded,
-                        size: 64,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primary.withValues(alpha: 0.4),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Advertisement',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.5),
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Ad Banner Placeholder',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.4),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
+              // Ad Banner
+              const AdBannerWidget(adSize: AdSize.mediumRectangle),
+              const SizedBox(height: AppDimensions.spacingXxl),
               Text(
-                'Ready to convert your images?',
+                title,
                 style: Theme.of(
                   context,
                 ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: AppDimensions.spacingS),
               Text(
-                'This will convert $imageCount image${imageCount > 1 ? "s" : ""}',
+                subtitle,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withValues(alpha: 0.7),
-                ),
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSurface.withValues(alpha: 0.7),
+                    ),
                 textAlign: TextAlign.center,
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: AppDimensions.spacingXxl),
               Row(
                 children: [
                   Expanded(
                     child: GradientButton(
                       color: Colors.redAccent,
                       onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Cancel'),
+                      child: Text(context.l10n.cancel),
                     ),
                   ),
-                  const SizedBox(width: 12),
+                  const SizedBox(width: AppDimensions.spacingM),
                   Expanded(
                     child: GradientButton(
                       onPressed: () {
                         Navigator.of(context).pop();
                         onContinue();
                       },
-                      child: const Text('Continue'),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  /// Show ad dialog before resizing image
-  void showResizeAdDialog(
-    BuildContext context, {
-    required VoidCallback onContinue,
-  }) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => Dialog(
-        backgroundColor: Colors.transparent,
-        child: GlassCard(
-          padding: const EdgeInsets.all(24),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              // Ad Banner Placeholder
-              Container(
-                height: 250,
-                width: double.infinity,
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Theme.of(
-                        context,
-                      ).colorScheme.primary.withValues(alpha: 0.1),
-                      Theme.of(
-                        context,
-                      ).colorScheme.secondary.withValues(alpha: 0.1),
-                      Theme.of(
-                        context,
-                      ).colorScheme.tertiary.withValues(alpha: 0.1),
-                    ],
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.outline.withValues(alpha: 0.2),
-                  ),
-                ),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Icon(
-                        Icons.ads_click_rounded,
-                        size: 64,
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.primary.withValues(alpha: 0.4),
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        'Advertisement',
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.5),
-                          fontWeight: FontWeight.w600,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Ad Banner Placeholder',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withValues(alpha: 0.4),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              const SizedBox(height: 24),
-              Text(
-                'Ready to resize your image?',
-                style: Theme.of(
-                  context,
-                ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Your image will be resized to the specified dimensions',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: Theme.of(
-                    context,
-                  ).colorScheme.onSurface.withValues(alpha: 0.7),
-                ),
-                textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 24),
-              Row(
-                children: [
-                  Expanded(
-                    child: GradientButton(
-                      color: Colors.redAccent,
-                      onPressed: () => Navigator.of(context).pop(),
-                      child: const Text('Cancel'),
-                    ),
-                  ),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: GradientButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        onContinue();
-                      },
-                      child: const Text('Continue'),
+                      child: Text(context.l10n.continueAction),
                     ),
                   ),
                 ],

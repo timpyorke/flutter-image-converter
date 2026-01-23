@@ -4,6 +4,7 @@ import 'package:flutter_image_converters/core/widgets/glass_card.dart';
 import 'package:flutter_image_converters/core/widgets/gradient_button.dart';
 import 'package:flutter_image_converters/models/image_data.dart';
 import 'package:flutter_image_converters/views/resize/widgets/reset_image_info.dart';
+import 'package:flutter_image_converters/l10n/l10n.dart'; // Needed for BuildContext extension if not global
 
 class ResetResultCard extends StatelessWidget {
   const ResetResultCard({
@@ -56,18 +57,18 @@ class ResetResultCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Resize Complete!',
+                      context.l10n.resizeComplete,
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                        fontWeight: FontWeight.w700,
-                      ),
+                            fontWeight: FontWeight.w700,
+                          ),
                     ),
                     Text(
-                      'Your image has been resized successfully',
+                      context.l10n.imageResizedSuccessfully,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onSurface.withValues(alpha: 0.7),
-                      ),
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onSurface.withValues(alpha: 0.7),
+                          ),
                     ),
                   ],
                 ),
@@ -90,12 +91,12 @@ class ResetResultCard extends StatelessWidget {
           if (shouldShowSaveButton)
             GradientButton(
               onPressed: saveResizedImage,
-              child: const Row(
+              child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(Icons.download_rounded, color: Colors.white),
-                  SizedBox(width: 12),
-                  Text('Save Image'),
+                  const Icon(Icons.download_rounded, color: Colors.white),
+                  const SizedBox(width: 12),
+                  Text(context.l10n.save),
                 ],
               ),
             ),

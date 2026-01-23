@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:heif_converter/heif_converter.dart';
+import 'package:flutter_image_converters/const/app_constants.dart';
 import 'package:flutter_image_converters/const/error_keys.dart';
 import 'package:flutter_image_converters/models/resize_setting.dart';
 import 'package:image_picker/image_picker.dart';
@@ -8,6 +9,7 @@ import '../models/image_data.dart';
 import '../models/conversion_settings.dart';
 import '../core/utils/image_cache.dart';
 import 'image_processing_isolate.dart';
+import '../core/utils/storage_helper.dart';
 
 /// Service for handling image operations
 class ImageService {
@@ -27,9 +29,9 @@ class ImageService {
       final format = _getFormatFromPath(pickedFile.path);
 
       // Handle special formats
-      if (format == 'heic' || format == 'heif') {
-        final result =
-            await HeifConverter.convert(pickedFile.path, format: 'png');
+      if (format == AppConstants.heic || format == AppConstants.heif) {
+        final result = await HeifConverter.convert(pickedFile.path,
+            format: AppConstants.png);
         if (result != null) {
           bytes = await File(result).readAsBytes();
           // Clean up temp file
@@ -79,9 +81,9 @@ class ImageService {
           Uint8List bytes;
           final format = _getFormatFromPath(pickedFile.path);
 
-          if (format == 'heic' || format == 'heif') {
-            final result =
-                await HeifConverter.convert(pickedFile.path, format: 'png');
+          if (format == AppConstants.heic || format == AppConstants.heif) {
+            final result = await HeifConverter.convert(pickedFile.path,
+                format: AppConstants.png);
             if (result != null) {
               bytes = await File(result).readAsBytes();
               try {
@@ -204,12 +206,12 @@ class ImageService {
       }
 
       // Ensure directory exists
-      final dir = Directory(directory);
+      final dir = await StorageHelper.resolveDirectory(directory);
       if (!await dir.exists()) {
         await dir.create(recursive: true);
       }
 
-      final format = imageData.format ?? 'jpg';
+      final format = imageData.format ?? AppConstants.jpg;
       final fileName = imageData.name ??
           'image_${DateTime.now().millisecondsSinceEpoch}.$format';
       final filePath = '$directory/$fileName';

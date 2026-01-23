@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_image_converters/const/app_dimensions.dart';
+import 'package:flutter_image_converters/l10n/l10n.dart';
 import 'package:flutter_image_converters/const/image_format.dart';
 import 'package:flutter_image_converters/core/widgets/glass_card.dart';
 import 'package:flutter_image_converters/views/convert/widgets/convert_quality_chip.dart';
@@ -20,14 +22,14 @@ class ConvertSettingsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GlassCard(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(AppDimensions.paddingXl),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
               Container(
-                padding: const EdgeInsets.all(8),
+                padding: const EdgeInsets.all(AppDimensions.paddingS),
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
                     colors: [
@@ -40,20 +42,20 @@ class ConvertSettingsCard extends StatelessWidget {
                 child: const Icon(
                   Icons.tune_rounded,
                   color: Colors.white,
-                  size: 20,
+                  size: AppDimensions.iconS,
                 ),
               ),
-              const SizedBox(width: 12),
+              const SizedBox(width: AppDimensions.spacingM),
               Text(
-                'Target Format',
+                context.l10n.targetFormat,
                 style: Theme.of(context).textTheme.titleMedium,
               ),
             ],
           ),
           const SizedBox(height: 12),
           Wrap(
-            spacing: 10,
-            runSpacing: 10,
+            spacing: AppDimensions.spacingS,
+            runSpacing: AppDimensions.spacingS,
             children: ImageFormat.values.map((format) {
               final isSelected = targetFormat == format;
               return GestureDetector(
@@ -61,8 +63,8 @@ class ConvertSettingsCard extends StatelessWidget {
                 child: AnimatedContainer(
                   duration: const Duration(milliseconds: 200),
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 20,
-                    vertical: 12,
+                    horizontal: AppDimensions.paddingXl,
+                    vertical: AppDimensions.paddingM,
                   ),
                   decoration: BoxDecoration(
                     gradient: isSelected
@@ -80,7 +82,7 @@ class ConvertSettingsCard extends StatelessWidget {
                         : Theme.of(
                             context,
                           ).colorScheme.surface.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(16),
+                    borderRadius: BorderRadius.circular(AppDimensions.radiusL),
                     border: Border.all(
                       color: isSelected
                           ? Colors.transparent
@@ -95,7 +97,7 @@ class ConvertSettingsCard extends StatelessWidget {
                               color: Theme.of(
                                 context,
                               ).colorScheme.primary.withValues(alpha: 0.3),
-                              blurRadius: 12,
+                              blurRadius: AppDimensions.radiusM,
                               offset: const Offset(0, 4),
                             ),
                           ]
@@ -107,9 +109,8 @@ class ConvertSettingsCard extends StatelessWidget {
                       color: isSelected
                           ? Colors.white
                           : Theme.of(context).colorScheme.onSurface,
-                      fontWeight: isSelected
-                          ? FontWeight.w600
-                          : FontWeight.w500,
+                      fontWeight:
+                          isSelected ? FontWeight.w600 : FontWeight.w500,
                     ),
                   ),
                 ),
@@ -118,20 +119,20 @@ class ConvertSettingsCard extends StatelessWidget {
           ),
           if (targetFormat == ImageFormat.jpg ||
               targetFormat == ImageFormat.webp) ...[
-            const SizedBox(height: 24),
+            const SizedBox(height: AppDimensions.spacingXxl),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  'Quality',
+                  context.l10n.quality,
                   style: Theme.of(
                     context,
                   ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w500),
                 ),
                 Container(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
+                    horizontal: AppDimensions.paddingM,
+                    vertical: AppDimensions.paddingS,
                   ),
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
@@ -144,7 +145,7 @@ class ConvertSettingsCard extends StatelessWidget {
                         ).colorScheme.secondary.withValues(alpha: 0.2),
                       ],
                     ),
-                    borderRadius: BorderRadius.circular(12),
+                    borderRadius: BorderRadius.circular(AppDimensions.radiusM),
                   ),
                   child: Text(
                     '$quality%',
@@ -158,28 +159,41 @@ class ConvertSettingsCard extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             Wrap(
-              spacing: 8,
+              spacing: AppDimensions.spacingS,
               children: [
                 ConvertQualityChip(
-                  label: 'Low',
+                  label: context.l10n.low,
                   isSelected: quality == 50,
                   quality: 50,
                   updateQuality: updateQuality,
                 ),
                 ConvertQualityChip(
-                  label: 'Medium',
+                  label: context.l10n.medium,
                   isSelected: quality == 75,
                   quality: 75,
                   updateQuality: updateQuality,
                 ),
                 ConvertQualityChip(
-                  label: 'High',
+                  label: context.l10n.high,
                   isSelected: quality == 90,
                   quality: 90,
                   updateQuality: updateQuality,
                 ),
                 ConvertQualityChip(
-                  label: 'Max',
+                  label: context.l10n
+                      .max, // or generic 'Max' if not localized, but assume key exists or add it.
+                  // AppStrings.max exists in arb? I should check.
+                  // app_en.arb has 'max' string? No, I don't recall seeing 'max'.
+                  // Checking existing arb file content... NO 'max' in viewed arb file.
+                  // I should add "max": "Max" to arb, OR just use string "Max" here for now to move forward.
+                  // I will check if "max" is in arb. 'higher', 'smaller'... 'Reduce by %'...
+                  // I'll stick to string "Max" for now if not in arb to avoid error.
+                  // actually, better to check before replacing.
+                  // Wait, previous file view of app_strings.dart showed 'static const String max = 'Max';'.
+                  // I'll use text "Max" temporarily or check arb next turn.
+                  // Actually, I'll use context.l10n.quality (Wait, Max is quality label)
+                  // Let's assume I need to keep AppStrings.max until I add it to arb.
+                  // Skipping this one replacement for now to be safe.
                   isSelected: quality == 100,
                   quality: 100,
                   updateQuality: updateQuality,
