@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "162488874272",
+    "project_id": "image-converter-cebd1",
+    "storage_bucket": "image-converter-cebd1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:162488874272:android:f031af153e10b156049345",
+        "android_client_info": {
+          "package_name": "com.codenour.image_converters"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtDO9DEPox_USDC57WNcFTrIRleMo-OVo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:162488874272:android:b1d99b0433b0028f049345",
+        "android_client_info": {
+          "package_name": "com.example.flutter_image_converters"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAtDO9DEPox_USDC57WNcFTrIRleMo-OVo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

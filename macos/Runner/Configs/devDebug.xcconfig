@@ -1,0 +1,6 @@
+#include "../../Flutter/devDebug.xcconfig"
+#include "Warnings.xcconfig"
+
+ASSET_PREFIX=dev
+BUNDLE_NAME=Image Converters Dev
+BUNDLE_DISPLAY_NAME=Image Converters Dev
