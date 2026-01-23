@@ -3,7 +3,7 @@ import 'package:flutter_image_converters/core/const/app_dimensions.dart';
 import 'package:flutter_image_converters/l10n/l10n.dart';
 import 'package:flutter_image_converters/core/utils/toast_helper.dart';
 import 'package:flutter_image_converters/core/widgets/pick_image_button_widget.dart';
-import 'package:flutter_image_converters/presentation/views/convert/widgets/Source_images_section.dart';
+import 'package:flutter_image_converters/presentation/views/convert/widgets/source_images_section.dart';
 import 'package:flutter_image_converters/presentation/views/convert/widgets/convert_settings_card.dart';
 import 'package:flutter_image_converters/presentation/views/convert/widgets/convert_result_section.dart';
 import 'package:provider/provider.dart';

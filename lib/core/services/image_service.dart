@@ -214,7 +214,7 @@ class ImageService {
       final format = imageData.format ?? AppConstants.jpg;
       final fileName = imageData.name ??
           'image_${DateTime.now().millisecondsSinceEpoch}.$format';
-      final filePath = '$directory/$fileName';
+      final filePath = '${dir.path}/$fileName';
       final file = File(filePath);
 
       await file.writeAsBytes(imageData.bytes!);
