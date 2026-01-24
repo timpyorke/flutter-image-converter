@@ -7,7 +7,7 @@ part 'resize_view_state.freezed.dart';
 
 /// Represents the state of the resize view
 @freezed
-class ResizeViewState with _$ResizeViewState {
+abstract class ResizeViewState with _$ResizeViewState {
   const factory ResizeViewState({
     @Default(ResizeStateType.idle) ResizeStateType state,
     ImageData? sourceImage,

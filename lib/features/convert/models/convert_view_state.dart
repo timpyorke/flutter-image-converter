@@ -8,7 +8,7 @@ part 'convert_view_state.freezed.dart';
 
 /// Represents the state of the conversion view
 @freezed
-class ConvertViewState with _$ConvertViewState {
+abstract class ConvertViewState with _$ConvertViewState {
   const factory ConvertViewState({
     @Default(ConversionStateType.idle) ConversionStateType state,
     @Default([]) List<ImageData> sourceImages,

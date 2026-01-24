@@ -6,7 +6,7 @@ part 'app_settings.freezed.dart';
 
 /// Application settings model
 @freezed
-class AppSettings with _$AppSettings {
+abstract class AppSettings with _$AppSettings {
   const factory AppSettings({
     @Default(ThemeMode.system) ThemeMode themeMode,
     @Default(ImageFormat.png) ImageFormat defaultFormat,
