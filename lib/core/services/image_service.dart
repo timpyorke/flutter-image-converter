@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:heif_converter/heif_converter.dart';
 import 'package:flutter_image_converters/core/const/app_constants.dart';
 import 'package:flutter_image_converters/core/const/error_keys.dart';
 import 'package:flutter_image_converters/domain/models/resize_setting.dart';
@@ -30,18 +30,14 @@ class ImageService {
 
       // Handle special formats
       if (format == AppConstants.heic || format == AppConstants.heif) {
-        // Use flutter_image_compress to fix orientation and convert
-        final result = await FlutterImageCompress.compressWithFile(
-          pickedFile.path,
-          quality: 100, // Keep high quality for source
-          autoCorrectionAngle: true,
-          format: CompressFormat
-              .jpeg, // JPEG is faster and retains quality well enough
-          keepExif: false, // Bake orientation
-        );
-
+        final result = await HeifConverter.convert(pickedFile.path,
+            format: AppConstants.png);
         if (result != null) {
-          bytes = result;
+          bytes = await File(result).readAsBytes();
+          // Clean up temp file
+          try {
+            await File(result).delete();
+          } catch (_) {}
         } else {
           bytes = await pickedFile.readAsBytes();
         }
@@ -86,16 +82,13 @@ class ImageService {
           final format = _getFormatFromPath(pickedFile.path);
 
           if (format == AppConstants.heic || format == AppConstants.heif) {
-            final result = await FlutterImageCompress.compressWithFile(
-              pickedFile.path,
-              quality: 100,
-              autoCorrectionAngle: true,
-              format: CompressFormat.jpeg,
-              keepExif: false,
-            );
-
+            final result = await HeifConverter.convert(pickedFile.path,
+                format: AppConstants.png);
             if (result != null) {
-              bytes = result;
+              bytes = await File(result).readAsBytes();
+              try {
+                await File(result).delete();
+              } catch (_) {}
             } else {
               bytes = await pickedFile.readAsBytes();
             }
@@ -149,6 +142,7 @@ class ImageService {
           imageBytes: sourceImage.bytes!,
           targetFormat: settings.targetFormat,
           quality: settings.quality,
+          rotation: sourceImage.rotation,
         ),
       );
 

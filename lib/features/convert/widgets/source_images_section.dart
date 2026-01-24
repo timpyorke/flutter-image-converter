@@ -16,6 +16,7 @@ class SourceImagesSection extends StatelessWidget {
     required this.clear,
     required this.sourceImages,
     required this.removeSourceImage,
+    required this.rotateSourceImage,
   });
 
   final List<ImageData> sourceImages;
@@ -23,6 +24,7 @@ class SourceImagesSection extends StatelessWidget {
   final VoidCallback pickImages;
   final VoidCallback clear;
   final Function(int) removeSourceImage;
+  final Function(int) rotateSourceImage;
 
   @override
   Widget build(BuildContext context) {
@@ -128,14 +130,52 @@ class SourceImagesSection extends StatelessWidget {
                         children: [
                           Stack(
                             children: [
-                              CachedImageThumbnail(
-                                imageData: image,
-                                height: 140,
-                                width: 140,
-                                fit: BoxFit.cover,
-                                thumbnailSize: 300,
-                                borderRadius: BorderRadius.circular(16),
+                              // Image with rotation transform
+                              Transform.rotate(
+                                angle: image.rotation * 3.14159265359 / 180,
+                                child: CachedImageThumbnail(
+                                  imageData: image,
+                                  height: 140,
+                                  width: 140,
+                                  fit: BoxFit.cover,
+                                  thumbnailSize: 300,
+                                  borderRadius: BorderRadius.circular(16),
+                                ),
                               ),
+                              // Rotate button - top left
+                              Positioned(
+                                top: 4,
+                                left: 4,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: BackdropFilter(
+                                    filter: ImageFilter.blur(
+                                      sigmaX: 10,
+                                      sigmaY: 10,
+                                    ),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color:
+                                            Colors.black.withValues(alpha: 0.3),
+                                        borderRadius: BorderRadius.circular(
+                                            AppDimensions.radiusXl),
+                                      ),
+                                      child: IconButton(
+                                        padding: const EdgeInsets.all(4),
+                                        constraints: const BoxConstraints(),
+                                        icon: const Icon(
+                                          Icons.rotate_right_rounded,
+                                          color: Colors.white,
+                                          size: 16,
+                                        ),
+                                        onPressed: () =>
+                                            rotateSourceImage(index),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              // Close button - top right
                               Positioned(
                                 top: 4,
                                 right: 4,
