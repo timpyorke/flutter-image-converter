@@ -226,6 +226,12 @@ class ConversionViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Rotate a specific source image by 90 degrees clockwise
+  void rotateSourceImage(int index) {
+    _state = _state.copyWithRotatedImage(index);
+    notifyListeners();
+  }
+
   /// Reset error state
   void clearError() {
     if (_state.state == ConversionStateType.error) {

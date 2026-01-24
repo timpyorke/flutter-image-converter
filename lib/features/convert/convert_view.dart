@@ -60,6 +60,7 @@ class ConvertView extends StatelessWidget {
                   clear: viewModel.clear,
                   sourceImages: viewModel.sourceImages,
                   removeSourceImage: viewModel.removeSourceImage,
+                  rotateSourceImage: viewModel.rotateSourceImage,
                 ),
 
                 // Settings Section

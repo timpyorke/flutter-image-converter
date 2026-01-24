@@ -142,4 +142,17 @@ extension ConvertViewStateExtension on ConvertViewState {
     }
     return this;
   }
+
+  /// Rotate source image at index by 90 degrees clockwise
+  ConvertViewState copyWithRotatedImage(int index) {
+    if (index >= 0 && index < sourceImages.length) {
+      final newSourceImages = List<ImageData>.from(sourceImages);
+      final currentRotation = newSourceImages[index].rotation;
+      final newRotation = (currentRotation + 90) % 360;
+      newSourceImages[index] =
+          newSourceImages[index].copyWith(rotation: newRotation);
+      return copyWith(sourceImages: newSourceImages);
+    }
+    return this;
+  }
 }

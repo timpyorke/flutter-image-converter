@@ -26,31 +26,36 @@ class ImageProcessingIsolate {
       throw Exception('Failed to decode image');
     }
 
-    // Fix orientation
-    final orientedImage = img.bakeOrientation(image);
+    // Fix EXIF orientation first
+    var processedImage = img.bakeOrientation(image);
+
+    // Apply user-specified rotation if any
+    if (params.rotation != 0) {
+      processedImage = img.copyRotate(processedImage, angle: params.rotation);
+    }
 
     Uint8List convertedBytes;
 
     switch (params.targetFormat) {
       case ImageFormat.jpg:
         convertedBytes = Uint8List.fromList(
-          img.encodeJpg(orientedImage, quality: params.quality),
+          img.encodeJpg(processedImage, quality: params.quality),
         );
         break;
       case ImageFormat.png:
-        convertedBytes = Uint8List.fromList(img.encodePng(orientedImage));
+        convertedBytes = Uint8List.fromList(img.encodePng(processedImage));
         break;
       case ImageFormat.webp:
         try {
           convertedBytes = Uint8List.fromList(
-            img.encodeJpg(orientedImage, quality: params.quality),
+            img.encodeJpg(processedImage, quality: params.quality),
           );
         } catch (e) {
-          convertedBytes = Uint8List.fromList(img.encodePng(orientedImage));
+          convertedBytes = Uint8List.fromList(img.encodePng(processedImage));
         }
         break;
       case ImageFormat.bmp:
-        convertedBytes = Uint8List.fromList(img.encodeBmp(orientedImage));
+        convertedBytes = Uint8List.fromList(img.encodeBmp(processedImage));
         break;
     }
 
@@ -135,11 +140,13 @@ class ConvertImageParams {
   final Uint8List imageBytes;
   final ImageFormat targetFormat;
   final int quality;
+  final int rotation; // Rotation in degrees (0, 90, 180, 270)
 
   ConvertImageParams({
     required this.imageBytes,
     required this.targetFormat,
     required this.quality,
+    this.rotation = 0,
   });
 }
 

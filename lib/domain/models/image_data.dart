@@ -16,6 +16,7 @@ abstract class ImageData with _$ImageData {
     int? height,
     String? format,
     int? sizeInBytes,
+    @Default(0) int rotation, // Rotation in degrees (0, 90, 180, 270)
   }) = _ImageData;
 
   String get sizeDisplay {

@@ -142,6 +142,7 @@ class ImageService {
           imageBytes: sourceImage.bytes!,
           targetFormat: settings.targetFormat,
           quality: settings.quality,
+          rotation: sourceImage.rotation,
         ),
       );
 
