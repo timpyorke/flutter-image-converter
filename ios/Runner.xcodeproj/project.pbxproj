@@ -1275,12 +1275,6 @@
 				97C147031CF9000F007C117D /* Debug */,
 				97C147041CF9000F007C117D /* Release */,
 				249021D3217E4FDB00AE95B9 /* Profile */,
-				34C45B7077F505B222B40FB6 /* Debug-dev */,
-				42ACAC0495A76383902C1D68 /* Profile-dev */,
-				5273333CBFECE5142A211E64 /* Release-dev */,
-				5740B0B264E54CE3833234A5 /* Debug-prod */,
-				C880126691417C235CCA2894 /* Profile-prod */,
-				CE5CB659D14D0CCFC3B17C1C /* Release-prod */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -1291,12 +1285,6 @@
 				97C147061CF9000F007C117D /* Debug */,
 				97C147071CF9000F007C117D /* Release */,
 				249021D4217E4FDB00AE95B9 /* Profile */,
-				B0F59D0894987912FC8049B0 /* Debug-dev */,
-				189BA70742E2EDB20E74FA22 /* Profile-dev */,
-				CF036440F08A4EBE0ADECFCD /* Release-dev */,
-				602BAB6B886E365FD99A35B4 /* Debug-prod */,
-				99FFE78C70898F4592EAFC4D /* Profile-prod */,
-				20EAED325AACEFD67DECCB44 /* Release-prod */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
