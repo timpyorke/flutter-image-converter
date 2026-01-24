@@ -1,8 +1,6 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_converters/core/config/themes.dart';
 import 'package:flutter_image_converters/core/di/service_locator.dart';
-import 'package:flutter_image_converters/core/widgets/flavor_banner.dart';
 import 'package:flutter_image_converters/l10n/app_localizations.dart';
 import 'package:flutter_image_converters/features/home/home_view.dart';
 import 'package:flutter_image_converters/features/convert/conversion_viewmodel.dart';
@@ -12,7 +10,6 @@ import 'package:flutter_image_converters/features/settings/settings_viewmodel.da
 import 'package:flutter_image_converters/features/tutorial/tutorial_view.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:provider/provider.dart';
-import 'flavors.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
@@ -29,7 +26,7 @@ class App extends StatelessWidget {
       child: Consumer<SettingsViewModel>(
         builder: (context, settingsVM, child) {
           return MaterialApp(
-            title: F.title,
+            title: 'Image Converters',
             theme: buildLightTheme(),
             darkTheme: buildDarkTheme(),
             themeMode: settingsVM.themeMode,
@@ -52,12 +49,9 @@ class App extends StatelessWidget {
               Locale('ru'), // Russian
             ],
             locale: Locale(settingsVM.settings.language),
-            home: FlavorBanner(
-              show: kDebugMode,
-              child: settingsVM.settings.hasSeenTutorial
-                  ? const HomePage()
-                  : const TutorialView(),
-            ),
+            home: settingsVM.settings.hasSeenTutorial
+                ? const HomePage()
+                : const TutorialView(),
           );
         },
       ),

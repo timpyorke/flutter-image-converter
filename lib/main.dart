@@ -4,7 +4,6 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 import 'app.dart';
 import 'core/di/service_locator.dart';
-import 'flavors.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -13,8 +12,6 @@ void main() async {
 
   // Initialize dependency injection
   await setupDependencyInjection();
-
-  F.appFlavor = Flavor.prod;
 
   runApp(const App());
 }
