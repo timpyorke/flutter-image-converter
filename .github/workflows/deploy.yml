@@ -38,13 +38,13 @@ jobs:
 
       # Prod Build (App Bundle) - Triggered on Release Tag
       - name: Build Prod App Bundle
-        run: flutter build appbundle --release --flavor prod -t lib/main_prod.dart --build-number=${{ github.run_number }}
+        run: flutter build appbundle --release -t lib/main.dart --build-number=${{ github.run_number }}
 
       - name: Upload Prod Bundle
         uses: actions/upload-artifact@v4
         with:
-          name: app-prod-release
-          path: build/app/outputs/bundle/prodRelease/app-prod-release.aab
+          name: app-release
+          path: build/app/outputs/bundle/release/app-release.aab
           retention-days: 90
 
   build_ios:
@@ -80,16 +80,16 @@ jobs:
       # iOS Build (No Codesign) - Just checks if it compiles
       # We use Prod flavor for tags
       - name: Build iOS (Prod) - No Codesign
-        run: flutter build ios --release --no-codesign --flavor prod -t lib/main_prod.dart --build-number=${{ github.run_number }}
+        run: flutter build ios --release --no-codesign -t lib/main.dart --build-number=${{ github.run_number }}
 
       - name: Compress Runner.app
         run: |
           cd build/ios/iphoneos
-          tar -czf message_app_ios_prod.tar.gz Runner.app
+          tar -czf message_app_ios.tar.gz Runner.app
           
       - name: Upload iOS App (Unsigned)
         uses: actions/upload-artifact@v4
         with:
-          name: ios-app-prod-unsigned
-          path: build/ios/iphoneos/message_app_ios_prod.tar.gz
+          name: ios-app-unsigned
+          path: build/ios/iphoneos/message_app_ios.tar.gz
           retention-days: 7

@@ -12,7 +12,6 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   cupertino_icons: ^1.0.8
-  flutter_flavorizr: ^2.4.1
   provider: ^6.1.2
   image_picker: ^1.0.7
   image: ^4.1.7

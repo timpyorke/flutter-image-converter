@@ -1,5 +1,5 @@
 import 'dart:io';
-import '../../flavors.dart';
+import 'package:flutter/foundation.dart';
 
 class AdConfig {
   // Test Ad Unit IDs
@@ -15,7 +15,7 @@ class AdConfig {
       'ca-app-pub-9823034696974019/4818863124';
 
   static String get bannerAdUnitId {
-    if (F.appFlavor == Flavor.dev) {
+    if (kDebugMode) {
       if (Platform.isAndroid) {
         return _androidTestBannerId;
       } else if (Platform.isIOS) {
