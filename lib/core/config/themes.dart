@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 ThemeData buildLightTheme() {
   return ThemeData(
@@ -28,6 +29,7 @@ ThemeData buildLightTheme() {
         color: Color(0xFF1F2937),
         letterSpacing: -0.5,
       ),
+      systemOverlayStyle: SystemUiOverlayStyle.dark,
     ),
     textTheme: const TextTheme(
       headlineLarge: TextStyle(
@@ -91,6 +93,7 @@ ThemeData buildDarkTheme() {
         color: Color(0xFFF9FAFB),
         letterSpacing: -0.5,
       ),
+      systemOverlayStyle: SystemUiOverlayStyle.light,
     ),
     textTheme: const TextTheme(
       headlineLarge: TextStyle(

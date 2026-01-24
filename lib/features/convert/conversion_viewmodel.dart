@@ -55,7 +55,17 @@ class ConversionViewModel extends ChangeNotifier {
       final images = await imageService.pickMultipleImages();
 
       if (images.isNotEmpty) {
-        _state = _state.copyWithSourceImages(images);
+        final currentImages = _state.sourceImages;
+        final existingPaths = currentImages.map((e) => e.path).toSet();
+        final uniqueNewImages =
+            images.where((img) => !existingPaths.contains(img.path)).toList();
+
+        if (uniqueNewImages.isNotEmpty) {
+          final newImages = [...currentImages, ...uniqueNewImages];
+          _state = _state.copyWithSourceImages(newImages);
+        } else {
+          _state = _state.copyWithIdle();
+        }
       } else {
         _state = _state.copyWithIdle();
       }

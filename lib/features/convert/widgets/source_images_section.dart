@@ -106,7 +106,7 @@ class SourceImagesSection extends StatelessWidget {
           ),
           const SizedBox(height: AppDimensions.spacingXl),
           SizedBox(
-            height: 160,
+            height: 220,
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.only(bottom: 4),
@@ -116,86 +116,94 @@ class SourceImagesSection extends StatelessWidget {
                 return Padding(
                   padding: const EdgeInsets.only(right: AppDimensions.paddingM),
                   child: GlassContainer(
-                    padding: EdgeInsets.zero,
+                    padding: const EdgeInsets.all(AppDimensions.paddingS),
                     borderRadius: AppDimensions.radiusXl,
                     child: Container(
                       width: 140,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: Stack(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          CachedImageThumbnail(
-                            imageData: image,
-                            height: 160,
-                            width: 140,
-                            fit: BoxFit.cover,
-                            thumbnailSize: 200,
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          Positioned(
-                            top: 8,
-                            right: 8,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(20),
-                              child: BackdropFilter(
-                                filter: ImageFilter.blur(
-                                  sigmaX: 10,
-                                  sigmaY: 10,
-                                ),
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withValues(alpha: 0.3),
-                                    borderRadius: BorderRadius.circular(
-                                        AppDimensions.radiusXl),
-                                  ),
-                                  child: IconButton(
-                                    padding: const EdgeInsets.all(
-                                        AppDimensions.paddingS),
-                                    constraints: const BoxConstraints(),
-                                    icon: const Icon(
-                                      Icons.close_rounded,
-                                      color: Colors.white,
-                                      size: 18,
+                          Stack(
+                            children: [
+                              CachedImageThumbnail(
+                                imageData: image,
+                                height: 140,
+                                width: 140,
+                                fit: BoxFit.cover,
+                                thumbnailSize: 300,
+                                borderRadius: BorderRadius.circular(16),
+                              ),
+                              Positioned(
+                                top: 4,
+                                right: 4,
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(20),
+                                  child: BackdropFilter(
+                                    filter: ImageFilter.blur(
+                                      sigmaX: 10,
+                                      sigmaY: 10,
                                     ),
-                                    onPressed: () => removeSourceImage(index),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color:
+                                            Colors.black.withValues(alpha: 0.3),
+                                        borderRadius: BorderRadius.circular(
+                                            AppDimensions.radiusXl),
+                                      ),
+                                      child: IconButton(
+                                        padding: const EdgeInsets.all(4),
+                                        constraints: const BoxConstraints(),
+                                        icon: const Icon(
+                                          Icons.close_rounded,
+                                          color: Colors.white,
+                                          size: 16,
+                                        ),
+                                        onPressed: () =>
+                                            removeSourceImage(index),
+                                      ),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                          Positioned(
-                            bottom: 8,
-                            left: 8,
-                            right: 8,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child: BackdropFilter(
-                                filter: ImageFilter.blur(
-                                  sigmaX: 10,
-                                  sigmaY: 10,
+                          const SizedBox(height: 8),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 4),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  image.name ?? '',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .labelMedium
+                                      ?.copyWith(
+                                        fontWeight: FontWeight.w600,
+                                      ),
                                 ),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: AppDimensions.paddingS,
-                                    vertical: 6,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: Colors.black.withValues(alpha: 0.5),
-                                    borderRadius: BorderRadius.circular(
-                                        AppDimensions.radiusM),
-                                  ),
-                                  child: Text(
-                                    image.dimensionsDisplay,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    textAlign: TextAlign.center,
-                                  ),
+                                const SizedBox(height: 2),
+                                Text(
+                                  '${image.dimensionsDisplay} • ${image.sizeDisplay}',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall
+                                      ?.copyWith(
+                                        fontSize: 10,
+                                        color: Theme.of(context)
+                                            .colorScheme
+                                            .onSurface
+                                            .withValues(alpha: 0.6),
+                                      ),
                                 ),
-                              ),
+                              ],
                             ),
                           ),
                         ],
