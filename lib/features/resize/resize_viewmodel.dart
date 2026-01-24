@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_image_converters/core/const/resize_state_type.dart';
 import 'package:flutter_image_converters/l10n/l10n.dart';
 import 'package:flutter_image_converters/core/utils/toast_helper.dart';
-import 'package:flutter_image_converters/domain/resize_setting.dart';
+import 'package:flutter_image_converters/domain/models/resize_setting.dart';
 import 'package:flutter_image_converters/data/providers/shared_pref_provider.dart';
 import 'package:flutter_image_converters/features/resize/models/resize_view_state.dart';
-import '../../data/image_data.dart';
+import '../../domain/models/image_data.dart';
 import '../../core/services/image_service.dart';
 
 /// ViewModel for Image Resize operations

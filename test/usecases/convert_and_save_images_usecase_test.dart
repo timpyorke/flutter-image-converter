@@ -1,13 +1,10 @@
-import 'dart:typed_data';
-
 import 'package:flutter/foundation.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_image_converters/core/const/image_format.dart';
 import 'package:flutter_image_converters/core/services/image_service.dart';
 import 'package:flutter_image_converters/core/services/permission_service.dart';
 import 'package:flutter_image_converters/domain/usecases/convert_and_save_images_usecase.dart';
 import 'package:flutter_image_converters/features/convert/models/conversion_settings.dart';
-import 'package:flutter_image_converters/data/image_data.dart';
+import 'package:flutter_image_converters/domain/models/image_data.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -32,12 +29,6 @@ void main() {
   Future<R> mockCompute<Q, R>(ComputeCallback<Q, R> callback, Q message,
       {String? debugLabel}) async {
     return await callback(message);
-  }
-
-  // Mock compute that throws
-  Future<R> mockComputeThrow<Q, R>(ComputeCallback<Q, R> callback, Q message,
-      {String? debugLabel}) async {
-    throw Exception('Compute failed');
   }
 
   group('ConvertAndSaveImagesUseCase', () {

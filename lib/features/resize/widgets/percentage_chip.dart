@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_image_converters/data/image_data.dart';
+import 'package:flutter_image_converters/domain/models/image_data.dart';
 
 class PercentageChip extends StatelessWidget {
   const PercentageChip({

@@ -3,7 +3,7 @@ import 'package:flutter_image_converters/core/const/app_dimensions.dart';
 import 'package:flutter_image_converters/l10n/l10n.dart';
 import 'package:flutter_image_converters/core/widgets/glass_card.dart';
 import 'package:flutter_image_converters/core/widgets/glass_container.dart';
-import 'package:flutter_image_converters/data/image_data.dart';
+import 'package:flutter_image_converters/domain/models/image_data.dart';
 import 'package:flutter_image_converters/features/resize/widgets/percentage_chip.dart';
 import 'package:flutter_image_converters/features/resize/widgets/reset_chip.dart';
 

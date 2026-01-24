@@ -12,8 +12,9 @@ import 'package:flutter_image_converters/core/services/permission_service.dart'
     as _i9;
 import 'package:flutter_image_converters/features/convert/models/conversion_settings.dart'
     as _i5;
-import 'package:flutter_image_converters/data/image_data.dart' as _i2;
-import 'package:flutter_image_converters/domain/resize_setting.dart' as _i6;
+import 'package:flutter_image_converters/domain/models/image_data.dart' as _i2;
+import 'package:flutter_image_converters/domain/models/resize_setting.dart'
+    as _i6;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:mockito/src/dummies.dart' as _i7;
 

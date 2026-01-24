@@ -6,7 +6,7 @@ import 'package:flutter_image_converters/l10n/l10n.dart';
 import 'package:flutter_image_converters/core/widgets/cached_image_thumbnail.dart';
 import 'package:flutter_image_converters/core/widgets/glass_card.dart';
 import 'package:flutter_image_converters/core/widgets/glass_container.dart';
-import 'package:flutter_image_converters/data/image_data.dart';
+import 'package:flutter_image_converters/domain/models/image_data.dart';
 
 class SourceImagesSection extends StatelessWidget {
   const SourceImagesSection({

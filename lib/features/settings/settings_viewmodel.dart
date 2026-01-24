@@ -3,7 +3,7 @@ import 'package:flutter_image_converters/core/const/image_format.dart';
 import 'package:flutter_image_converters/data/providers/shared_pref_provider.dart';
 import 'package:flutter_image_converters/core/services/dialog_service.dart';
 import 'package:flutter_image_converters/features/settings/models/setting_view_state.dart';
-import '../../app_settings.dart';
+import '../../data/models/app_settings.dart';
 
 /// ViewModel for app settings
 class SettingsViewModel extends ChangeNotifier {

@@ -1,7 +1,7 @@
 import 'package:flutter_image_converters/core/const/conversion_state_type.dart';
 import 'package:flutter_image_converters/core/const/image_format.dart';
 import 'package:flutter_image_converters/features/convert/models/conversion_settings.dart';
-import 'package:flutter_image_converters/data/image_data.dart';
+import 'package:flutter_image_converters/domain/models/image_data.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'convert_view_state.freezed.dart';

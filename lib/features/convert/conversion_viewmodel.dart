@@ -4,7 +4,7 @@ import 'package:flutter_image_converters/core/const/image_format.dart';
 import 'package:flutter_image_converters/l10n/l10n.dart';
 import 'package:flutter_image_converters/core/utils/toast_helper.dart';
 import 'package:flutter_image_converters/features/convert/models/conversion_settings.dart';
-import 'package:flutter_image_converters/data/image_data.dart';
+import 'package:flutter_image_converters/domain/models/image_data.dart';
 import 'package:flutter_image_converters/data/providers/shared_pref_provider.dart';
 import 'package:flutter_image_converters/core/services/dialog_service.dart';
 import 'package:flutter_image_converters/features/convert/models/convert_view_state.dart';

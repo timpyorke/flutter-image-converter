@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../data/image_data.dart';
+import '../../domain/models/image_data.dart';
 import '../services/image_service.dart';
 import '../../core/di/service_locator.dart';
 

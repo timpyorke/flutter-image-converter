@@ -4,7 +4,7 @@ import 'package:flutter_image_converters/core/const/app_dimensions.dart';
 import 'package:flutter_image_converters/core/widgets/nav_item_widget.dart';
 import 'package:provider/provider.dart';
 import '../../l10n/app_localizations.dart';
-import '../naviation/navigation_viewmodel.dart';
+import 'home_viewmodel.dart';
 import '../convert/convert_view.dart';
 import '../resize/resize_view.dart';
 import '../settings/settings_view.dart';

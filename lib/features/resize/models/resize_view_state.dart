@@ -1,6 +1,6 @@
 import 'package:flutter_image_converters/core/const/resize_state_type.dart';
-import 'package:flutter_image_converters/data/image_data.dart';
-import 'package:flutter_image_converters/domain/resize_setting.dart';
+import 'package:flutter_image_converters/domain/models/image_data.dart';
+import 'package:flutter_image_converters/domain/models/resize_setting.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'resize_view_state.freezed.dart';

@@ -1,4 +1,4 @@
-import 'package:flutter_image_converters/app_settings.dart';
+import 'package:flutter_image_converters/data/models/app_settings.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'setting_view_state.freezed.dart';

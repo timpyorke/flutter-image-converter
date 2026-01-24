@@ -7,7 +7,7 @@ import '../services/storage_service.dart';
 import '../services/permission_service.dart';
 import '../../domain/usecases/convert_and_save_images_usecase.dart';
 import '../../features/convert/conversion_viewmodel.dart';
-import '../../features/naviation/navigation_viewmodel.dart';
+import '../../features/home/home_viewmodel.dart';
 import '../../features/resize/resize_viewmodel.dart';
 import '../../features/settings/settings_viewmodel.dart';
 

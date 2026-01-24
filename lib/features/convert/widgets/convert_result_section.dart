@@ -4,7 +4,7 @@ import 'package:flutter_image_converters/l10n/l10n.dart';
 import 'package:flutter_image_converters/core/widgets/glass_card.dart';
 import 'package:flutter_image_converters/core/widgets/glass_container.dart';
 import 'package:flutter_image_converters/core/widgets/gradient_button.dart';
-import 'package:flutter_image_converters/data/image_data.dart';
+import 'package:flutter_image_converters/domain/models/image_data.dart';
 
 class ConvertResultSection extends StatelessWidget {
   const ConvertResultSection({
