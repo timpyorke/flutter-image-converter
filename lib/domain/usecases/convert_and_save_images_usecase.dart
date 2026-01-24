@@ -1,17 +1,25 @@
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_image_converters/core/const/image_format.dart';
-
-import 'package:permission_handler/permission_handler.dart';
 import '../../presentation/models/image_data.dart';
 import '../../presentation/models/conversion_settings.dart';
-import '../services/image_service.dart';
+import '../../core/services/image_service.dart';
+import '../../core/services/permission_service.dart';
+
+typedef ComputeImpl = Future<R> Function<Q, R>(
+    ComputeCallback<Q, R> callback, Q message,
+    {String? debugLabel});
 
 /// Use case for converting and saving images in the background
 class ConvertAndSaveImagesUseCase {
   final ImageService imageService;
+  final PermissionService permissionService;
+  final ComputeImpl _compute;
 
-  ConvertAndSaveImagesUseCase({required this.imageService});
+  ConvertAndSaveImagesUseCase({
+    required this.imageService,
+    required this.permissionService,
+    ComputeImpl? computeImpl,
+  }) : _compute = computeImpl ?? compute;
 
   /// Convert and save images with progress callback
   Future<ConvertAndSaveResult> execute({
@@ -25,7 +33,7 @@ class ConvertAndSaveImagesUseCase {
     }
 
     // Request storage permission
-    final hasPermission = await _requestStoragePermission();
+    final hasPermission = await permissionService.requestStoragePermission();
     if (!hasPermission) {
       throw Exception('Storage permission denied');
     }
@@ -37,7 +45,7 @@ class ConvertAndSaveImagesUseCase {
 
     try {
       // Process images in background
-      await compute(_convertImagesInBackground, {
+      await _compute(_convertImagesInBackground, {
         'sourceImages': sourceImages,
         'settings': settings,
       }).then((results) async {
@@ -108,37 +116,6 @@ class ConvertAndSaveImagesUseCase {
     String? saveToPath,
   }) async {
     return imageService.saveImage(imageData, saveToPath ?? '');
-  }
-
-  /// Request storage permission
-  Future<bool> _requestStoragePermission() async {
-    if (Platform.isAndroid) {
-      // For Android 13+ (API 33+), photos permission is sufficient for MediaStore
-      final photosStatus = await Permission.photos.status;
-      if (photosStatus.isGranted) {
-        return true;
-      }
-
-      // Request photos permission
-      final photosResult = await Permission.photos.request();
-      if (photosResult.isGranted) {
-        return true;
-      }
-
-      // Fallback to storage permission for older Android versions
-      final storageStatus = await Permission.storage.status;
-      if (storageStatus.isGranted) {
-        return true;
-      }
-
-      final storageResult = await Permission.storage.request();
-      return storageResult.isGranted;
-    } else if (Platform.isIOS) {
-      final status = await Permission.photos.request();
-      return status.isGranted;
-    }
-
-    return true; // For other platforms
   }
 }
 

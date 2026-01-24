@@ -4,7 +4,8 @@ import 'package:get_it/get_it.dart';
 
 import '../services/image_service.dart';
 import '../services/storage_service.dart';
-import '../usecases/convert_and_save_images_usecase.dart';
+import '../services/permission_service.dart';
+import '../../domain/usecases/convert_and_save_images_usecase.dart';
 import '../../presentation/viewmodels/conversion_viewmodel.dart';
 import '../../presentation/viewmodels/navigation_viewmodel.dart';
 import '../../presentation/viewmodels/resize_viewmodel.dart';
@@ -22,6 +23,7 @@ Future<void> setupDependencyInjection() async {
   );
   getIt.registerLazySingleton<ImageService>(() => ImageService());
   getIt.registerLazySingleton<DialogService>(() => DialogService());
+  getIt.registerLazySingleton<PermissionService>(() => PermissionService());
   await getIt.isReady<StorageService>();
 
   //**
@@ -35,7 +37,10 @@ Future<void> setupDependencyInjection() async {
   //* UseCases - Register as factories
   //**/
   getIt.registerFactory<ConvertAndSaveImagesUseCase>(
-    () => ConvertAndSaveImagesUseCase(imageService: getIt<ImageService>()),
+    () => ConvertAndSaveImagesUseCase(
+      imageService: getIt<ImageService>(),
+      permissionService: getIt<PermissionService>(),
+    ),
   );
 
   //**

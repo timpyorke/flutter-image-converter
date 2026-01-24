@@ -9,7 +9,7 @@ import 'package:flutter_image_converters/providers/shared_pref_provider.dart';
 import 'package:flutter_image_converters/core/services/dialog_service.dart';
 import 'package:flutter_image_converters/presentation/views/convert/models/convert_view_state.dart';
 import '../../core/services/image_service.dart';
-import '../../core/usecases/convert_and_save_images_usecase.dart';
+import '../../domain/usecases/convert_and_save_images_usecase.dart';
 
 /// ViewModel for Image Conversion operations
 class ConversionViewModel extends ChangeNotifier {
