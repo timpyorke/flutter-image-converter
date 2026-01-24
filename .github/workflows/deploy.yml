@@ -50,12 +50,18 @@ jobs:
         if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.build_type == 'debug' }}
         run: flutter build apk --release -t lib/main.dart --build-number=${{ github.run_number }}
 
+      - name: Create Firebase Credentials File
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.build_type == 'debug' }}
+        env:
+          FIREBASE_CREDENTIALS: ${{ secrets.FIREBASE_CREDENTIALS_FILE }}
+        run: echo "$FIREBASE_CREDENTIALS" > firebase_credentials.json
+
       - name: Upload APK to Firebase
         if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.build_type == 'debug' }}
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.FIREBASE_APP_ID_ANDROID }}
-          serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS_FILE }}
+          serviceCredentialsFile: firebase_credentials.json
           groups: testers
           file: build/app/outputs/flutter-apk/app-release.apk
 
@@ -96,6 +102,9 @@ jobs:
     name: Build iOS
     runs-on: macos-latest
     timeout-minutes: 45
+    env:
+      IOS_CERTIFICATE_BASE64: ${{ secrets.IOS_CERTIFICATE_BASE64 }}
+      IOS_PROVISION_PROFILE_BASE64: ${{ secrets.IOS_PROVISION_PROFILE_BASE64 }}
     
     steps:
       - uses: actions/checkout@v4
@@ -121,9 +130,36 @@ jobs:
           cd ios
           pod install
           cd ..
-          
-      # IMPORTANT: "flutter build ipa" requires valid signing setup (Provisioning Profile + Cert).
-      # If you do not have secrets set up, this will fail or require --no-codesign (which produces unrelated artifacts).
+
+      - name: Install Apple Certificate and Provisioning Profile
+        if: ${{ env.IOS_CERTIFICATE_BASE64 != '' && env.IOS_PROVISION_PROFILE_BASE64 != '' }}
+        env:
+          BUILD_CERTIFICATE_BASE64: ${{ secrets.IOS_CERTIFICATE_BASE64 }}
+          P12_PASSWORD: ${{ secrets.IOS_CERTIFICATE_PASSWORD }}
+          BUILD_PROVISION_PROFILE_BASE64: ${{ secrets.IOS_PROVISION_PROFILE_BASE64 }}
+          KEYCHAIN_PASSWORD: ${{ secrets.KEYCHAIN_PASSWORD }}
+        run: |
+          # create variables
+          CERTIFICATE_PATH=$RUNNER_TEMP/build_certificate.p12
+          PP_PATH=$RUNNER_TEMP/build_pp.mobileprovision
+          KEYCHAIN_PATH=$RUNNER_TEMP/app-signing.keychain-db
+
+          # import certificate and provisioning profile from secrets
+          echo -n "$BUILD_CERTIFICATE_BASE64" | base64 --decode -o $CERTIFICATE_PATH
+          echo -n "$BUILD_PROVISION_PROFILE_BASE64" | base64 --decode -o $PP_PATH
+
+          # create temporary keychain
+          security create-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+          security set-keychain-settings -lut 21600 $KEYCHAIN_PATH
+          security unlock-keychain -p "$KEYCHAIN_PASSWORD" $KEYCHAIN_PATH
+
+          # import certificate to keychain
+          security import $CERTIFICATE_PATH -P "$P12_PASSWORD" -A -t cert -f pkcs12 -k $KEYCHAIN_PATH
+          security list-keychain -d user -s $KEYCHAIN_PATH
+
+          # apply provisioning profile
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          cp $PP_PATH ~/Library/MobileDevice/Provisioning\ Profiles
       
       # --- DEBUG BUILD (IPA - Development/AdHoc) ---
       - name: Build IPA (Debug/Firebase)
@@ -131,12 +167,18 @@ jobs:
         # Requires manual signing setup or valid Match setup
         run: flutter build ipa --release --export-method development -t lib/main.dart --build-number=${{ github.run_number }}
 
+      - name: Create Firebase Credentials File (iOS)
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.build_type == 'debug' }}
+        env:
+          FIREBASE_CREDENTIALS: ${{ secrets.FIREBASE_CREDENTIALS_FILE }}
+        run: echo "$FIREBASE_CREDENTIALS" > firebase_credentials.json
+
       - name: Upload IPA to Firebase
         if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.build_type == 'debug' }}
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.FIREBASE_APP_ID_IOS }}
-          serviceCredentialsFileContent: ${{ secrets.FIREBASE_CREDENTIALS_FILE }}
+          serviceCredentialsFile: firebase_credentials.json
           groups: testers
           file: build/ios/ipa/*.ipa
 
