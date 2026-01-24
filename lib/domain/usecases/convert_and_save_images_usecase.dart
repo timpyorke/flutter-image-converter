@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_image_converters/core/const/image_format.dart';
-import '../../presentation/models/image_data.dart';
-import '../../presentation/models/conversion_settings.dart';
+import '../../data/image_data.dart';
+import '../../features/convert/models/conversion_settings.dart';
 import '../../core/services/image_service.dart';
 import '../../core/services/permission_service.dart';
 
