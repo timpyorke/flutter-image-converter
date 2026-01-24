@@ -5,7 +5,7 @@ part 'setting_view_state.freezed.dart';
 
 /// Represents the state of the settings view
 @freezed
-class SettingViewState with _$SettingViewState {
+abstract class SettingViewState with _$SettingViewState {
   const factory SettingViewState({
     required AppSettings settings,
     @Default(false) bool isLoading,

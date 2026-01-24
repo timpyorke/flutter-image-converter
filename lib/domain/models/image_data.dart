@@ -5,7 +5,7 @@ part 'image_data.freezed.dart';
 
 /// Model representing an image data object
 @freezed
-class ImageData with _$ImageData {
+abstract class ImageData with _$ImageData {
   const ImageData._();
 
   const factory ImageData({
