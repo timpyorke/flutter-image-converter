@@ -20,6 +20,8 @@ jobs:
     name: Build Android
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    env:
+      FIREBASE_APP_ID_ANDROID: ${{ secrets.FIREBASE_APP_ID_ANDROID }}
     
     steps:
       - uses: actions/checkout@v4
@@ -57,7 +59,7 @@ jobs:
         run: echo "$FIREBASE_CREDENTIALS" > firebase_credentials.json
 
       - name: Upload APK to Firebase
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.build_type == 'debug' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.build_type == 'debug' && env.FIREBASE_APP_ID_ANDROID != '' }}
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.FIREBASE_APP_ID_ANDROID }}
@@ -105,6 +107,7 @@ jobs:
     env:
       IOS_CERTIFICATE_BASE64: ${{ secrets.IOS_CERTIFICATE_BASE64 }}
       IOS_PROVISION_PROFILE_BASE64: ${{ secrets.IOS_PROVISION_PROFILE_BASE64 }}
+      FIREBASE_APP_ID_IOS: ${{ secrets.FIREBASE_APP_ID_IOS }}
     
     steps:
       - uses: actions/checkout@v4
@@ -174,7 +177,7 @@ jobs:
         run: echo "$FIREBASE_CREDENTIALS" > firebase_credentials.json
 
       - name: Upload IPA to Firebase
-        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.build_type == 'debug' }}
+        if: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.build_type == 'debug' && env.FIREBASE_APP_ID_IOS != '' }}
         uses: wzieba/Firebase-Distribution-Github-Action@v1
         with:
           appId: ${{ secrets.FIREBASE_APP_ID_IOS }}
