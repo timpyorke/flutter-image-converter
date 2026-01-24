@@ -10,7 +10,9 @@ class ImageProcessingIsolate {
   }
 
   static img.Image? _decodeImageSync(Uint8List bytes) {
-    return img.decodeImage(bytes);
+    final image = img.decodeImage(bytes);
+    if (image == null) return null;
+    return img.bakeOrientation(image);
   }
 
   /// Convert image in isolate
@@ -24,28 +26,31 @@ class ImageProcessingIsolate {
       throw Exception('Failed to decode image');
     }
 
+    // Fix orientation
+    final orientedImage = img.bakeOrientation(image);
+
     Uint8List convertedBytes;
 
     switch (params.targetFormat) {
       case ImageFormat.jpg:
         convertedBytes = Uint8List.fromList(
-          img.encodeJpg(image, quality: params.quality),
+          img.encodeJpg(orientedImage, quality: params.quality),
         );
         break;
       case ImageFormat.png:
-        convertedBytes = Uint8List.fromList(img.encodePng(image));
+        convertedBytes = Uint8List.fromList(img.encodePng(orientedImage));
         break;
       case ImageFormat.webp:
         try {
           convertedBytes = Uint8List.fromList(
-            img.encodeJpg(image, quality: params.quality),
+            img.encodeJpg(orientedImage, quality: params.quality),
           );
         } catch (e) {
-          convertedBytes = Uint8List.fromList(img.encodePng(image));
+          convertedBytes = Uint8List.fromList(img.encodePng(orientedImage));
         }
         break;
       case ImageFormat.bmp:
-        convertedBytes = Uint8List.fromList(img.encodeBmp(image));
+        convertedBytes = Uint8List.fromList(img.encodeBmp(orientedImage));
         break;
     }
 
@@ -63,19 +68,24 @@ class ImageProcessingIsolate {
       throw Exception('Failed to decode image');
     }
 
-    int newWidth = params.width ?? image.width;
-    int newHeight = params.height ?? image.height;
+    // Fix orientation
+    final orientedImage = img.bakeOrientation(image);
+
+    int newWidth = params.width ?? orientedImage.width;
+    int newHeight = params.height ?? orientedImage.height;
 
     if (params.maintainAspectRatio) {
       if (params.width != null && params.height == null) {
-        newHeight = (image.height * params.width! / image.width).round();
+        newHeight = (orientedImage.height * params.width! / orientedImage.width)
+            .round();
       } else if (params.height != null && params.width == null) {
-        newWidth = (image.width * params.height! / image.height).round();
+        newWidth = (orientedImage.width * params.height! / orientedImage.height)
+            .round();
       }
     }
 
     final resized = img.copyResize(
-      image,
+      orientedImage,
       width: newWidth,
       height: newHeight,
       interpolation: img.Interpolation.linear,
@@ -106,8 +116,11 @@ class ImageProcessingIsolate {
       throw Exception('Failed to decode image');
     }
 
+    // Fix orientation
+    final orientedImage = img.bakeOrientation(image);
+
     final thumbnail = img.copyResize(
-      image,
+      orientedImage,
       width: params.maxSize,
       height: params.maxSize,
       interpolation: img.Interpolation.linear,
